@@ -1,0 +1,18 @@
+06-07 11:21 pika.adapters.base_connection INFO     Connecting to 10.64.0.167:5672
+06-07 11:21 pika.adapters.blocking_connection INFO     Created channel=1
+06-07 11:21 root         INFO     Jackdaws love my big sphinx of quartz.
+06-07 11:21 myapp.area1  INFO     How quickly daft jumping zebras vex.
+06-07 11:21 myapp.area2  WARNING  Jail zesty vixen who grabbed pay from quack.
+06-07 11:21 myapp.area2  ERROR    The five boxing wizards jump quickly.
+06-07 11:21 myapp.area1  INFO     aaaaaaaaaaaaaaaa
+06-07 11:21 myapp.area1  INFO     aaaaaaaaaaaaaaaa
+06-07 11:21 myapp.area1  INFO     aaaaaaaaaaaaaaaa
+06-07 11:21 myapp.area1  INFO     aaaaaaaaaaaaaaaa
+06-07 11:21 myapp.area1  INFO     aaaaaaaaaaaaaaaa
+06-07 11:21 myapp.area1  INFO     aaaaaaaaaaaaaaaa
+06-07 11:21 myapp.area1  INFO     aaaaaaaaaaaaaaaa
+06-07 11:21 myapp.area1  INFO     aaaaaaaaaaaaaaaa
+06-07 11:21 myapp.area1  INFO     aaaaaaaaaaaaaaaa
+06-07 11:21 myapp.area1  INFO     aaaaaaaaaaaaaaaa
+06-07 11:21 myapp.area1  INFO     aaaaaaaaaaaaaaaa
+06-07 11:21 myapp.area1  INFO     aaaaaaaaaaaaaaaa

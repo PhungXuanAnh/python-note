@@ -1,0 +1,57 @@
+{
+    "contexts": [
+        {
+            "user": "centos", 
+            "name": "demo1", 
+            "placement_groups": {
+                "pgrp1": {
+                    "policy": "availability"
+                }
+            }, 
+            "image": "CentOS-7-x86_64-GenericCloud-1603.qcow2", 
+            "networks": {
+                "test": {
+                    "cidr": "10.0.1.0/24"
+                }
+            }, 
+            "flavor": "m1.small", 
+            "servers": {
+                "apollo": {
+                    "placement": "pgrp1", 
+                    "floating_ip": true
+                }, 
+                "kratos": {
+                    "placement": "pgrp1", 
+                    "floating_ip": true
+                }, 
+                "athena": {
+                    "placement": "pgrp1", 
+                    "floating_ip": true
+                }
+            }
+        }, 
+        {
+            "user": "centos", 
+            "name": "demo2", 
+            "placement_groups": {
+                "pgrp1": {
+                    "policy": "availability"
+                }
+            }, 
+            "image": "CentOS-7-x86_64-GenericCloud-1603.qcow2", 
+            "networks": {
+                "test": {
+                    "cidr": "10.0.1.0/24"
+                }
+            }, 
+            "flavor": "m1.small", 
+            "servers": {
+                "hades": {
+                    "placement": "pgrp1", 
+                    "floating_ip": true
+                }
+            }
+        }
+    ], 
+    "schema": "yardstick:task:0.1"
+}

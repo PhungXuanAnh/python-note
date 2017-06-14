@@ -1,0 +1,35 @@
+language: python
+sudo: false
+cache:
+  directories:
+    - $HOME/.cache/pip
+python:
+  - "2.6"
+  - "2.7"
+  - "3.3"
+  - "3.4"
+  - "3.5"
+install:
+  # Self-install for setup.py-driven deps
+  - pip install -e .
+  # Dev (doc/test running) requirements
+  - pip install coveralls # For coveralls.io specifically
+  - pip install -r dev-requirements.txt
+script:
+  # Main tests, w/ coverage!
+  - inv test --coverage
+  # Ensure documentation & invoke pipeline run OK.
+  # Run 'docs' first since its objects.inv is referred to by 'www'.
+  # Also force warnings to be errors since most of them tend to be actual
+  # problems.
+  - invoke docs -o -W www -o -W
+notifications:
+  irc:
+    channels: "irc.freenode.org#paramiko"
+    template:
+      - "%{repository}@%{branch}: %{message} (%{build_url})"
+    on_success: change
+    on_failure: change
+  email: false
+after_success:
+  - coveralls

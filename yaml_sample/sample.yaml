@@ -1,0 +1,24 @@
+contexts:
+- flavor: m1.small
+  image: CentOS-7-x86_64-GenericCloud-1603.qcow2
+  name: demo1
+  networks:
+    test: {cidr: 10.0.1.0/24}
+  placement_groups:
+    pgrp1: {policy: availability}
+  servers:
+    apollo: {floating_ip: true, placement: pgrp1}
+    athena: {floating_ip: true, placement: pgrp1}
+    kratos: {floating_ip: true, placement: pgrp1}
+  user: centos
+- flavor: m1.small
+  image: CentOS-7-x86_64-GenericCloud-1603.qcow2
+  name: demo2
+  networks:
+    test: {cidr: 10.0.1.0/24}
+  placement_groups:
+    pgrp1: {policy: availability}
+  servers:
+    hades: {floating_ip: true, placement: pgrp1}
+  user: centos
+schema: yardstick:task:0.1
