@@ -11,7 +11,7 @@ def window():
    app = QApplication(sys.argv)
    w = QWidget()
    b = QPushButton(w)
-   b.setText("Hello World!")
+   b.setText("Hello World QWdiget!")
    b.move(50,50)
    b.clicked.connect(showdialog)
    w.setWindowTitle("PyQt Dialog demo")
@@ -20,7 +20,7 @@ def window():
     
 def showdialog():
    d = QDialog()
-   b1 = QPushButton("ok",d)
+   b1 = QPushButton("ok Dialog",d)
    b1.move(50,50)
    d.setWindowTitle("Dialog")
    d.setWindowModality(Qt.ApplicationModal)
