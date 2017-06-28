@@ -63,12 +63,20 @@ class TimerMessageBox(QtGui.QMessageBox):
         self.raise_()
         self.activateWindow()
      
-class Example(QtGui.QWidget):
+class Example(QtGui.QMainWindow):
     
     
     def __init__(self):
         super(Example, self).__init__()
-        print("time rest breack = {}".format(time_rest_break))
+        print("time rest break = {}".format(time_rest_break))
+        
+        self.label = QtGui.QLabel(self)
+        self.label.resize(500, 100)
+        font_label = QtGui.QFont()
+        font_label.setPointSize(75);
+        font_label.setBold(True);
+        self.label.setFont(font_label)
+        
         
         self.timer = QtCore.QTimer(self)
         self.timer.setInterval(1000)
@@ -76,12 +84,18 @@ class Example(QtGui.QWidget):
         self.timer.start()
         
         self.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
+        self.setGeometry(50, 50, 500, 300)
         
 
     def warning(self):
         global time_rest_break
-        print("time rest breack = {}".format(time_rest_break))
         time_rest_break -= 1
+        
+        m, s = divmod(time_rest_break, 60)
+        h, m = divmod(m, 60)
+        self.label.setText("%d:%02d:%02d" % (h, m, s))
+        print("time rest break = {} = {}:{:02d}:{:02d}".format(time_rest_break, h, m, s))
+        
         if time_rest_break <= 0:
             time_rest_break = 2  
             messagebox = TimerMessageBox(5, self)
