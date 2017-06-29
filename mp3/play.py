@@ -11,7 +11,7 @@ song_file1 = "a.mp3"
 # pygame.mixer.quit()
 
 
-''' to use pyglet with compressed audio as mp3, need to install AVbin
+''' to use pyglet with compressed audio as mp3, need to install AVbin ============== GOOD
     Download here: http://avbin.github.io/AVbin/Download.html '''
 # import pyglet    
 # song = pyglet.media.load(song_file)

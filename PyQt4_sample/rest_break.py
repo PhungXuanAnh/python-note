@@ -1,8 +1,19 @@
 import sys
+import pyglet
 from PyQt4 import QtCore
 from PyQt4 import QtGui
 
-time_rest_break = 1200
+def play_song(song_file):   
+    song = pyglet.media.load(song_file)
+    song.play()
+     
+    def exiter(dt):
+        pyglet.app.exit()
+    print "Song length is: %f" % song.duration
+    # song.duration is the song length
+    pyglet.clock.schedule_once(exiter, song.duration)
+     
+    pyglet.app.run()
 
 class TimerMessageBox(QtGui.QMessageBox):
     def __init__(self, timeout=3, parent=None):
@@ -18,6 +29,7 @@ class TimerMessageBox(QtGui.QMessageBox):
         self.timer.start()
         self.activateWindow()
         self.raise_()
+        play_song('/media/xuananh/data/Downloads/Saved/.music/Fantasy-magical-sound-effect.mp3')
         
     def changeContent(self):
         self.setText("wait (closing automatically in {0} secondes.)".format(self.time_to_wait))
@@ -68,7 +80,10 @@ class Example(QtGui.QMainWindow):
     
     def __init__(self):
         super(Example, self).__init__()
-        print("time rest break = {}".format(time_rest_break))
+        
+        self.TIME_BREAK = 1200
+        self.time_rest_break = self.TIME_BREAK
+        print("time rest break = {}".format(self.time_rest_break))
         
         self.label = QtGui.QLabel(self)
         self.label.resize(500, 100)
@@ -77,6 +92,19 @@ class Example(QtGui.QMainWindow):
         font_label.setBold(True);
         self.label.setFont(font_label)
         
+        self.btn = QtGui.QPushButton('Set time', self)
+        self.btn.resize(self.btn.sizeHint())
+        self.btn.move(1, 110)
+        self.btn.resize(200,100)
+        self.btn.clicked.connect(self.btn_function)
+        
+#         self.textEdit = QtGui.QTextEdit(self)
+#         self.textEdit.move(210, 110)
+#         self.textEdit.resize(100, 50)
+        
+        self.textbox = QtGui.QLineEdit(self)
+        self.textbox.move(210, 110)
+        self.textbox.resize(100, 50)
         
         self.timer = QtCore.QTimer(self)
         self.timer.setInterval(1000)
@@ -88,20 +116,23 @@ class Example(QtGui.QMainWindow):
         
 
     def warning(self):
-        global time_rest_break
-        time_rest_break -= 1
+        self.time_rest_break -= 1
         
-        m, s = divmod(time_rest_break, 60)
+        m, s = divmod(self.time_rest_break, 60)
         h, m = divmod(m, 60)
         self.label.setText("%d:%02d:%02d" % (h, m, s))
-        print("time rest break = {} = {}:{:02d}:{:02d}".format(time_rest_break, h, m, s))
+        print("time rest break = {} = {}:{:02d}:{:02d}".format(self.time_rest_break, h, m, s))
         
-        if time_rest_break <= 0:
-            time_rest_break = 2  
-            messagebox = TimerMessageBox(5, self)
+        if self.time_rest_break <= 0:
+            self.time_rest_break = 2  
+            messagebox = TimerMessageBox(3, self)
             messagebox.exec_()
             if messagebox.clickedButton() != None:
-                time_rest_break = 1200
+                self.time_rest_break = self.TIME_BREAK
+                
+    def btn_function(self):
+        self.TIME_BREAK = int(self.textbox.text()) * 60
+        self.time_rest_break = int(self.textbox.text()) * 60
                 
 def main():
     app = QtGui.QApplication(sys.argv)
