@@ -29,3 +29,6 @@ print a
 
 print shlex.split("ping -c1 8.8.8.8")
 
+print "a-b-c".split("-")
+print "a-b-c".split("-")[0]
+

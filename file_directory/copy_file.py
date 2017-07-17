@@ -10,20 +10,14 @@ import errno
 from os.path import basename
 src = '/media/xuananh/data/Temp/Temp.py'
 dst = '/media/xuananh/data'
-validium_keydir = '/.validium/keypair/'
 
 from os.path import expanduser
 home = expanduser("~")
 print home
 
 # shutil.copyfile(src, dst + '/' + basename(src))
-# shutil.copy2(src, home + validium_keydir)
-
-validium_key_dir = os.environ.get('HOME', None) + '/.validium/keypair'
-if not os.path.exists(validium_key_dir):
-    os.makedirs(validium_key_dir)
-
-shutil.copy2(src, validium_key_dir)
+# shutil.copy2(src, dst)
+shutil.copy2(src, dst + '/temp1.txt')
 
 
 '''
@@ -49,11 +43,11 @@ def copyanything(src, dst):
             shutil.copy(src, dst)
         else: raise     
 
-# rename file
-os.rename('/media/xuananh/data/Temp/Temp2.py', '/media/xuananh/data/Temp/temp1111.py')
-# rename
-shutil.move('/media/xuananh/data/Temp/Temp2.py', '/media/xuananh/data/Temp/Temp1.py') 
-# move and rename
-shutil.move('/media/xuananh/data/Temp/Temp1.py', '/home/xuananh/Temp2.py')
-# just move
-shutil.move('/media/xuananh/data/Temp/Temp1.py', '/home/xuananh/')
+# # rename file
+# os.rename('/media/xuananh/data/Temp/Temp2.py', '/media/xuananh/data/Temp/temp1111.py')
+# # rename
+# shutil.move('/media/xuananh/data/Temp/Temp2.py', '/media/xuananh/data/Temp/Temp1.py') 
+# # move and rename
+# shutil.move('/media/xuananh/data/Temp/Temp1.py', '/home/xuananh/Temp2.py')
+# # just move
+# shutil.move('/media/xuananh/data/Temp/Temp1.py', '/home/xuananh/')
