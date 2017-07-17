@@ -1,7 +1,26 @@
 song_file = "indent.mp3"
 song_file1 = "a.mp3"
+song_file2 = "/media/xuananh/data/Downloads/Saved/.music/Magic-chimes.mp3"
 
-'''pygame is not stable when play multi time with indent.mp3'''
+''' to use pyglet with compressed audio as mp3, need to install AVbin ============== GOOD
+    Download here: http://avbin.github.io/AVbin/Download.html '''
+# import pyglet    
+# song = pyglet.media.load(song_file)
+# song.play()
+#   
+# def exiter(dt):
+#     pyglet.app.exit()
+# print "Song length is: %f" % song.duration
+# # song.duration is the song length
+# pyglet.clock.schedule_once(exiter, song.duration)
+#   
+# pyglet.app.run()
+
+
+'''
+pygame is not stable when play multi time with very short song like indent.mp3
+but it is very good with long song like a.mp3   
+'''
 # import pygame
 # pygame.mixer.init()
 # pygame.mixer.music.load(song_file)
@@ -10,20 +29,6 @@ song_file1 = "a.mp3"
 #     continue
 # pygame.mixer.quit()
 
-
-''' to use pyglet with compressed audio as mp3, need to install AVbin ============== GOOD
-    Download here: http://avbin.github.io/AVbin/Download.html '''
-# import pyglet    
-# song = pyglet.media.load(song_file)
-# song.play()
-# 
-# def exiter(dt):
-#     pyglet.app.exit()
-# print "Song length is: %f" % song.duration
-# # song.duration is the song length
-# pyglet.clock.schedule_once(exiter, song.duration)
-# 
-# pyglet.app.run()
 
 ''' tham khao thoi, khong play dc
     sudo apt-get install python-gst0.10 

@@ -2,25 +2,17 @@ import sys
 import pyglet
 from PyQt4 import QtCore
 from PyQt4 import QtGui
-
-def play_song(song_file):   
-    song = pyglet.media.load(song_file)
-    song.play()
-     
-    def exiter(dt):
-        pyglet.app.exit()
-    print "Song length is: %f" % song.duration
-    # song.duration is the song length
-    pyglet.clock.schedule_once(exiter, song.duration)
-     
-    pyglet.app.run()
+import threading
 
 class TimerMessageBox(QtGui.QMessageBox):
-    def __init__(self, timeout=3, parent=None):
+    def __init__(self, counter_show, timeout=3, parent=None):
         super(TimerMessageBox, self).__init__(parent)
+        
+        self.counter_show = counter_show
+        
         self.setWindowTitle("wait")
         self.time_to_wait = timeout
-        self.setText("wait (closing automatically in {0} secondes.)".format(timeout))
+        self.setText("Show {} times. Closing in {} seconds".format(self.counter_show, timeout))
         self.setStandardButtons(QtGui.QMessageBox.Cancel)
         
         self.timer = QtCore.QTimer(self)
@@ -29,10 +21,9 @@ class TimerMessageBox(QtGui.QMessageBox):
         self.timer.start()
         self.activateWindow()
         self.raise_()
-        play_song('/media/xuananh/data/Downloads/Saved/.music/Fantasy-magical-sound-effect.mp3')
         
     def changeContent(self):
-        self.setText("wait (closing automatically in {0} secondes.)".format(self.time_to_wait))
+        self.setText("Show {} times. Closing in {} seconds".format(self.counter_show, self.time_to_wait))
         self.time_to_wait -= 1
         if self.time_to_wait <= 0:
             self.close()
@@ -81,22 +72,33 @@ class Example(QtGui.QMainWindow):
     def __init__(self):
         super(Example, self).__init__()
         
+        self.counter_show = 0
+        
+        self.is_playing = False
+        self.song_file = "/media/xuananh/data/Downloads/Saved/.music/Magic-chimes.mp3"
+        
         self.TIME_BREAK = 1200
         self.time_rest_break = self.TIME_BREAK
         print("time rest break = {}".format(self.time_rest_break))
         
         self.label = QtGui.QLabel(self)
-        self.label.resize(500, 100)
+        self.label.resize(200, 50)
         font_label = QtGui.QFont()
-        font_label.setPointSize(75);
+        font_label.setPointSize(25);
         font_label.setBold(True);
         self.label.setFont(font_label)
         
-        self.btn = QtGui.QPushButton('Set time', self)
-        self.btn.resize(self.btn.sizeHint())
-        self.btn.move(1, 110)
-        self.btn.resize(200,100)
-        self.btn.clicked.connect(self.btn_function)
+        self.btn_settime = QtGui.QPushButton('Set time', self)
+        self.btn_settime.resize(self.btn_settime.sizeHint())
+        self.btn_settime.move(1, 110)
+#         self.btn_settime.resize(100,50)   # wide = 200, high = 100
+        self.btn_settime.clicked.connect(self.btn_func_settime)
+        
+        self.btn_reset = QtGui.QPushButton('Reset', self)
+        self.btn_reset.resize(self.btn_reset.sizeHint())
+        self.btn_reset.move(1, 150)     # column = 1, row =  150
+#         self.btn_reset.resize(200,100)
+        self.btn_reset.clicked.connect(self.btn_func_reset)
         
 #         self.textEdit = QtGui.QTextEdit(self)
 #         self.textEdit.move(210, 110)
@@ -112,7 +114,7 @@ class Example(QtGui.QMainWindow):
         self.timer.start()
         
         self.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
-        self.setGeometry(50, 50, 500, 300)
+        self.setGeometry(50, 50, 350, 200)
         
 
     def warning(self):
@@ -124,15 +126,44 @@ class Example(QtGui.QMainWindow):
         print("time rest break = {} = {}:{:02d}:{:02d}".format(self.time_rest_break, h, m, s))
         
         if self.time_rest_break <= 0:
-            self.time_rest_break = 2  
-            messagebox = TimerMessageBox(3, self)
-            messagebox.exec_()
-            if messagebox.clickedButton() != None:
-                self.time_rest_break = self.TIME_BREAK
+            
+            self.counter_show += 1
+            
+            if not self.is_playing:
+                f2 = threading.Thread(target=self.play_song, args=[self.song_file])
+                f2.start()
                 
-    def btn_function(self):
+            self.time_rest_break = 2  
+            messagebox = TimerMessageBox(self.counter_show, 3, self)
+            messagebox.exec_()
+            
+            if messagebox.clickedButton() != None:
+                if self.TIME_BREAK < 5:
+                    self.TIME_BREAK = 1200
+                self.time_rest_break = self.TIME_BREAK
+                self.is_playing = False
+                self.counter_show = 0
+                
+    def btn_func_settime(self):
         self.TIME_BREAK = int(self.textbox.text()) * 60
-        self.time_rest_break = int(self.textbox.text()) * 60
+        self.time_rest_break = self.TIME_BREAK
+        
+    def btn_func_reset(self):
+        self.TIME_BREAK = 1200
+        self.time_rest_break = self.TIME_BREAK
+        
+    def play_song(self, song_file):
+        self.is_playing = True
+        
+        import pygame
+        pygame.mixer.init()
+        pygame.mixer.music.load(song_file)
+        pygame.mixer.music.play()
+        while pygame.mixer.music.get_busy() == True and self.is_playing == True:
+            continue
+        
+        self.is_playing = False
+        pygame.mixer.quit()
                 
 def main():
     app = QtGui.QApplication(sys.argv)
