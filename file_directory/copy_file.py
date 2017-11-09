@@ -44,7 +44,7 @@ def copyanything(src, dst):
         else: raise     
 
 # # rename file
-# os.rename('/media/xuananh/data/Temp/Temp2.py', '/media/xuananh/data/Temp/temp1111.py')
+os.rename('/media/xuananh/data/Temp/Temp2.py', '/media/xuananh/data/Temp/temp1111.py')
 # # rename
 # shutil.move('/media/xuananh/data/Temp/Temp2.py', '/media/xuananh/data/Temp/Temp1.py') 
 # # move and rename

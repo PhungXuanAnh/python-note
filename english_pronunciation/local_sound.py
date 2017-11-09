@@ -1,4 +1,8 @@
 #!/usr/bin/python
+# sudo -H pip install requests
+# sudo -H pip install pyglet
+# install AVbin: Download here: http://avbin.github.io/AVbin/Download.html
+# sudo ./install-avbin-linux-x86-64-v10
 
 import sys
 import json
@@ -89,12 +93,10 @@ if __name__ == '__main__':
 #     print ("sys.argv[1] = {} \n sys.argv[2] = {}"\
 #            .format(sys.argv[1], sys.argv[2]))
     
-#     sound_dir = '/home/xuananh/.goldendict/Longman-2005-Voice-Package-British'
-
-    ''' Note: play_sound_goldendict.py [word] [sound_dir] '''
+    ''' Usage: play_sound_goldendict.py [word] [sound_dir] '''
     
     result = []
-    result = find_all_sound(sys.argv[1], sys.argv[2])
+    result = find_all_sound(name=sys.argv[1], sound_dir=sys.argv[2])
     print result
     
     for file_path in result:

@@ -15,11 +15,14 @@ dict_t ={
 
 for key in dict_t:
     print (key, dict_t[key])
-print "aaaaaaaaaaaaaa"   
+print "-----------------------------------" 
+
+  
 for key, value in dict_t.items():
     print (key, value)
     
 # del dict_t["aaa"]
+print "-----------------------------------" 
 
 if isinstance(dict_t, dict):
     print 'That is a dictionary'

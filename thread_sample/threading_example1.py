@@ -11,15 +11,18 @@ def print_time(threadName, delay, counter):
 
 f1 = threading.Thread(target=print_time, args=["11111", 2, 5]) # pass args as a list
 ''' set this flag to keep f1 alive even main thread killed '''
-f1.daemon = True 
+f1.daemon = True
+f1.setName("bbbbbbbbbbbbbbbbbbbbbbbbbbbb") 
 f1.start()
 
 f2 = threading.Thread(target=print_time, args=["22222", 1, 5])
+f2.setName("ccccccccccccccccccccccccccc")
 f2.start()
 
 f3 = threading.Thread(target=print_time, args=("33333", 1, 5,)) # pass args as a tuple
-f3.start()
 f3.setName("aaaaaaaaaaaaaaaaaaaaaaa")
+f3.start()
+
 print f3.getName()
 
 f4 = threading.current_thread()

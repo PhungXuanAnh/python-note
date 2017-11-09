@@ -1,0 +1,265 @@
+*   Trying 10.76.241.89...
+* Connected to 10.76.241.89 (10.76.241.89) port 5000 (#0)
+> POST /v3/auth/tokens HTTP/1.1
+> Host: 10.76.241.89:5000
+> User-Agent: curl/7.47.0
+> Accept: */*
+> Content-Type: application/json
+> Content-Length: 236
+> 
+} [236 bytes data]
+* upload completely sent off: 236 out of 236 bytes
+< HTTP/1.1 201 Created
+< Date: Tue, 03 Oct 2017 09:20:26 GMT
+< Server: Apache/2.4.6 (CentOS)
+< X-Subject-Token: gAAAAABZ01ZbQklXDq7LVPy_LpMktWMgiU2mw6JotNXV4YxmcP2cd_v-SRcoxTqZrmhds2TW1r_WooF8EYrbqUPzKOFW3-5jp-Aoo0VALeMhCcdKuaxmPDh2-EPH5IRZVJUwsiWoZjLGcESlgaHjp3o38GtyL7OkJVhW8c-hp2HH4BrhEBVOqLY
+< Vary: X-Auth-Token
+< x-openstack-request-id: req-471ebd63-985e-46fb-96d3-d33e0cac31b1
+< Content-Length: 4812
+< Connection: close
+< Content-Type: application/json
+< 
+{ [2225 bytes data]
+* Closing connection 0
+{
+    "token": {
+        "audit_ids": [
+            "5GUMH31wTwywXWVs7Z1nOQ"
+        ],
+        "catalog": [
+            {
+                "endpoints": [
+                    {
+                        "id": "18a15d75f23f42a4bf2f8323d347de44",
+                        "interface": "internal",
+                        "region": "RegionOne",
+                        "region_id": "RegionOne",
+                        "url": "http://10.76.241.89:9292"
+                    },
+                    {
+                        "id": "623afc6fb4bc4c7f85a719694a4dcbe0",
+                        "interface": "admin",
+                        "region": "RegionOne",
+                        "region_id": "RegionOne",
+                        "url": "http://10.76.241.89:9292"
+                    },
+                    {
+                        "id": "b481eed29a3244c297c44de3302913d7",
+                        "interface": "public",
+                        "region": "RegionOne",
+                        "region_id": "RegionOne",
+                        "url": "http://10.76.241.89:9292"
+                    }
+                ],
+                "id": "1aff7579ea7f4ac1aba17178784a0e07",
+                "name": "glance",
+                "type": "image"
+            },
+            {
+                "endpoints": [
+                    {
+                        "id": "1adbae3c2cec40e1ab7731229d1d183a",
+                        "interface": "public",
+                        "region": "RegionOne",
+                        "region_id": "RegionOne",
+                        "url": "http://10.76.241.89:5000/v3"
+                    },
+                    {
+                        "id": "6385fc376503499caf014274dcee073a",
+                        "interface": "admin",
+                        "region": "RegionOne",
+                        "region_id": "RegionOne",
+                        "url": "http://10.76.241.89:35357/v3"
+                    },
+                    {
+                        "id": "6efa001cac404a6a838f78783487157b",
+                        "interface": "internal",
+                        "region": "RegionOne",
+                        "region_id": "RegionOne",
+                        "url": "http://10.76.241.89:5000/v3"
+                    }
+                ],
+                "id": "1f6a62952c52413e82436a60285cea8d",
+                "name": "keystone",
+                "type": "identity"
+            },
+            {
+                "endpoints": [
+                    {
+                        "id": "79a82537b6da4a53954fe549716ff2b4",
+                        "interface": "internal",
+                        "region": "RegionOne",
+                        "region_id": "RegionOne",
+                        "url": "http://10.76.241.89:9696"
+                    },
+                    {
+                        "id": "8c7b2cdeb68a4a6e9cba17c0235c590c",
+                        "interface": "admin",
+                        "region": "RegionOne",
+                        "region_id": "RegionOne",
+                        "url": "http://10.76.241.89:9696"
+                    },
+                    {
+                        "id": "d317e6c8de8b40dfa63be015cfed3658",
+                        "interface": "public",
+                        "region": "RegionOne",
+                        "region_id": "RegionOne",
+                        "url": "http://10.76.241.89:9696"
+                    }
+                ],
+                "id": "29a416cebec74006b15c799e002356e9",
+                "name": "neutron",
+                "type": "network"
+            },
+            {
+                "endpoints": [
+                    {
+                        "id": "4c18b26ccd334ae9931d8255307d199e",
+                        "interface": "internal",
+                        "region": "RegionOne",
+                        "region_id": "RegionOne",
+                        "url": "http://10.76.241.89:8004/v1/348cfe5aaead4ea3a4adde691d6c6537"
+                    },
+                    {
+                        "id": "c200264cdfd2440f810c9c7d66d76da7",
+                        "interface": "admin",
+                        "region": "RegionOne",
+                        "region_id": "RegionOne",
+                        "url": "http://10.76.241.89:8004/v1/348cfe5aaead4ea3a4adde691d6c6537"
+                    },
+                    {
+                        "id": "eb7361cc04154466917da14287438a2c",
+                        "interface": "public",
+                        "region": "RegionOne",
+                        "region_id": "RegionOne",
+                        "url": "http://10.76.241.89:8004/v1/348cfe5aaead4ea3a4adde691d6c6537"
+                    }
+                ],
+                "id": "60b0404165664ec088bf16000e1ec96b",
+                "name": "heat",
+                "type": "orchestration"
+            },
+            {
+                "endpoints": [
+                    {
+                        "id": "9e9d494eef5d4654ababc0f9a37c2c4e",
+                        "interface": "internal",
+                        "region": "RegionOne",
+                        "region_id": "RegionOne",
+                        "url": "http://10.76.241.89:8774/v2.1/348cfe5aaead4ea3a4adde691d6c6537"
+                    },
+                    {
+                        "id": "dddc2bfd1a1c423b92efd9f06eded69e",
+                        "interface": "admin",
+                        "region": "RegionOne",
+                        "region_id": "RegionOne",
+                        "url": "http://10.76.241.89:8774/v2.1/348cfe5aaead4ea3a4adde691d6c6537"
+                    },
+                    {
+                        "id": "f89a3b20671b4957abaf434212481a76",
+                        "interface": "public",
+                        "region": "RegionOne",
+                        "region_id": "RegionOne",
+                        "url": "http://10.76.241.89:8774/v2.1/348cfe5aaead4ea3a4adde691d6c6537"
+                    }
+                ],
+                "id": "64189064d078415686d71d73af365b1b",
+                "name": "nova",
+                "type": "compute"
+            },
+            {
+                "endpoints": [
+                    {
+                        "id": "07a0b35e16cd43fca8ed0c148677e210",
+                        "interface": "public",
+                        "region": "RegionOne",
+                        "region_id": "RegionOne",
+                        "url": "http://10.76.241.89:8778/placement"
+                    },
+                    {
+                        "id": "213206cbc5284843a926356e91e1baa3",
+                        "interface": "internal",
+                        "region": "RegionOne",
+                        "region_id": "RegionOne",
+                        "url": "http://10.76.241.89:8778/placement"
+                    },
+                    {
+                        "id": "332b213f159e48f8aa77f7906dc19923",
+                        "interface": "admin",
+                        "region": "RegionOne",
+                        "region_id": "RegionOne",
+                        "url": "http://10.76.241.89:8778/placement"
+                    }
+                ],
+                "id": "b7988d7e66bf4d29a7578ea40fa7bad5",
+                "name": "placement",
+                "type": "placement"
+            },
+            {
+                "endpoints": [
+                    {
+                        "id": "11120bbc249547e2a5c28e4312858d5a",
+                        "interface": "public",
+                        "region": "RegionOne",
+                        "region_id": "RegionOne",
+                        "url": "http://10.76.241.89:8000/v1"
+                    },
+                    {
+                        "id": "12f6d7c327a14f34af622ca6d2e09132",
+                        "interface": "admin",
+                        "region": "RegionOne",
+                        "region_id": "RegionOne",
+                        "url": "http://10.76.241.89:8000/v1"
+                    },
+                    {
+                        "id": "ab89f42ea1b841feb23747998a0323e2",
+                        "interface": "internal",
+                        "region": "RegionOne",
+                        "region_id": "RegionOne",
+                        "url": "http://10.76.241.89:8000/v1"
+                    }
+                ],
+                "id": "db59db324cbf4b9e9634734e454acff7",
+                "name": "heat-cfn",
+                "type": "cloudformation"
+            }
+        ],
+        "expires_at": "2017-10-03T10:20:27.000000Z",
+        "is_domain": false,
+        "issued_at": "2017-10-03T09:20:27.000000Z",
+        "methods": [
+            "password"
+        ],
+        "project": {
+            "domain": {
+                "id": "default",
+                "name": "Default"
+            },
+            "id": "348cfe5aaead4ea3a4adde691d6c6537",
+            "name": "admin"
+        },
+        "roles": [
+            {
+                "id": "3cbb6dae686b4bae8319cc789ca26a3d",
+                "name": "heat_stack_owner"
+            },
+            {
+                "id": "9fe2ff9ee4384b1894a90878d3e92bab",
+                "name": "_member_"
+            },
+            {
+                "id": "7b03b4910f5f4443bf5130d94c8c4490",
+                "name": "admin"
+            }
+        ],
+        "user": {
+            "domain": {
+                "id": "default",
+                "name": "Default"
+            },
+            "id": "5c23efcbd4444061a6ed5ff3cf9fd1f2",
+            "name": "admin",
+            "password_expires_at": null
+        }
+    }
+}

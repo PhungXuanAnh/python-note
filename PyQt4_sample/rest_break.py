@@ -3,6 +3,8 @@ import pyglet
 from PyQt4 import QtCore
 from PyQt4 import QtGui
 import threading
+import logging
+import subprocess
 
 class TimerMessageBox(QtGui.QMessageBox):
     def __init__(self, counter_show, timeout=3, parent=None):
@@ -75,7 +77,7 @@ class Example(QtGui.QMainWindow):
         self.counter_show = 0
         
         self.is_playing = False
-        self.song_file = "/media/xuananh/data/Downloads/Saved/.music/Magic-chimes.mp3"
+        self.song_file = "/media/xuananh/data/Downloads/.music/Magic-chimes.mp3"
         
         self.TIME_BREAK = 1200
         self.time_rest_break = self.TIME_BREAK
@@ -137,7 +139,12 @@ class Example(QtGui.QMainWindow):
             messagebox = TimerMessageBox(self.counter_show, 3, self)
             messagebox.exec_()
             
-            if messagebox.clickedButton() != None:
+            if self.counter_show == 1:
+                subprocess.Popen("gnome-screensaver-command -l", shell=True, 
+                               stdout=subprocess.PIPE, 
+                               stderr=subprocess.STDOUT)
+            
+            if messagebox.clickedButton() != None:  # while user click to Cancel button
                 if self.TIME_BREAK < 5:
                     self.TIME_BREAK = 1200
                 self.time_rest_break = self.TIME_BREAK
@@ -164,7 +171,24 @@ class Example(QtGui.QMainWindow):
         
         self.is_playing = False
         pygame.mixer.quit()
-                
+
+def check_if_screen_locked():
+    logs_message = ""
+    process = subprocess.Popen("gnome-screensaver-command -q", shell=True, 
+                               stdout=subprocess.PIPE, 
+                               stderr=subprocess.STDOUT)
+    while True:
+        output = process.stdout.readline()
+        if output == '' and process.poll() is not None:
+            break
+        if output:
+            logs_message = logs_message + output
+
+    if logs_message == "The screensaver is active\n":
+        return True
+    else: #logs_message == "The screensaver is inactive\n"
+        return False
+              
 def main():
     app = QtGui.QApplication(sys.argv)
     ex = Example()
@@ -173,4 +197,7 @@ def main():
 
 
 if __name__ == '__main__':
+    
     main()
+        
+    

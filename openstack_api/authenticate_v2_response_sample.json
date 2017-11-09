@@ -1,0 +1,227 @@
+{
+    "access": {
+        "metadata": {
+            "is_admin": 0,
+            "roles": [
+                "9fe2ff9ee4384b1894a90878d3e92bab",
+                "7df40cbd2c3f4008ae14b4ca65a737f7",
+                "abe87d6dcc3640448c3ae678e41ac1f6"
+            ]
+        },
+        "serviceCatalog": [
+            {
+                "endpoints": [
+                    {
+                        "adminURL": "http://10.64.0.101:8774/v2.1/e85319bde3e6419ebb013c44331ad8af",
+                        "id": "517ab64606f2403a80da48df03d9f329",
+                        "internalURL": "http://10.64.0.101:8774/v2.1/e85319bde3e6419ebb013c44331ad8af",
+                        "publicURL": "http://10.64.0.101:8774/v2.1/e85319bde3e6419ebb013c44331ad8af",
+                        "region": "RegionOne"
+                    }
+                ],
+                "endpoints_links": [],
+                "name": "nova",
+                "type": "compute"
+            },
+            {
+                "endpoints": [
+                    {
+                        "adminURL": "http://10.64.0.101:9696",
+                        "id": "67089cffc6bb44ccbadee94f8410c2ad",
+                        "internalURL": "http://10.64.0.101:9696",
+                        "publicURL": "http://10.64.0.101:9696",
+                        "region": "RegionOne"
+                    }
+                ],
+                "endpoints_links": [],
+                "name": "neutron",
+                "type": "network"
+            },
+            {
+                "endpoints": [
+                    {
+                        "adminURL": "http://10.64.0.101:8776/v2/e85319bde3e6419ebb013c44331ad8af",
+                        "id": "270e4cc97fb549bfaeaa216199e01fbd",
+                        "internalURL": "http://10.64.0.101:8776/v2/e85319bde3e6419ebb013c44331ad8af",
+                        "publicURL": "http://10.64.0.101:8776/v2/e85319bde3e6419ebb013c44331ad8af",
+                        "region": "RegionOne"
+                    }
+                ],
+                "endpoints_links": [],
+                "name": "cinderv2",
+                "type": "volumev2"
+            },
+            {
+                "endpoints": [
+                    {
+                        "adminURL": "http://10.64.0.101:8776/v3/e85319bde3e6419ebb013c44331ad8af",
+                        "id": "1f86b93e082f4184aa1589f62dca6f04",
+                        "internalURL": "http://10.64.0.101:8776/v3/e85319bde3e6419ebb013c44331ad8af",
+                        "publicURL": "http://10.64.0.101:8776/v3/e85319bde3e6419ebb013c44331ad8af",
+                        "region": "RegionOne"
+                    }
+                ],
+                "endpoints_links": [],
+                "name": "cinderv3",
+                "type": "volumev3"
+            },
+            {
+                "endpoints": [
+                    {
+                        "adminURL": "http://10.64.0.101:8042",
+                        "id": "7b4f1439420141978693442e7017dacd",
+                        "internalURL": "http://10.64.0.101:8042",
+                        "publicURL": "http://10.64.0.101:8042",
+                        "region": "RegionOne"
+                    }
+                ],
+                "endpoints_links": [],
+                "name": "aodh",
+                "type": "alarming"
+            },
+            {
+                "endpoints": [
+                    {
+                        "adminURL": "http://10.64.0.101:9292",
+                        "id": "144c1cc451c9413d972c040a8c6935f3",
+                        "internalURL": "http://10.64.0.101:9292",
+                        "publicURL": "http://10.64.0.101:9292",
+                        "region": "RegionOne"
+                    }
+                ],
+                "endpoints_links": [],
+                "name": "glance",
+                "type": "image"
+            },
+            {
+                "endpoints": [
+                    {
+                        "adminURL": "http://10.64.0.101:8777",
+                        "id": "524662814eae4a6c93420391cb830499",
+                        "internalURL": "http://10.64.0.101:8777",
+                        "publicURL": "http://10.64.0.101:8777",
+                        "region": "RegionOne"
+                    }
+                ],
+                "endpoints_links": [],
+                "name": "ceilometer",
+                "type": "metering"
+            },
+            {
+                "endpoints": [
+                    {
+                        "adminURL": "http://10.64.0.101:8000/v1",
+                        "id": "1cc5c4b8af7442d98e2eb13811b040d7",
+                        "internalURL": "http://10.64.0.101:8000/v1",
+                        "publicURL": "http://10.64.0.101:8000/v1",
+                        "region": "RegionOne"
+                    }
+                ],
+                "endpoints_links": [],
+                "name": "heat-cfn",
+                "type": "cloudformation"
+            },
+            {
+                "endpoints": [
+                    {
+                        "adminURL": "http://10.64.0.101:8776/v1/e85319bde3e6419ebb013c44331ad8af",
+                        "id": "0b9eee346ae146f6a16bfbf9a56842e1",
+                        "internalURL": "http://10.64.0.101:8776/v1/e85319bde3e6419ebb013c44331ad8af",
+                        "publicURL": "http://10.64.0.101:8776/v1/e85319bde3e6419ebb013c44331ad8af",
+                        "region": "RegionOne"
+                    }
+                ],
+                "endpoints_links": [],
+                "name": "cinder",
+                "type": "volume"
+            },
+            {
+                "endpoints": [
+                    {
+                        "adminURL": "http://10.64.0.101:8004/v1/e85319bde3e6419ebb013c44331ad8af",
+                        "id": "464f915eaa4840149c982f38a977b5a6",
+                        "internalURL": "http://10.64.0.101:8004/v1/e85319bde3e6419ebb013c44331ad8af",
+                        "publicURL": "http://10.64.0.101:8004/v1/e85319bde3e6419ebb013c44331ad8af",
+                        "region": "RegionOne"
+                    }
+                ],
+                "endpoints_links": [],
+                "name": "heat",
+                "type": "orchestration"
+            },
+            {
+                "endpoints": [
+                    {
+                        "adminURL": "http://10.64.0.101:8080/v1/AUTH_e85319bde3e6419ebb013c44331ad8af",
+                        "id": "5c1754370420408798c80723badc17d0",
+                        "internalURL": "http://10.64.0.101:8080/v1/AUTH_e85319bde3e6419ebb013c44331ad8af",
+                        "publicURL": "http://10.64.0.101:8080/v1/AUTH_e85319bde3e6419ebb013c44331ad8af",
+                        "region": "RegionOne"
+                    }
+                ],
+                "endpoints_links": [],
+                "name": "swift",
+                "type": "object-store"
+            },
+            {
+                "endpoints": [
+                    {
+                        "adminURL": "http://10.64.0.101:8041",
+                        "id": "441c12932ad74e7b91862421d6a1a1d4",
+                        "internalURL": "http://10.64.0.101:8041",
+                        "publicURL": "http://10.64.0.101:8041",
+                        "region": "RegionOne"
+                    }
+                ],
+                "endpoints_links": [],
+                "name": "gnocchi",
+                "type": "metric"
+            },
+            {
+                "endpoints": [
+                    {
+                        "adminURL": "http://10.64.0.101:35357/v2.0",
+                        "id": "8aad3b369f52404e953379795afdd221",
+                        "internalURL": "http://10.64.0.101:5000/v2.0",
+                        "publicURL": "http://10.64.0.101:5000/v2.0",
+                        "region": "RegionOne"
+                    }
+                ],
+                "endpoints_links": [],
+                "name": "keystone",
+                "type": "identity"
+            }
+        ],
+        "token": {
+            "audit_ids": [
+                "wcXAYz5SRR6W9lP9hPxfDg"
+            ],
+            "expires": "2016-12-29T05:23:56Z",
+            "id": "0d94468b58a64cf48160b14a252b11a4",
+            "issued_at": "2016-12-29T04:23:56.000000Z",
+            "tenant": {
+                "description": "admin tenant",
+                "enabled": true,
+                "id": "e85319bde3e6419ebb013c44331ad8af",
+                "name": "admin"
+            }
+        },
+        "user": {
+            "id": "833cdd15e9d84f0aa4147f5c18970d54",
+            "name": "admin",
+            "roles": [
+                {
+                    "name": "_member_"
+                },
+                {
+                    "name": "admin"
+                },
+                {
+                    "name": "heat_stack_owner"
+                }
+            ],
+            "roles_links": [],
+            "username": "admin"
+        }
+    }
+}
