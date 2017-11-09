@@ -6,6 +6,18 @@ import threading
 import logging
 import subprocess
 
+def is_screen_locked():
+    command = "gdbus call -e -d com.canonical.Unity -o /com/canonical/Unity/Session -m com.canonical.Unity.Session.IsLocked"
+    process = subprocess.Popen(command, shell=True, 
+                               stdout=subprocess.PIPE, 
+                               stderr=subprocess.PIPE)
+    result = process.communicate()
+    
+    if result[0] == '(true,)\n':
+        return True
+    elif result[0] == '(false,)\n':
+        return False
+    
 class TimerMessageBox(QtGui.QMessageBox):
     def __init__(self, counter_show, timeout=3, parent=None):
         super(TimerMessageBox, self).__init__(parent)
@@ -120,6 +132,9 @@ class Example(QtGui.QMainWindow):
         
 
     def warning(self):
+        if is_screen_locked():
+            self.time_rest_break = self.TIME_BREAK
+            
         self.time_rest_break -= 1
         
         m, s = divmod(self.time_rest_break, 60)
@@ -127,24 +142,29 @@ class Example(QtGui.QMainWindow):
         self.label.setText("%d:%02d:%02d" % (h, m, s))
         print("time rest break = {} = {}:{:02d}:{:02d}".format(self.time_rest_break, h, m, s))
         
+        # if time rest break happend
         if self.time_rest_break <= 0:
             
             self.counter_show += 1
             
+            # play mp3 file
             if not self.is_playing:
                 f2 = threading.Thread(target=self.play_song, args=[self.song_file])
                 f2.start()
                 
             self.time_rest_break = 2  
+            # show message box
             messagebox = TimerMessageBox(self.counter_show, 3, self)
             messagebox.exec_()
             
+            # auto lock screen after 3 seconds
             if self.counter_show == 1:
                 subprocess.Popen("gnome-screensaver-command -l", shell=True, 
                                stdout=subprocess.PIPE, 
                                stderr=subprocess.STDOUT)
             
-            if messagebox.clickedButton() != None:  # while user click to Cancel button
+            # when user click to Cancel button
+            if messagebox.clickedButton() != None:
                 if self.TIME_BREAK < 5:
                     self.TIME_BREAK = 1200
                 self.time_rest_break = self.TIME_BREAK
@@ -172,23 +192,6 @@ class Example(QtGui.QMainWindow):
         self.is_playing = False
         pygame.mixer.quit()
 
-def check_if_screen_locked():
-    logs_message = ""
-    process = subprocess.Popen("gnome-screensaver-command -q", shell=True, 
-                               stdout=subprocess.PIPE, 
-                               stderr=subprocess.STDOUT)
-    while True:
-        output = process.stdout.readline()
-        if output == '' and process.poll() is not None:
-            break
-        if output:
-            logs_message = logs_message + output
-
-    if logs_message == "The screensaver is active\n":
-        return True
-    else: #logs_message == "The screensaver is inactive\n"
-        return False
-              
 def main():
     app = QtGui.QApplication(sys.argv)
     ex = Example()
@@ -197,7 +200,6 @@ def main():
 
 
 if __name__ == '__main__':
-    
     main()
         
     
