@@ -19,14 +19,14 @@ def is_screen_locked():
         return False
     
 class TimerMessageBox(QtGui.QMessageBox):
-    def __init__(self, counter_show, timeout=3, parent=None):
+    def __init__(self, counter_show_in_messagebox, timeout=3, parent=None):
         super(TimerMessageBox, self).__init__(parent)
         
-        self.counter_show = counter_show
+        self.counter_show_in_messagebox = counter_show_in_messagebox
         
         self.setWindowTitle("wait")
         self.time_to_wait = timeout
-        self.setText("Show {} times. Closing in {} seconds".format(self.counter_show, timeout))
+        self.setText("Show {} times. Closing in {} seconds".format(self.counter_show_in_messagebox, timeout))
         self.setStandardButtons(QtGui.QMessageBox.Cancel)
         
         self.timer = QtCore.QTimer(self)
@@ -37,7 +37,7 @@ class TimerMessageBox(QtGui.QMessageBox):
         self.raise_()
         
     def changeContent(self):
-        self.setText("Show {} times. Closing in {} seconds".format(self.counter_show, self.time_to_wait))
+        self.setText("Show {} times. Closing in {} seconds".format(self.counter_show_in_messagebox, self.time_to_wait))
         self.time_to_wait -= 1
         if self.time_to_wait <= 0:
             self.close()
@@ -86,7 +86,7 @@ class Example(QtGui.QMainWindow):
     def __init__(self):
         super(Example, self).__init__()
         
-        self.counter_show = 0
+        self.counter_show_in_messagebox = 0
         
         self.is_playing = False
         self.song_file = "/media/xuananh/data/Downloads/.music/Magic-chimes.mp3"
@@ -134,6 +134,7 @@ class Example(QtGui.QMainWindow):
     def warning(self):
         if is_screen_locked():
             self.time_rest_break = self.TIME_BREAK
+            return
             
         self.time_rest_break -= 1
         
@@ -145,7 +146,7 @@ class Example(QtGui.QMainWindow):
         # if time rest break happend
         if self.time_rest_break <= 0:
             
-            self.counter_show += 1
+            self.counter_show_in_messagebox += 1
             
             # play mp3 file
             if not self.is_playing:
@@ -154,14 +155,14 @@ class Example(QtGui.QMainWindow):
                 
             self.time_rest_break = 2  
             # show message box
-            messagebox = TimerMessageBox(self.counter_show, 3, self)
+            messagebox = TimerMessageBox(self.counter_show_in_messagebox, 3, self)
             messagebox.exec_()
             
             # auto lock screen after 3 seconds
-            if self.counter_show == 1:
-                subprocess.Popen("gnome-screensaver-command -l", shell=True, 
-                               stdout=subprocess.PIPE, 
-                               stderr=subprocess.STDOUT)
+#             if self.counter_show_in_messagebox == 1:
+            subprocess.Popen("gnome-screensaver-command -l", shell=True, 
+                           stdout=subprocess.PIPE, 
+                           stderr=subprocess.STDOUT)
             
             # when user click to Cancel button
             if messagebox.clickedButton() != None:
@@ -169,7 +170,7 @@ class Example(QtGui.QMainWindow):
                     self.TIME_BREAK = 1200
                 self.time_rest_break = self.TIME_BREAK
                 self.is_playing = False
-                self.counter_show = 0
+#                 self.counter_show_in_messagebox = 0
                 
     def btn_func_settime(self):
         self.TIME_BREAK = int(self.textbox.text()) * 60
