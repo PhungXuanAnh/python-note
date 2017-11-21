@@ -30,7 +30,7 @@ logging.basicConfig(
     format="[%(asctime)s] [%(module)s.%(funcName)s:%(lineno)d] %(levelname)s: %(message)s",
     datefmt="%H:%M:%S", 
     stream=sys.stdout,
-    filename="/media/xuananh/data/Temp/example.log",
+#     filename="/media/xuananh/data/Temp/example.log",
     )
 
 

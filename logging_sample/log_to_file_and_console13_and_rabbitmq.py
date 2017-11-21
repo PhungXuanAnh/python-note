@@ -70,7 +70,7 @@ console.setFormatter(formatter)
 logging.getLogger('').addHandler(console)
 
 #================== add my logging handler
-host_ip = '10.64.0.167'
+host_ip = 'localhost'
 queue = 'hello'
 rabbit_handler = RabbitmqHandler1(host_ip, queue)
 rabbit_handler.setLevel(logging.INFO)
