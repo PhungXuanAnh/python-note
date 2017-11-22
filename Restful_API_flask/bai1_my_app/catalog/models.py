@@ -1,4 +1,4 @@
-from flask_rest_app.my_app import db
+from flask_rest_app.bai1_my_app import db
  
 class Product(db.Model):
     id = db.Column(db.Integer, primary_key=True)

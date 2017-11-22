@@ -1,7 +1,7 @@
 import json
 from flask import request, jsonify, Blueprint, abort
 from flask.views import MethodView
-from flask_rest_app.my_app import db, app
+from flask_rest_app.bai1_my_app import db, app
 from models import Product
  
 catalog = Blueprint('catalog', __name__)
