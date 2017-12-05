@@ -1,6 +1,5 @@
 from flask import Flask, jsonify, abort, make_response, request, url_for
 from flask_httpauth import HTTPBasicAuth
-from curses.has_key import python
 
 app = Flask(__name__)
 

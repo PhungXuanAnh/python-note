@@ -2,7 +2,7 @@ import logging
 logging.basicConfig(level=logging.INFO,
                     format='%(asctime)s - %(levelname)s - %(message)s',
                     filename='logsfile11.out',
-                    filemode='w')
+                    filemode='a')
 # Until here logs only to file: 'logs_file.out'
 
 # define a new Handler to log to console as well

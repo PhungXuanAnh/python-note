@@ -1,8 +1,8 @@
 import zipfile
 import logging
 
-path_to_zip_file = '/media/xuananh/data/Downloads/codes.zip'
-directory_to_extract_to = '/media/xuananh/data/Downloads/code_zip'
+path_to_zip_file = "/media/xuananh/data/Downloads/tc_prox_baremetal_acl-2.zip"
+directory_to_extract_to = '/media/xuananh/data/Downloads'
 
 try:
     zip_ref = zipfile.ZipFile(path_to_zip_file, 'r')
@@ -11,5 +11,3 @@ try:
 except:
     logging.exception("Error while extract file: " + path_to_zip_file)    
 
-# zip = zipfile.ZipFile(r'c:\my.zip')  
-# zip.extractall(r'c:\output')  

@@ -1,20 +1,22 @@
-#!/usr/bin/env python  
-import gobject  
-import dbus  
-from dbus.mainloop.glib import DBusGMainLoop  
+'''
+check if screen is locked on ubuntu 16.04
+'''
 
-def filter_cb(bus, message):
-    if message.get_member() != "ActiveChanged":
-        return
-    args = message.get_args_list()
-    if args[0] == True:
-        print("Lock Screen")
-    else:
-        print("Unlock Screen")
+import subprocess, time
 
-DBusGMainLoop(set_as_default=True)
-bus = dbus.SessionBus()
-bus.add_match_string("type='signal',interface='org.gnome.ScreenSaver'")
-bus.add_message_filter(filter_cb)
-mainloop = gobject.MainLoop()
-mainloop.run()
+def is_screen_locked():
+    command = "gdbus call -e -d com.canonical.Unity -o /com/canonical/Unity/Session -m com.canonical.Unity.Session.IsLocked"
+    process = subprocess.Popen(command, shell=True, 
+                               stdout=subprocess.PIPE, 
+                               stderr=subprocess.PIPE)
+    result = process.communicate()
+    
+    if result[0] == '(true,)\n':
+        return True
+    elif result[0] == '(false,)\n':
+        return False
+           
+while True:
+    print(is_screen_locked())
+    time.sleep(1)
+    
