@@ -33,8 +33,8 @@ class TimerMessageBox(QtGui.QMessageBox):
         self.timer.setInterval(1000)
         self.timer.timeout.connect(self.changeContent)
         self.timer.start()
-        self.activateWindow()
-        self.raise_()
+#         self.activateWindow()
+#         self.raise_()
         
     def changeContent(self):
         self.setText("Show {} times. Closing in {} seconds".format(self.counter_show_in_messagebox, self.time_to_wait))
@@ -59,26 +59,26 @@ class TimerMessageBox(QtGui.QMessageBox):
         self.setGeometry(geom)
         super(TimerMessageBox, self).showEvent(event)
     
-    def eventFilter(self, obj, event):
-        if event.type() == QtCore.QEvent.WindowDeactivate:
-            self.setTopLevelWindow()
-            self.dialog.close()
+#     def eventFilter(self, obj, event):
+#         if event.type() == QtCore.QEvent.WindowDeactivate:
+# #             self.setTopLevelWindow()
+#             self.dialog.close()
+# 
+#             return True
 
-            return True
-
-        return False
+#         return False
         
-    def setTopLevelWindow(self):    
-        if self.windowState() != QtCore.Qt.WindowMaximized:
-            self.showMaximized()
-            self.showNormal()
-
-        else:
-            self.showNormal()
-            self.showMaximized()
-
-        self.raise_()
-        self.activateWindow()
+#     def setTopLevelWindow(self):    
+#         if self.windowState() != QtCore.Qt.WindowMaximized:
+#             self.showMaximized()
+#             self.showNormal()
+# 
+#         else:
+#             self.showNormal()
+#             self.showMaximized()
+# 
+#         self.raise_()
+#         self.activateWindow()
      
 class Example(QtGui.QMainWindow):
     
