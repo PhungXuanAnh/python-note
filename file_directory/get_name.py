@@ -20,3 +20,6 @@ print("6666666666666 " + socket.gethostname())
 # get user is running
 print ("user id = ", os.getegid())
 print ("user_name = ", getpass.getuser())
+
+# get path of current calling module
+print os.path.dirname(os.path.realpath(__file__))
