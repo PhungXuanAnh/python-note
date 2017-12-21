@@ -27,6 +27,23 @@ def deactivate_screensaver():
                      stdout=subprocess.PIPE, 
                      stderr=subprocess.STDOUT)
     
+def is_screensaver_active():
+    command = "gnome-screensaver-command -q"
+    process = subprocess.Popen(command, shell=True, 
+                     stdout=subprocess.PIPE, 
+                     stderr=subprocess.STDOUT)
+    result = process.communicate()
+    if result[0] == 'The screensaver is active\n':
+        return True
+    elif result[0] == 'The screensaver is inactive\n':
+        return False
+
+def turnon_screensaver():
+    command = "gnome-screensaver-command -a"
+    subprocess.Popen(command, shell=True, 
+                     stdout=subprocess.PIPE, 
+                     stderr=subprocess.STDOUT)
+    
 def is_screen_locked():
     command = "gdbus call -e -d com.canonical.Unity -o /com/canonical/Unity/Session -m com.canonical.Unity.Session.IsLocked"
     process = subprocess.Popen(command, shell=True, 
@@ -54,8 +71,9 @@ def working_time(times):
             start = now
             deactivate_screensaver()
             
-        time.sleep(1)
         now = datetime.datetime.now()
+        
+        time.sleep(1)
         
 def break_time(times):
     '''
@@ -66,12 +84,17 @@ def break_time(times):
     now = datetime.datetime.now()
 
     while (now - start).seconds < times:
+        logging.info("break time: {}".format((now - start).seconds))
         
-        time.sleep(1)
         now = datetime.datetime.now()
         
         if not is_screen_locked():
             lock_screen()
+        
+        if not is_screensaver_active():
+            turnon_screensaver()
+            
+        time.sleep(1)
             
 #     unlock_screen()
     deactivate_screensaver()

@@ -1,4 +1,5 @@
 import logging
+import sys
 logging.basicConfig(level=logging.INFO,
                     format='%(asctime)s - %(levelname)s - %(message)s',
                     filename='logsfile11.out',
@@ -6,7 +7,7 @@ logging.basicConfig(level=logging.INFO,
 # Until here logs only to file: 'logs_file.out'
 
 # define a new Handler to log to console as well
-console = logging.StreamHandler()
+console = logging.StreamHandler(sys.stdout)
 
 # optional, set the logging level
 console.setLevel(logging.INFO)

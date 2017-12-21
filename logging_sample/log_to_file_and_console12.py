@@ -1,4 +1,5 @@
 import logging
+import sys
 
 # set up logging to file - see previous section for more details
 logging.basicConfig(level=logging.DEBUG,
@@ -8,7 +9,7 @@ logging.basicConfig(level=logging.DEBUG,
                     filemode='w')
 
 # define a Handler which writes INFO messages or higher to the sys.stderr
-console = logging.StreamHandler()
+console = logging.StreamHandler(sys.stdout)
 console.setLevel(logging.INFO)
 
 # set a format which is simpler for console use
