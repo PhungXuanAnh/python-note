@@ -11,10 +11,11 @@
  https://www.youtube.com/watch?v=P0pIW5tJrRM
  
 '''
-import pdb
+
 import sys
 import multiprocessing
 
+import pdb
 class ForkedPdb(pdb.Pdb):
     """A Pdb subclass that may be used
     from a forked multiprocessing child
@@ -39,12 +40,15 @@ if __name__ == '__main__':
     p1 = multiprocessing.Process(target=worker)
     p1.start()
                 
-#     a = "aaa"
-#     pdb.set_trace()
-#     b = "bbb"
-#     c = "ccc"
-#     final = a + b + c
-#     print final
+    a = "aaa"
+    
+    import pdb
+    pdb.set_trace()
+    
+    b = "bbb"
+    c = "ccc"
+    final = a + b + c
+    print final
   
 
 
