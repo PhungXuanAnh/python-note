@@ -1,5 +1,4 @@
-'''
-Created on Jun 16, 2017
+import logging
 
-@author: xuananh
-'''
+# list all logger
+print logging.Logger.manager.loggerDict

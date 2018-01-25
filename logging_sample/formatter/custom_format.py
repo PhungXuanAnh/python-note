@@ -10,7 +10,12 @@ handler = logging.StreamHandler()
 formatter = logging.Formatter('%(asctime)s %(custom_format)s : %(message)s')
 handler.setFormatter(formatter)
 logger.addHandler(handler)
- 
+
+extra = {'custom_format':'aaaaaaaa'}
+logger = logging.LoggerAdapter(logger, extra)
+logger.info('The sky is so blue')
+
+extra = {'custom_format':'AAAAAAAAAAAAAAAAAAAAA'}
 logger = logging.LoggerAdapter(logger, extra)
 logger.info('The sky is so blue')
 

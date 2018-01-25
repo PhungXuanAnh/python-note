@@ -24,7 +24,6 @@ threadName         %(threadName)s    Thread name (if available).
 '''
 import logging, sys
 
-#  configure logging first time 
 logging.basicConfig(
     level=logging.DEBUG,
     format="[%(asctime)s] [%(module)s.%(funcName)s:%(lineno)d] %(levelname)s: %(message)s",
@@ -33,49 +32,8 @@ logging.basicConfig(
 #     filename="/media/xuananh/data/Temp/example.log",
     )
 
-
-logging.basicConfig(
-    level=logging.DEBUG,
-    format="[%(asctime)s] [%(pathname)s:%(funcName)s:%(lineno)d] %(levelname)s: %(message)s",
-    datefmt="%H:%M:%S", 
-    stream=sys.stdout,
-    )
-
-logging.basicConfig(level=logging.DEBUG,
-                    format='%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
-                    datefmt='%m-%d %H:%M',
-                    filename='logsfile12.out',
-                    filemode='w')
-
-logging.debug('aaaaaaaaaaaaa 1')
-logging.info('We processed %d records\n', len("abc")) 
-
-# list all logger
-print logging.Logger.manager.loggerDict
-
-# Its effect is to disable all logging calls of severity lvl and below, 
-# so that if you call it with a value of INFO, then all INFO and DEBUG 
-# events would be discarded, whereas those of severity WARNING and above 
-# would be processed according to the logger’s effective level.
-logging.disable(logging.INFO)
-# To undo it later, you can call:
-logging.disable(logging.NOTSET)
-
-#  remove old configure
-for handler in logging.root.handlers[:]:
-    logging.root.removeHandler(handler)
-    
-#  re-configure logging 
-logging.basicConfig(stream=sys.stderr, 
-                    level=logging.DEBUG,
-                    format='[%(asctime)s] p%(process)s {%(pathname)s:%(lineno)d} %(levelname)s - %(message)s',
-                    datefmt='%m-%d %H:%M:%S')  
-
 logging.debug('aaaaaaaaaaaaa 2')
-logging.info('We processed %d records\n', len("abc"))
 
-
-# logging.basicConfig(filename, filemode, format, datefmt, level, stream)  
 
 
 
