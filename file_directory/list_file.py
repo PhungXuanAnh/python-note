@@ -12,12 +12,14 @@ import os
 import glob
 import json
 
-for root, dirs, files in os.walk("/media/xuananh/data/Temp/yardstick/yardstick/benchmark/scenarios/networking"):
+for root, dirs, files in os.walk("/media/xuananh/data/Downloads/plugin_tmp"):
     for file in files:
-        if file.endswith(".py"):
+        if file.endswith(".zip"):
             print(os.path.join(root, file))
             
     print root, dirs, files
+    
+print os.walk("/media/xuananh/data/Downloads/plugin_tmp")
             
 print("==========================================================================================")            
 # scenario_bash_files = glob.glob(

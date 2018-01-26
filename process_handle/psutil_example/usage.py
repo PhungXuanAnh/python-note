@@ -11,6 +11,7 @@ import psutil
 # print p.terminal()
 # print p.terminate()
 
+print('list pid {}'.format(psutil.pids()))
 for p in psutil.process_iter():
     if p.name() == 'gateone':
         print p.pid

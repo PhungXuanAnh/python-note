@@ -1,6 +1,6 @@
 import threading, _threading_local
 import time
-from logging_sample import log_to_file_and_console13_and_rabbitmq as LOG
+from logging_sample.handler import custom_handler as LOG
 
 
 
