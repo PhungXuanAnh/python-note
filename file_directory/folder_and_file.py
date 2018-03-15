@@ -25,9 +25,18 @@ else :
 print (os.path.isfile("path"))
 print (not os.path.isfile("path"))
     
-# remove a file. #
-os.remove("path")     
-# remove an empty directory. #
-os.rmdir('test_dir')
-# delete a directory and all its contents. #      
-shutil.rmtree("path") 
+try:
+    # remove a file. #
+    os.remove("path")
+    # remove an empty directory. #
+    os.rmdir('test_dir')
+    # delete a directory and all its contents. #      
+    shutil.rmtree("path")
+except Exception as e:
+    print e
+    
+print os.getcwd()
+print os.path.exists("../abc_module")
+print os.path.join("a", "b", "c")
+
+ 

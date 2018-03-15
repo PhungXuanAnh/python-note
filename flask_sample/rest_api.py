@@ -1,4 +1,5 @@
 from flask import Flask, jsonify, abort, make_response, request, url_for
+from response_function import response_200
 
 app = Flask(__name__)
 
@@ -38,13 +39,13 @@ def get_servers():
 def get_server(server_id):
     server = [server for server in servers if server['id'] == server_id]
     if len(server) == 0:
-        abort(404)
+        abort(400, description="write something for decorate error")
     return jsonify({'server': server[0]})
 
 @app.route('/todo/api/v1.0/servers', methods=['POST'])
 def create_server():
     if not request.json or not 'title' in request.json:
-        abort(400)
+        abort(400, description="write something for decorate error")
     server = {
         'id': servers[-1]['id'] + 1,
         'title': request.json['title'],
@@ -57,17 +58,19 @@ def create_server():
 @app.route('/todo/api/v1.0/servers/<int:server_id>', methods=['PUT'])
 def update_server(server_id):
     server = [server for server in servers if server['id'] == server_id]
+    print("aaaaaaaaaaaa")
+    print(request.json)
     
     if len(server) == 0:
-        abort(404)
+        abort(400, description="write something for decorate error")
     if not request.json:
-        abort(400)
+        abort(400, description="write something for decorate error")
     if 'title' in request.json and type(request.json['title']) != unicode:
-        abort(400)
+        abort(400, description="write something for decorate error")
     if 'description' in request.json and type(request.json['description']) is not unicode:
-        abort(400)
+        abort(400, description="write something for decorate error")
     if 'done' in request.json and type(request.json['done']) is not bool:
-        abort(400)
+        abort(400, description="write something for decorate error")
         
     server[0]['title'] = request.json.get('title', server[0]['title'])
     server[0]['description'] = request.json.get('title', server[0]['description'])
@@ -78,9 +81,9 @@ def update_server(server_id):
 def delete_server(server_id):
     server = [server for server in servers if server['id'] == server_id]
     if len(server) == 0:
-        abort(404)
+        abort(400, description="write something for decorate error")
     servers.remove(server[0])
-    return jsonify({'result': True})
+    return response_200({'result': True})
 
 if __name__ == '__main__':
     app.run(debug=True)

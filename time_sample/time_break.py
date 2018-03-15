@@ -63,7 +63,7 @@ def is_screen_locked():
                                stderr=subprocess.PIPE)
     result = process.communicate()
     
-    logging.info({
+    logging.debug({
         'return-code': process.poll(),
         'stdout': result[0],
         'stderr': result[1]
@@ -73,6 +73,20 @@ def is_screen_locked():
         return True
     elif result[0] == '(false,)\n':
         return False
+
+def play_mp3(): 
+    song_file = "/media/xuananh/data/Downloads/.music/Magic-chimes.mp3"
+    import pyglet    
+    song = pyglet.media.load(song_file)
+    song.play()
+        
+    def exiter(dt):
+        pyglet.app.exit()
+    print "Song length is: %f" % song.duration
+    # song.duration is the song length
+    pyglet.clock.schedule_once(exiter, song.duration)
+        
+    pyglet.app.run()    
 
 def working_time(times):
     '''
@@ -88,45 +102,39 @@ def working_time(times):
         if is_screen_locked():
             start = now
             deactivate_screensaver()
-            stop_youtube()
-            pause_vlc()
-        else:
-            play_vlc()    
+#             stop_youtube()
+#             pause_vlc()
+#         else:
+#             play_vlc()
+        time.sleep(1) 
         now = datetime.datetime.now()
-        time.sleep(1)
-    
+#     
 #     stop_youtube()
-    pause_vlc()
+#     pause_vlc()
+    lock_screen()
        
 def break_time(times):
-    '''
-    @times: time to work, in second
-                ex: 1200 = 20m
-    '''
     start = datetime.datetime.now()
     now = datetime.datetime.now()
-
+    
     while (now - start).seconds < times:
         logging.info("break time: {}".format((now - start).seconds))
-        
+        play_mp3()
         now = datetime.datetime.now()
         
         if not is_screen_locked():
+            now = start
             lock_screen()
-        
+#             play_mp3()
+         
         if not is_screensaver_active():
             turnon_screensaver()
-            
+             
         time.sleep(1)
-            
+             
 #     unlock_screen()
     deactivate_screensaver()
 
-def run_time_break(time_to_work=1200, time_to_break=120):
-    while True:
-        working_time(times=time_to_work)
-        break_time(times=time_to_break)
-        
 def check_script_running():
     pid_file = '/tmp/time_break.pid'
     if os.path.exists(pid_file):
@@ -178,7 +186,7 @@ def is_vlc_playing():
 
     
 def logging_config():
-    logging.basicConfig(level=logging.DEBUG,
+    logging.basicConfig(level=logging.INFO,
                         format="[%(asctime)s] : %(message)s",
                         datefmt="%Y-%m-%d__%H:%M:%S", 
                         stream=sys.stdout,
@@ -194,6 +202,11 @@ def logging_config():
     my_handler.setLevel(logging.INFO)
     logging.getLogger('').addHandler(my_handler)
     
+def run_time_break(time_to_work=1200, time_to_break=120):
+    while True:
+        working_time(times=time_to_work)
+        break_time(times=time_to_break)    
+    
 def stop_youtube():
     run_cmd("xdotool windowfocus 75497476; xdotool key Control_R+Shift_R+Down")
     
@@ -206,7 +219,7 @@ if __name__ == '__main__':
     process.start()   
     while True:
         if not process.is_alive():
-            process = multiprocessing.Process(name='rest_time', target=run_time_break, args=())
+            process = multiprocessing.Process(name='rest_time', target=run_time_break, args=(1800, 150))
             process.start()
 
         time.sleep(10)

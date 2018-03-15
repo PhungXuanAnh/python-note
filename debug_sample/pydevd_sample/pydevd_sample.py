@@ -1,7 +1,8 @@
 '''
 ################## VERY IMPORTANCE ###################
 NOTE 1: when remote debug flask in multiproces,
-        it must set app.run(debug=False)
+        it must set clearly app.run(debug=False, thread=False)
+        for ensure be able connect to debug server
         
 NOTE 2: cac buoc test khi khong the ket noi den debug server
         1. debug file nay voi breakpoint 
@@ -14,16 +15,14 @@ NOTE 2: cac buoc test khi khong the ket noi den debug server
 import multiprocessing
 
 def worker():
+    import pydevd;pydevd.settrace(host="10.76.252.121",
+                                  port=5678,
+                                  stdoutToServer=True,
+                                  stderrToServer=True,
+                                  )
+#     import pydevd;pydevd.settrace()
     var1 = 4
-    while var1 < 6:
-        import pydevd;pydevd.settrace(host="10.80.0.101",
-                                      port=5678,
-                                      stdoutToServer=True,
-                                      stderrToServer=True,
-                                      )
-
-        import pydevd;pydevd.settrace()
-        
+    while var1 < 9:
         var1 = var1 + 1
         print var1
     
