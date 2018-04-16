@@ -1,4 +1,3 @@
 {
-    "python.linting.enabled": false,
-    "python.pythonPath": "/home/xuananh/.python2-env/bin/python",
+    "python.pythonPath": "/home/xuananh/.python2/bin/python",
 }
