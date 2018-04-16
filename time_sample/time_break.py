@@ -119,7 +119,7 @@ def break_time(times):
     
     while (now - start).seconds < times:
         logging.info("break time: {}".format((now - start).seconds))
-        play_mp3()
+#         play_mp3()
         now = datetime.datetime.now()
         
         if not is_screen_locked():
@@ -215,7 +215,7 @@ if __name__ == '__main__':
      sudo apt install xdotool -y
     '''
     logging_config()
-    process = multiprocessing.Process(name='rest_time', target=run_time_break, args=())
+    process = multiprocessing.Process(name='rest_time', target=run_time_break, args=(1800, 150))
     process.start()   
     while True:
         if not process.is_alive():

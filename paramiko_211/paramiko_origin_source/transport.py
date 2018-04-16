@@ -1545,7 +1545,7 @@ class Transport (threading.Thread, ClosingContextManager):
             while self.is_alive() and self is not threading.current_thread():
                 self.join(10)
         else:
-            # Keep trying to join() our main thread, quickly, until:
+            # Keep trying to join() our cmd_line_args thread, quickly, until:
             # * We join()ed successfully (self.is_alive() == False)
             # * Or it looks like we've hit issue #520 (socket.recv hitting some
             # race condition preventing it from timing out correctly), wherein

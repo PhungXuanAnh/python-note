@@ -13,7 +13,7 @@ def print_time(threadName, delay, counter):
         counter -= 1
 
 f1 = threading.Thread(target=print_time, args=["11111", 2, 5]) # pass args as a list
-''' set this flag to keep f1 alive even main thread killed '''
+''' set this flag to keep f1 alive even cmd_line_args thread killed '''
 f1.daemon = True 
 f1.start()
 
@@ -23,7 +23,7 @@ f2.start()
 f3 = threading.Thread(target=print_time, args=("33333", 1, 5,)) # pass args as a tuple
 f3.start()
 
-# list all thread in main thread
+# list all thread in cmd_line_args thread
 main_thread = threading.current_thread()
 for t in threading.enumerate():
     if t is main_thread:

@@ -26,7 +26,7 @@ thread1 = myThread(1, "Thread-1", 1)
 thread2 = myThread(2, "Thread-2", 2)
 
 ''' set this flag to keep child thread alive 
-    even main thread killed '''
+    even cmd_line_args thread killed '''
     
 thread1.daemon = True 
 thread2.daemon = True 
@@ -36,7 +36,7 @@ thread1.start()
 thread2.start()
 print "Exiting Main Thread"
 
-# list all thread in main thread
+# list all thread in cmd_line_args thread
 main_thread = threading.currentThread()
 for t in threading.enumerate():
     if t is main_thread:

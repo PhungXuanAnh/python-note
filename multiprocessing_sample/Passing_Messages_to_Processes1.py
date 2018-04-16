@@ -5,9 +5,9 @@ import time
 A more complex example shows how to manage several workers consuming data 
 from a JoinableQueue and passing results back to the parent process. 
 The poison pill technique is used to stop the workers. After setting up 
-the real tasks, the main program adds one “stop” value per worker to the 
+the real tasks, the cmd_line_args program adds one “stop” value per worker to the 
 job queue. When a worker encounters the special value, it breaks out of 
-its processing loop. The main process uses the task queue’s join() method 
+its processing loop. The cmd_line_args process uses the task queue’s join() method 
 to wait for all of the tasks to finish before processin the results.
 '''
 

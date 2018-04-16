@@ -35,6 +35,10 @@ def not_found(error):
 def get_servers():
     return jsonify({'servers': [make_publish_server(server) for server in servers]})
 
+@app.route('/todo/api/v1.0/server_string/<string:server_string>', methods=['GET'])
+def get_server_string(server_string):
+    return jsonify({'server_string': server_string})
+
 @app.route('/todo/api/v1.0/servers/<int:server_id>', methods=['GET'])
 def get_server(server_id):
     server = [server for server in servers if server['id'] == server_id]

@@ -37,7 +37,7 @@ if __name__ == '__main__':
                                  args=(e, 2))
     w2.start()
 
-    print 'main: waiting before calling Event.set()'
+    print 'cmd_line_args: waiting before calling Event.set()'
     time.sleep(3)
     e.set()
-    print 'main: event is set'
+    print 'cmd_line_args: event is set'

@@ -633,7 +633,7 @@ class TransportTest(unittest.TestCase):
         #
         # The deadlock occurs as follows:
         #
-        # In the main thread:
+        # In the cmd_line_args thread:
         #   1. The user's program calls Channel.send(), which sends
         #      MSG_CHANNEL_DATA to the remote host.
         #   2. Packetizer discovers that REKEY_BYTES has been exceeded, and
@@ -649,7 +649,7 @@ class TransportTest(unittest.TestCase):
         #   5. The MSG_CHANNEL_DATA is received, and MSG_CHANNEL_WINDOW_ADJUST is sent.
         #   6. The MSG_KEXINIT is received, and a corresponding MSG_KEXINIT is sent.
         #
-        # In the main thread:
+        # In the cmd_line_args thread:
         #   7. The user's program calls Channel.send().
         #   8. Channel.send acquires Channel.lock, then calls Transport._send_user_message().
         #   9. Transport._send_user_message waits for Transport.clear_to_send
@@ -660,14 +660,14 @@ class TransportTest(unittest.TestCase):
         #   10. MSG_CHANNEL_WINDOW_ADJUST is received; Channel._window_adjust
         #       is called to handle it.
         #   11. Channel._window_adjust tries to acquire Channel.lock, but it
-        #       blocks because the lock is already held by the main thread.
+        #       blocks because the lock is already held by the cmd_line_args thread.
         #
         # The result is that the Transport thread never processes the remote
         # host's MSG_KEXINIT packet, because it becomes deadlocked while
         # handling the preceding MSG_CHANNEL_WINDOW_ADJUST message.
 
         # We set up two separate threads for sending and receiving packets,
-        # while the main thread acts as a watchdog timer.  If the timer
+        # while the cmd_line_args thread acts as a watchdog timer.  If the timer
         # expires, a deadlock is assumed.
 
         class SendThread(threading.Thread):
@@ -803,7 +803,7 @@ class TransportTest(unittest.TestCase):
         # Tweak client Transport instance's Packetizer instance so
         # its read_message() sleeps a bit. This helps prevent race conditions
         # where the client Transport's timeout timer thread doesn't even have
-        # time to get scheduled before the main client thread finishes
+        # time to get scheduled before the cmd_line_args client thread finishes
         # handshaking with the server.
         # (Doing this on the server's transport *sounds* more 'correct' but
         # actually doesn't work nearly as well for whatever reason.)

@@ -26,7 +26,9 @@ if __name__ == '__main__':
         'longLink': 'http://abc112.com'
         }
 
-    print post(json.dumps(data)).text
+#     print post(json.dumps(data)).text
+    
+    print requests.get('http://127.0.0.1:5000/api/v1.0/servers/abc').text
 
 
      
