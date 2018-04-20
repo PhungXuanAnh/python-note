@@ -23,12 +23,22 @@
 2. Phần 2
 3. Phần 3
 ****
+1. Item 1
+1. Item 2
+1. Item 3
+   1. Item 3a
+   1. Item 3b
+***
 **Chữ in đậm** và *chữ in nghiêng*
+
 ***Chữ in nghiêng và in đậm***
+
 ~~chữ bị gach ngang~~
 ****
 > dẫn chứng 1
+
 > dẫn chứng 2
+
 > dẫn chứng 3
 ****
 code inline:
@@ -42,8 +52,9 @@ print("xin chào markdown")
 ****
 # bảng
 Vẽ bảng trong Markdown sẽ hơi khó nếu bạn chưa quen. Các cột được tách nhau bằng dấu ngăn thẳng đứng | và header được tách với content bằng dấu gạch ngang -.
+
 | Tables        | Are(căn lề giữa)| Cool(căn lề trái)  |
-| ------------- |:-------------:  | -----:             |
+| ------------- |:---------------:| ------------------:|
 | col 3 is      | right-aligned   | $1600              |
 | col 2 is      | centered        |   $12              |
 | zebra stripes | are neat        |    $1              |
@@ -89,7 +100,8 @@ Emoji là các biểu tượng thể hiện cảm xúc bắt nguồn từ bộ g
 ---
 ___
 # tạo điểm nhấn (highlight)
-==highlight==
+cách 1: ==highlight==
+cách 2: <mark>Marked text</mark>
 
 ---
 **Markdown** quá *tuyệt* phải không nào. Cảm ơn [John_Gruber](https://en.wikipedia.org/wiki/John_Gruber).
