@@ -81,7 +81,7 @@ Emoji là các biểu tượng thể hiện cảm xúc bắt nguồn từ bộ g
 
 ****
 # chèn link liên kết
-[Mô tả liên kết: google](httphttps://www.google.com/)
+[Mô tả liên kết: google](https://www.google.com/)
 
 ***
 # tạo đường kẻ ngang
