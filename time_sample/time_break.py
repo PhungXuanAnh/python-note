@@ -4,7 +4,7 @@ import time
 import logging
 import sys
 import os
-import dbus
+# import dbus
 from os import environ
 import multiprocessing
 from logging.handlers import RotatingFileHandler
