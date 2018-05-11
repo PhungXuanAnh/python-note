@@ -101,6 +101,7 @@ Emoji là các biểu tượng thể hiện cảm xúc bắt nguồn từ bộ g
 ___
 # tạo điểm nhấn (highlight)
 cách 1: ==highlight==
+
 cách 2: <mark>Marked text</mark>
 
 ---

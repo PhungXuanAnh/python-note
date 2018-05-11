@@ -15,7 +15,7 @@ NOTE 2: cac buoc test khi khong the ket noi den debug server
 import multiprocessing
 
 def worker():
-    import pydevd;pydevd.settrace(host="10.76.252.121",
+    import pydevd;pydevd.settrace(host="222.254.34.158",
                                   port=5678,
                                   stdoutToServer=True,
                                   stderrToServer=True,
@@ -41,8 +41,6 @@ if __name__ == '__main__':
     
     var1 = 0
     while var1 < 3:
-
-        
         var1 = var1 + 1
         print var1
     
