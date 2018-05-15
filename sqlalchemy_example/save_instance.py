@@ -1,22 +1,25 @@
+# coding=utf-8
 '''
 Created on Apr 4, 2017
 
 @author: xuananh
 '''
-from sqlalchemy_example import User
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy import create_engine
+from models import User, Session
 
 # create instances of my user object
-u = User('nosklo')
-u.address = '66 Some Street #500'
+u1 = User('Phùng Xuân Anh')
+u1.address = 'Văn Nhân - Phú Xuyên - Hà Nội'
+# u1 = User('Phung Xuan Anh')
+# u1.address = 'Van Nhan - Phu Xuyen - Ha Noi'
+u1.profile = 'được đấy'
 
-u2 = User('lakshmipathi')
-u2.password = 'ihtapimhskal'
+# u2 = User('Phùng Anh Hoa')
+# u2.password = 'passwordOfHoa'
+u2 = User('Phung Anh Hoa')
+u2.password = 'passwordOfHoa'
+u2.profile = 'được đó'
 
 # testing
-engine = create_engine('sqlite:///teste.db', echo=True)
-Session = sessionmaker(bind=engine)
 s = Session()
-s.add_all([u, u2])
+s.add_all([u1, u2])
 s.commit()
