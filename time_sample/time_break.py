@@ -99,9 +99,9 @@ def working_time(times):
     while (now - start).seconds < times:
         logging.info("working time: {}".format((now - start).seconds))
         
-        if is_screen_locked():
-            start = now
-            deactivate_screensaver()
+#         if is_screen_locked():
+#             start = now
+#             deactivate_screensaver()
 #             stop_youtube()
 #             pause_vlc()
 #         else:
@@ -111,8 +111,21 @@ def working_time(times):
 #     
 #     stop_youtube()
 #     pause_vlc()
-    lock_screen()
-       
+#     lock_screen()
+    
+def open_image():
+    import signal
+    images_dir = '/media/xuananh/data/Dropbox/Work/Eclipse_workspace/Note/time_sample/images'
+    command = 'eog -n {images_dir}/boss-baby-{num}.jpg'
+    for i in range(1,8):
+        p = subprocess.Popen(command.format(images_dir=images_dir, num=i), 
+                         shell=True, 
+                         stdout=subprocess.PIPE, 
+                         stderr=subprocess.PIPE,
+                         preexec_fn=os.setsid)
+        time.sleep(10)
+        os.killpg(os.getpgid(p.pid), signal.SIGTERM) 
+           
 def break_time(times):
     start = datetime.datetime.now()
     now = datetime.datetime.now()
@@ -121,16 +134,18 @@ def break_time(times):
         logging.info("break time: {}".format((now - start).seconds))
 #         play_mp3()
         now = datetime.datetime.now()
+        open_image()
         
         if not is_screen_locked():
             now = start
-            lock_screen()
+#             lock_screen()
 #             play_mp3()
          
-        if not is_screensaver_active():
-            turnon_screensaver()
-             
-        time.sleep(1)
+#         if not is_screensaver_active():
+#             turnon_screensaver()
+            
+#         time.sleep(1)
+
              
 #     unlock_screen()
     deactivate_screensaver()
@@ -214,13 +229,21 @@ if __name__ == '__main__':
     '''
      sudo apt install xdotool -y
     '''
+    t_working = 1800
+    t_break = 180
     logging_config()
-    process = multiprocessing.Process(name='rest_time', target=run_time_break, args=(1800, 150))
-    process.start()   
-    while True:
-        if not process.is_alive():
-            process = multiprocessing.Process(name='rest_time', target=run_time_break, args=(1800, 150))
-            process.start()
+#     run_time_break(time_to_work=t_working, time_to_break=t_break)
+    run_time_break()
+#     open_image()
+    
+    
+#     process = multiprocessing.Process(name='rest_time', target=run_time_break, args=(t_working, t_break))
+#     process.start()   
+#     while True:
+#         if not process.is_alive():
+#             process = multiprocessing.Process(name='rest_time', target=run_time_break, args=(t_working, t_break))
+#             process.start()
+#  
+#         time.sleep(10)
 
-        time.sleep(10)
             

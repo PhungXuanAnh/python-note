@@ -14,7 +14,6 @@ import time
 import sys
 
 cmd = 'ping localhost'
-cmd = ['gateone']
 # The os.setsid() is passed in the argument preexec_fn so
 # it's run after the fork() and before  exec() to run the shell.
 pro = subprocess.Popen(cmd, stdout=subprocess.PIPE, 

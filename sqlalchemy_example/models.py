@@ -9,8 +9,6 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 
-from random import randint
-
 # NOTE: tao database voi charset va collate la uft8 voi cau lenh sau:
 # CREATE DATABASE test11 CHARACTER SET utf8 COLLATE utf8_unicode_ci;'
 
@@ -35,6 +33,23 @@ engine = create_engine(mysql_uri, encoding='utf-8', echo=True)
 Session = sessionmaker(bind=engine)
 Base = declarative_base(bind=engine)
 
+def randompassword():
+    import string
+    import random
+    chars = string.ascii_uppercase + string.ascii_lowercase + string.digits
+    size = random.randint(8, 12)
+    return ''.join(random.choice(chars) for x in range(size))
+
+def gen_password():
+    from random import choice
+
+    # # python 2
+    # from string import letters
+    # return ''.join(choice(letters) for n in xrange(10))
+
+    # python 3
+    from string import ascii_letters
+    return ''.join(choice(ascii_letters) for n in range(10))
 class User(Base):
     __tablename__ = 'users'
     id       = Column(Integer, primary_key=True)
@@ -47,8 +62,7 @@ class User(Base):
         self.name = name
         self.address = address
         if password is None:
-            # password = ''.join(choice(letters) for n in range(10))
-            password = randint(0, 9)
+            password = gen_password()
         self.password = password
 
 Base.metadata.create_all()
