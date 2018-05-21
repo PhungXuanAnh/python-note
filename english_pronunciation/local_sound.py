@@ -8,11 +8,17 @@ import sys
 import json
 import os
 import pyglet
+import logging
 
-# success
-
+logging.basicConfig(
+    level=logging.DEBUG,
+    format="[%(asctime)s] [%(module)s.%(funcName)s:%(lineno)d] %(levelname)s: %(message)s",
+    datefmt="%H:%M:%S", 
+    stream=sys.stdout,
+    # filename="/tmp/local_sound.log",
+    )
 def find_all(name, path):
-    print (name, path)
+    logging.debug (name, path)
     result = []
     for root, dirs, files in os.walk(path):
         if name in files:
@@ -80,17 +86,17 @@ def play(file_path):
     
     def exiter(dt):
         pyglet.app.exit()
-    print("Song length is: %f" % song.duration)
+    logging.debug("Song length is: %f" % song.duration)
     # song.duration is the song length
     pyglet.clock.schedule_once(exiter, song.duration)
     
     pyglet.app.run()
     
 if __name__ == '__main__':
-#     print 'Number of arguments:', len(sys.argv), 'arguments.'
-#     print 'Argument List:'
-#     print (json.dumps(sys.argv, indent=4, sort_keys=True))
-#     print ("sys.argv[1] = {} \n sys.argv[2] = {}"\
+#     logging.debug 'Number of arguments:', len(sys.argv), 'arguments.'
+#     logging.debug 'Argument List:'
+#     logging.debug (json.dumps(sys.argv, indent=4, sort_keys=True))
+#     logging.debug ("sys.argv[1] = {} \n sys.argv[2] = {}"\
 #            .format(sys.argv[1], sys.argv[2]))
     
     ''' 
@@ -98,11 +104,14 @@ Usage:
    local_sound.py [word] [sound_dir] 
     python3-env /media/xuananh/data/github/python-note/english_pronunciation/local_sound.py %GDWORD% /media/xuananh/data/.goldendict/Webster\ Voice\ Package\ -\ English
 
+    python3-env /media/xuananh/data/github/python-note/english_pronunciation/local_sound.py test /media/xuananh/data/.goldendict/Webster\ Voice\ Package\ -\ English
+
+
 '''
     
     result = []
     result = find_all_sound(name=sys.argv[1], sound_dir=sys.argv[2])
-    print(result)
+    logging.debug(result)
     
     for file_path in result:
         play(file_path)
