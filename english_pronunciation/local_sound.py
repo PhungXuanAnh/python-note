@@ -25,7 +25,7 @@ def find_all(name, path):
             result.append(os.path.join(root, name))
     return result
 
-def find_all_sound(name, sound_dir):
+def find_all_sound_file(name, sound_dir):
     
     # find in upper character directory
     result = find_all(name + '.mp3', sound_dir + '/' + name[0].upper())
@@ -110,7 +110,7 @@ Usage:
 '''
     
     result = []
-    result = find_all_sound(name=sys.argv[1], sound_dir=sys.argv[2])
+    result = find_all_sound_file(name=sys.argv[1], sound_dir=sys.argv[2])
     logging.info(result)
     
     for file_path in result:
