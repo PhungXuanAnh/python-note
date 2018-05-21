@@ -90,4 +90,4 @@ def delete_server(server_id):
     return response_200({'result': True})
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=8001, debug=True)

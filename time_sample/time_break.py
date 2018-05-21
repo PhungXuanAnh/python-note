@@ -99,9 +99,9 @@ def working_time(times):
     while (now - start).seconds < times:
         logging.info("working time: {}".format((now - start).seconds))
         
-#         if is_screen_locked():
-#             start = now
-#             deactivate_screensaver()
+        if is_screen_locked():
+            start = now
+            deactivate_screensaver()
 #             stop_youtube()
 #             pause_vlc()
 #         else:
