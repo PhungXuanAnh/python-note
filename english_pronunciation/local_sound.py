@@ -18,7 +18,7 @@ logging.basicConfig(
     # filename="/tmp/local_sound.log",
     )
 def find_all(name, path):
-    logging.info('Looking file ' + path + '/' + name)
+    logging.info('Looking file {} in path {} '.format(name, path))
     result = []
     for root, _, files in os.walk(path):
         logging.info(files)
