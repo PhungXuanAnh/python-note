@@ -1,8 +1,8 @@
 #!/usr/bin/python
 # sudo -H pip install requests
 # sudo -H pip install pyglet
-# install AVbin: Download here: http://avbin.github.io/AVbin/Download.html
-# sudo ./install-avbin-linux-x86-64-v10
+# wget http://avbin.github.io/AVbin/Download.html
+# Sudo ./install-avbin-linux-x86-64-v10
 
 import sys
 import json
