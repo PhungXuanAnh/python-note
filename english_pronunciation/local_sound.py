@@ -16,14 +16,13 @@ logging.basicConfig(
     level=logging.DEBUG,
     format="[%(asctime)s] [%(module)s.%(funcName)s:%(lineno)d] %(levelname)s: %(message)s",
     datefmt="%H:%M:%S", 
-    stream=sys.stdout,
-    # filename="/tmp/local_sound.log",
+#     stream=sys.stdout,
+    filename="/tmp/local_sound.log",
     )
 def find_all(name, path):
     logging.info('Looking file {} in path {} '.format(name, path))
     result = []
     for root, _, files in os.walk(path):
-        logging.info(files)
         if name in files:
             result.append(os.path.join(root, name))
     return result
@@ -104,11 +103,9 @@ if __name__ == '__main__':
     
     ''' 
 Usage: 
-   local_sound.py [word] [sound_dir] 
-    python3-env /media/xuananh/data/github/python-note/english_pronunciation/local_sound.py %GDWORD% /media/xuananh/data/.goldendict/Webster\ Voice\ Package\ -\ English
+    local_sound.py [word] [sound_dir] 
 
-    python3-env /media/xuananh/data/github/python-note/english_pronunciation/local_sound.py test /media/xuananh/data/.goldendict/Webster\ Voice\ Package\ -\ English
-
+    python2-env /media/xuananh/data/github/python-note/english_pronunciation/local_sound.py %GDWORD% /media/xuananh/data/.goldendict/Webster-Voice-Package-English
 
 '''
     
