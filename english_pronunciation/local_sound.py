@@ -93,8 +93,12 @@ if __name__ == '__main__':
 #     print ("sys.argv[1] = {} \n sys.argv[2] = {}"\
 #            .format(sys.argv[1], sys.argv[2]))
     
-    ''' Usage: 
-                play_sound_goldendict.py [word] [sound_dir] '''
+    ''' 
+Usage: 
+   local_sound.py [word] [sound_dir] 
+    python3-env /media/xuananh/data/github/python-note/english_pronunciation/local_sound.py %GDWORD% /media/xuananh/data/.goldendict/Webster\ Voice\ Package\ -\ English
+
+'''
     
     result = []
     result = find_all_sound(name=sys.argv[1], sound_dir=sys.argv[2])
