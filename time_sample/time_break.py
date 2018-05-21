@@ -115,7 +115,7 @@ def working_time(times):
     
 def open_image():
     import signal
-    images_dir = '/media/xuananh/data/Dropbox/Work/Eclipse_workspace/Note/time_sample/images'
+    images_dir = '/media/xuananh/data/github/python-note/time_sample/images'
     command = 'eog -n {images_dir}/boss-baby-{num}.jpg'
     for i in range(1,8):
         p = subprocess.Popen(command.format(images_dir=images_dir, num=i), 

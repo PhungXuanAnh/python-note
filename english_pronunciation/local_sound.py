@@ -93,7 +93,8 @@ if __name__ == '__main__':
 #     print ("sys.argv[1] = {} \n sys.argv[2] = {}"\
 #            .format(sys.argv[1], sys.argv[2]))
     
-    ''' Usage: play_sound_goldendict.py [word] [sound_dir] '''
+    ''' Usage: 
+                play_sound_goldendict.py [word] [sound_dir] '''
     
     result = []
     result = find_all_sound(name=sys.argv[1], sound_dir=sys.argv[2])
