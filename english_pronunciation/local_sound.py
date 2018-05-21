@@ -1,13 +1,11 @@
 #!/usr/bin/python
-# sudo -H pip install requests
-# sudo -H pip install pyglet
+# Sudo -H pip install pyglet
 # install AVbin: Download here: http://avbin.github.io/AVbin/Download.html
 # wget https://github.com/downloads/AVbin/AVbin/install-avbin-linux-x86-64-v10
 # chmod +x install-avbin-linux-x86-64-v10
 # Sudo ./install-avbin-linux-x86-64-v10
 
 import sys
-import json
 import os
 import pyglet
 import logging
@@ -105,8 +103,7 @@ if __name__ == '__main__':
 Usage: 
     local_sound.py [word] [sound_dir] 
 
-    python2-env /media/xuananh/data/github/python-note/english_pronunciation/local_sound.py %GDWORD% /media/xuananh/data/.goldendict/Webster-Voice-Package-English
-
+    python /media/xuananh/data/github/python-note/english_pronunciation/local_sound.py %GDWORD% /media/xuananh/data/.goldendict/Webster-Voice-Package-English
 '''
     
     result = []
