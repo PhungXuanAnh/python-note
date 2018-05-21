@@ -18,7 +18,7 @@ logging.basicConfig(
     # filename="/tmp/local_sound.log",
     )
 def find_all(name, path):
-    logging.debug (name, path)
+    logging.info (name, path)
     result = []
     for root, dirs, files in os.walk(path):
         if name in files:
@@ -86,17 +86,17 @@ def play(file_path):
     
     def exiter(dt):
         pyglet.app.exit()
-    logging.debug("Song length is: %f" % song.duration)
+    logging.info("Song length is: %f" % song.duration)
     # song.duration is the song length
     pyglet.clock.schedule_once(exiter, song.duration)
     
     pyglet.app.run()
     
 if __name__ == '__main__':
-#     logging.debug 'Number of arguments:', len(sys.argv), 'arguments.'
-#     logging.debug 'Argument List:'
-#     logging.debug (json.dumps(sys.argv, indent=4, sort_keys=True))
-#     logging.debug ("sys.argv[1] = {} \n sys.argv[2] = {}"\
+#     logging.info 'Number of arguments:', len(sys.argv), 'arguments.'
+#     logging.info 'Argument List:'
+#     logging.info (json.dumps(sys.argv, indent=4, sort_keys=True))
+#     logging.info ("sys.argv[1] = {} \n sys.argv[2] = {}"\
 #            .format(sys.argv[1], sys.argv[2]))
     
     ''' 
@@ -111,7 +111,7 @@ Usage:
     
     result = []
     result = find_all_sound(name=sys.argv[1], sound_dir=sys.argv[2])
-    logging.debug(result)
+    logging.info(result)
     
     for file_path in result:
         play(file_path)
