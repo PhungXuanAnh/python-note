@@ -32,6 +32,6 @@ if __name__ == '__main__':
 
     args = parse_cmdline()
 
-    print args.dir
+    print(args.dir)
 
-    print args.file
+    print(args.file)

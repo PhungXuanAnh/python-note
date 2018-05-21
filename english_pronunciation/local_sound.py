@@ -80,7 +80,7 @@ def play(file_path):
     
     def exiter(dt):
         pyglet.app.exit()
-    print "Song length is: %f" % song.duration
+    print("Song length is: %f" % song.duration)
     # song.duration is the song length
     pyglet.clock.schedule_once(exiter, song.duration)
     
@@ -98,7 +98,7 @@ if __name__ == '__main__':
     
     result = []
     result = find_all_sound(name=sys.argv[1], sound_dir=sys.argv[2])
-    print result
+    print(result)
     
     for file_path in result:
         play(file_path)
