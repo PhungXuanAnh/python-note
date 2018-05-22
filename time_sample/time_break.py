@@ -229,8 +229,8 @@ if __name__ == '__main__':
     '''
      sudo apt install xdotool -y
     '''
-    t_working = 5 #1800
-    t_break = 30 #180
+    t_working = 1200
+    t_break = 120
     logging_config()
     run_time_break(t_working, t_break)
     
