@@ -133,11 +133,11 @@ def break_time(times):
     while (now - start).seconds < times:
         logging.info("break time: {}".format((now - start).seconds))
 #         play_mp3()
-        now = datetime.datetime.now()
+        
         open_image()
         
-        if not is_screen_locked():
-            now = start
+        if is_screen_locked():
+            now = datetime.datetime.now()
 #             lock_screen()
 #             play_mp3()
          
@@ -229,21 +229,8 @@ if __name__ == '__main__':
     '''
      sudo apt install xdotool -y
     '''
-    t_working = 1800
-    t_break = 180
+    t_working = 5 #1800
+    t_break = 30 #180
     logging_config()
-#     run_time_break(time_to_work=t_working, time_to_break=t_break)
-    run_time_break()
-#     open_image()
+    run_time_break(t_working, t_break)
     
-    
-#     process = multiprocessing.Process(name='rest_time', target=run_time_break, args=(t_working, t_break))
-#     process.start()   
-#     while True:
-#         if not process.is_alive():
-#             process = multiprocessing.Process(name='rest_time', target=run_time_break, args=(t_working, t_break))
-#             process.start()
-#  
-#         time.sleep(10)
-
-            
