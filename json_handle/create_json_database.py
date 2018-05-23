@@ -23,11 +23,11 @@ def download_file(link_archive, path_file):
         data = f.read()
         with open(path_file, "wb") as code:
             code.write(data)
-        print "aaaaaaaaa 1"
+        print ("aaaaaaaaa 1")
         return '0'
     except:
         logging.exception("Downloading error: ")
-        print "aaaaaaaaa 2"        
+        print ("aaaaaaaaa 2")        
         return 'error'
         
         
@@ -37,25 +37,25 @@ def extract_file(path_to_zip_file, directory_to_extract_to):
         zip_ref.extractall(directory_to_extract_to)
         list_t = zip_ref.namelist()
         zip_ref.close()
-        print "aaaaaaaaa 3"
+        print ("aaaaaaaaa 3")
         return list_t[0]
     except:
         logging.exception("Error while extract file: " + path_to_zip_file)
-        print "aaaaaaaaa 4"        
+        print ("aaaaaaaaa 4")        
         return 'error'
         
 def make_sure_path_exists(path):
     if os.path.exists(path):
-        print "aaaaaaaaa 5"         
+        print ("aaaaaaaaa 5"  )       
         return '0'
     else: 
         try:
             os.makedirs(path)
-            print "aaaaaaaaa 6"            
+            print ("aaaaaaaaa 6")            
             return '0'
         except:
             logging.exception("Error at while create folder: " + path)
-            print "aaaaaaaaa 7" 
+            print ("aaaaaaaaa 7" )
         return 'error'
         
 def change_database(blueprint_id, path_to_blueprint, path_to_json_database):
@@ -70,7 +70,7 @@ def change_database(blueprint_id, path_to_blueprint, path_to_json_database):
     try:
         # save data
         if (os.path.exists(path_to_json_database)):
-            print "aaaaaaaaaaa 8"        
+            print ("aaaaaaaaaaa 8"  )      
             in_file = open(path_to_json_database, 'r') #open
             dict_data = json.load(in_file)  # read
             dict_data[blueprint_id] = data_t[blueprint_id] # modify
@@ -78,7 +78,7 @@ def change_database(blueprint_id, path_to_blueprint, path_to_json_database):
             json.dump(dict_data,in_file, indent=4)   # save
             in_file.close()  
         else:
-            print "aaaaaaaaaaa 9"        
+            print ("aaaaaaaaaaa 9" )       
             in_file = open(path_to_json_database, 'w') # create and open
             json.dump(data_t,in_file, indent=4)   # save  
             in_file.close()
