@@ -9,8 +9,6 @@ if not os.path.exists(LOG_DIR):
 
 with open('/media/xuananh/data/Dropbox/Work/Other/slack-token-api-key.json',"r") as in_file:
     SLACK_API_KEY=json.load(in_file)['phungxuananh']
-print('aaaaaaaaaaa')
-print(SLACK_API_KEY)
 
 LOGGING = {
     'version': 1,

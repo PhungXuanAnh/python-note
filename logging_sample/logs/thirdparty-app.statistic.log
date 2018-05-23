@@ -2,3 +2,5 @@
 [2018-05-23 10:41:51,040] [logging_sample.<module>:109] INFO: cccccccccccccccccccccccc
 [2018-05-23 10:42:05,333] [logging_sample.<module>:105] ERROR: cccccccccccccccccccccccc
 [2018-05-23 10:42:05,808] [logging_sample.<module>:109] INFO: cccccccccccccccccccccccc
+[2018-05-23 10:53:08,096] [logging_sample.<module>:109] ERROR: cccccccccccccccccccccccc
+[2018-05-23 10:53:08,608] [logging_sample.<module>:113] INFO: cccccccccccccccccccccccc
