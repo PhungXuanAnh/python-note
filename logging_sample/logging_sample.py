@@ -72,17 +72,17 @@ LOGGING = {
     },
     'loggers': {
         'app': {
-            'handlers': ['app-file', 'console', 'app-error-file'],
+            'handlers': ['app-file', 'console', 'app-error-file', 'slack-error'],
             'propagate': False,
             'level': 'INFO',
         },
         'thirdparty-app.request': {
-            'handlers': ['thirdparty-app-request-file', 'console'],
+            'handlers': ['thirdparty-app-request-file', 'console', 'slack-error'],
             'propagate': False,
             'level': 'INFO',
         },
         'thirdparty-app.statistic': {
-            'handlers': ['thirdparty-app-statistic-file', 'console'],
+            'handlers': ['thirdparty-app-statistic-file', 'console', 'slack-error'],
             'propagate': False,
             'level': 'INFO',
         },

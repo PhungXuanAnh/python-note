@@ -1,11 +1,4 @@
-[2018-05-23 10:05:38,334] [logging_sample.<module>:95] INFO: cccccccccccccccccccccccc
-[2018-05-23 10:05:38,529] [logging_sample.<module>:91] ERROR: cccccccccccccccccccccccc
-[2018-05-23 10:05:38,529] [logging_sample.<module>:95] INFO: cccccccccccccccccccccccc
-[2018-05-23 10:05:38,700] [logging_sample.<module>:91] ERROR: cccccccccccccccccccccccc
-[2018-05-23 10:05:38,701] [logging_sample.<module>:95] INFO: cccccccccccccccccccccccc
-[2018-05-23 10:05:38,875] [logging_sample.<module>:91] ERROR: cccccccccccccccccccccccc
-[2018-05-23 10:05:38,876] [logging_sample.<module>:95] INFO: cccccccccccccccccccccccc
-[2018-05-23 10:05:39,029] [logging_sample.<module>:91] ERROR: cccccccccccccccccccccccc
-[2018-05-23 10:05:39,030] [logging_sample.<module>:95] INFO: cccccccccccccccccccccccc
-[2018-05-23 10:05:39,188] [logging_sample.<module>:91] ERROR: cccccccccccccccccccccccc
-[2018-05-23 10:05:39,188] [logging_sample.<module>:95] INFO: cccccccccccccccccccccccc
+[2018-05-23 10:41:50,571] [logging_sample.<module>:105] ERROR: cccccccccccccccccccccccc
+[2018-05-23 10:41:51,040] [logging_sample.<module>:109] INFO: cccccccccccccccccccccccc
+[2018-05-23 10:42:05,333] [logging_sample.<module>:105] ERROR: cccccccccccccccccccccccc
+[2018-05-23 10:42:05,808] [logging_sample.<module>:109] INFO: cccccccccccccccccccccccc
