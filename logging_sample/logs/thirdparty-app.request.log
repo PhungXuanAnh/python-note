@@ -1,0 +1,12 @@
+[2018-05-23 10:05:38,332] [logging_sample.<module>:90] ERROR: bbbbbbbbbbbbbbbbb
+[2018-05-23 10:05:38,334] [logging_sample.<module>:94] INFO: bbbbbbbbbbbbbbbbb
+[2018-05-23 10:05:38,528] [logging_sample.<module>:90] ERROR: bbbbbbbbbbbbbbbbb
+[2018-05-23 10:05:38,529] [logging_sample.<module>:94] INFO: bbbbbbbbbbbbbbbbb
+[2018-05-23 10:05:38,700] [logging_sample.<module>:90] ERROR: bbbbbbbbbbbbbbbbb
+[2018-05-23 10:05:38,700] [logging_sample.<module>:94] INFO: bbbbbbbbbbbbbbbbb
+[2018-05-23 10:05:38,875] [logging_sample.<module>:90] ERROR: bbbbbbbbbbbbbbbbb
+[2018-05-23 10:05:38,876] [logging_sample.<module>:94] INFO: bbbbbbbbbbbbbbbbb
+[2018-05-23 10:05:39,029] [logging_sample.<module>:90] ERROR: bbbbbbbbbbbbbbbbb
+[2018-05-23 10:05:39,030] [logging_sample.<module>:94] INFO: bbbbbbbbbbbbbbbbb
+[2018-05-23 10:05:39,187] [logging_sample.<module>:90] ERROR: bbbbbbbbbbbbbbbbb
+[2018-05-23 10:05:39,188] [logging_sample.<module>:94] INFO: bbbbbbbbbbbbbbbbb
