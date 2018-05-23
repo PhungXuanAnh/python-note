@@ -28,7 +28,7 @@ with open(file_path,"r") as in_file:
 
 # Load the contents from the string variable
 parsed = json.loads(json_string)
-print json.dumps(parsed, indent=4, sort_keys=True)
+print (json.dumps(parsed, indent=4, sort_keys=True))
 
  
 response = '''

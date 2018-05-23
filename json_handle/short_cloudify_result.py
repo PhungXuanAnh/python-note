@@ -26,7 +26,7 @@ with open(file_path,"r") as in_file:
             
             
             if val_node["properties"].get("use_password") != False:
-                print json.dumps(val_node, indent=4, sort_keys=True)
+                print (json.dumps(val_node, indent=4, sort_keys=True))
                 new_list_nodes.append(val_node)
             
 file_path1 = "/media/xuananh/data/Temp/202-nodes.new.json"        

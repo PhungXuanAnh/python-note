@@ -8,7 +8,7 @@ def print_time(threadName, delay, counter):
     threading.current_thread().setName(threadName)
     while counter:
         time.sleep(delay)
-        print "%s: %s" % (threadName, time.ctime(time.time()))
+        print ("%s: %s" % (threadName, time.ctime(time.time())))
         LOG.logger1.info("aaaaaaaaaaaaaaaa")
         counter -= 1
 
