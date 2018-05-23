@@ -8,3 +8,5 @@
 [2018-05-23 10:05:39,187] [logging_sample.<module>:89] ERROR: aaaaaaaaaaaaaaaaaaa
 [2018-05-23 10:41:49,235] [logging_sample.<module>:103] ERROR: aaaaaaaaaaaaaaaaaaa
 [2018-05-23 10:42:04,340] [logging_sample.<module>:103] ERROR: aaaaaaaaaaaaaaaaaaa
+[2018-05-23 10:46:18,553] [logging_sample.<module>:105] ERROR: aaaaaaaaaaaaaaaaaaa
+[2018-05-23 10:46:46,216] [logging_sample.<module>:107] ERROR: aaaaaaaaaaaaaaaaaaa

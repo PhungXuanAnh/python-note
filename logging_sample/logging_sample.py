@@ -1,12 +1,16 @@
 from logging.config import dictConfig
 import logging
 import os
+import json
 
 LOG_DIR = 'logs'
 if not os.path.exists(LOG_DIR):
     os.makedirs(LOG_DIR)
 
-SLACK_API_KEY='xoxp-367845759200-367997001297-368443228979-720654b08f427973fc406d38014e2d72'
+with open('/media/xuananh/data/Dropbox/Work/Other/slack-token-api-key.json',"r") as in_file:
+    SLACK_API_KEY=json.load(in_file)['phungxuananh']
+print('aaaaaaaaaaa')
+print(SLACK_API_KEY)
 
 LOGGING = {
     'version': 1,
