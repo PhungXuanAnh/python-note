@@ -28,9 +28,9 @@ time.sleep(2)
 
 while remote_conn.recv_ready():
     time.sleep(1)
-    print remote_conn.recv(1024)
+    print (remote_conn.recv(1024))
 
-print remote_conn.recv_ready()
+print (remote_conn.recv_ready())
 remote_conn.send('exit\n')
 if remote_conn.exit_status_ready():
-    print remote_conn.recv_exit_status()
+    print (remote_conn.recv_exit_status())

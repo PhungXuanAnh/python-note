@@ -35,7 +35,7 @@ Tbl_Sample.create_table()
 #     print name.id
 
 for name in Tbl_Sample.select():
-    print name.id
+    print (name.id)
 
 # for name in Tbl_Sample.select().limit(4):
 #     print name.id

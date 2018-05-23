@@ -64,9 +64,9 @@ if __name__ == '__main__':
     response = client.heat.stacks.delete(stack_name = "demo-59c93184")
     try:
         parsed = json.loads(response.text)
-        print json.dumps(parsed, indent=4, sort_keys=True)
+        print (json.dumps(parsed, indent=4, sort_keys=True))
     except:
         print ("status code: ", response.status_code)
-        print response.text
+        print (response.text)
         
 

@@ -10,7 +10,7 @@ def get_ip_address_interface(ifname):
         struct.pack('256s', ifname[:15])
     )[20:24])
 
-print get_ip_address_interface('enp2s0')
+print (get_ip_address_interface('enp2s0'))
 
 
 def get_ip_address():
@@ -19,4 +19,4 @@ def get_ip_address():
     s.connect(("google.com", 80))
     return s.getsockname()[0]
 
-print get_ip_address()
+print (get_ip_address())

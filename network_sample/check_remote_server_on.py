@@ -19,4 +19,4 @@ def is_remote_server_on(server_ip, port=22):
         s.close()
         return False
     
-print is_remote_server_on("10.80.200.23")
+print (is_remote_server_on("10.80.200.23"))

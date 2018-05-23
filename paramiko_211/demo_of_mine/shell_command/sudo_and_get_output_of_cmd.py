@@ -123,13 +123,12 @@ if __name__ == "__main__":
     
     try:
         cmd = 'sudo apt-get update'
-#         print("Runningcmd
         ret = client.execute(cmd, sudo=True)
-        print "  ".join(ret["out"]), "  E ".join(ret["err"]), ret["retval"]
+        print ("  ".join(ret["out"]), "  E ".join(ret["err"]), ret["retval"])
         
         cmd = 'mkdir /root/test'
-        print cmd
+        print (cmd)
         ret = client.execute(cmd, sudo=True)
-        print "  ".join(ret["out"]), "  E ".join(ret["err"]), ret["retval"]
+        print ("  ".join(ret["out"]), "  E ".join(ret["err"]), ret["retval"])
     finally:
         client.close() 

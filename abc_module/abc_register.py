@@ -13,5 +13,5 @@ class RegisteredImplementation(object):
 PluginBase.register(RegisteredImplementation)
 
 if __name__ == '__main__':
-    print 'Subclass:', issubclass(RegisteredImplementation, PluginBase)
-    print 'Instance:', isinstance(RegisteredImplementation(), PluginBase)
+    print ('Subclass:', issubclass(RegisteredImplementation, PluginBase))
+    print ('Instance:', isinstance(RegisteredImplementation(), PluginBase))

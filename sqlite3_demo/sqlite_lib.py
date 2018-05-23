@@ -67,7 +67,7 @@ class SqlLite:
         c.execute(create_plugin_table)
         #c.execute(create_mano_table)
         conn.commit()
-        print "Tables created successfully"
+        print ("Tables created successfully")
 
     @staticmethod
     def drop_database():
@@ -76,7 +76,7 @@ class SqlLite:
         c.execute('drop table plugin')
         #c.execute('drop table mano')
         conn.commit()
-        print "Tables dropped successfully"
+        print ("Tables dropped successfully")
 
     @staticmethod
     def insert_table(tbl, row):
@@ -88,7 +88,7 @@ class SqlLite:
 
         sql = "INSERT OR IGNORE INTO %s (%s) VALUES (%s)" % (tbl, str(keys)[1:-1], \
                                                    str(values)[1:-1])
-        print sql
+        print (sql)
         c.execute(sql)
         conn.commit()
 

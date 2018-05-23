@@ -12,4 +12,4 @@ def internet_is_connected():
     except:
         pass
     return False
-print internet_is_connected()
+print (internet_is_connected())

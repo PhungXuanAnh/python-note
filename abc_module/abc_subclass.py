@@ -12,5 +12,5 @@ class SubclassImplementation(PluginBase):
         return output.write(data)
 
 if __name__ == '__main__':
-    print 'Subclass:', issubclass(SubclassImplementation, PluginBase)
-    print 'Instance:', isinstance(SubclassImplementation(), PluginBase)
+    print ('Subclass:', issubclass(SubclassImplementation, PluginBase))
+    print ('Instance:', isinstance(SubclassImplementation(), PluginBase))

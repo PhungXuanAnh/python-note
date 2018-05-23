@@ -29,4 +29,4 @@ c.execute("""INSERT INTO A
 
 c.execute('SELECT * FROM A;')
 
-print c.fetchall() #[(1, u'1234', 2, u'5678', u'qwerty', u'bytestr')]
+print (c.fetchall()) #[(1, u'1234', 2, u'5678', u'qwerty', u'bytestr')]
