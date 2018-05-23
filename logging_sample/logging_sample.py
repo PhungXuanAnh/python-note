@@ -6,6 +6,8 @@ LOG_DIR = 'logs'
 if not os.path.exists(LOG_DIR):
     os.makedirs(LOG_DIR)
 
+SLACK_API_KEY='xoxp-367845759200-367997001297-368443228979-720654b08f427973fc406d38014e2d72'
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -54,7 +56,19 @@ LOGGING = {
             'filename': LOG_DIR + '/thirdparty-app.statistic.log',
             'maxBytes': 1 * 1024,  #1Kb       #100 * 1024 * 1024,  # 100Mb
             'backupCount': 3,
-        }
+        },
+        'slack-error': {
+            'level': 'ERROR',
+            'api_key': SLACK_API_KEY,
+            'class': 'slacker_log_handler.SlackerLogHandler',
+            'channel': '#general'
+        },
+        'slack-info': {
+            'level': 'INFO',
+            'api_key': SLACK_API_KEY,
+            'class': 'slacker_log_handler.SlackerLogHandler',
+            'channel': '#general'
+        },
     },
     'loggers': {
         'app': {
