@@ -17,9 +17,9 @@ for root, dirs, files in os.walk("/media/xuananh/data/Downloads/plugin_tmp"):
         if file.endswith(".zip"):
             print(os.path.join(root, file))
             
-    print root, dirs, files
+    print (root, dirs, files)
     
-print os.walk("/media/xuananh/data/Downloads/plugin_tmp")
+print (os.walk("/media/xuananh/data/Downloads/plugin_tmp"))
             
 print("==========================================================================================")            
 # scenario_bash_files = glob.glob(

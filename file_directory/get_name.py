@@ -22,4 +22,4 @@ print ("user id = ", os.getegid())
 print ("user_name = ", getpass.getuser())
 
 # get path of current calling module
-print os.path.dirname(os.path.realpath(__file__))
+print (os.path.dirname(os.path.realpath(__file__)))
