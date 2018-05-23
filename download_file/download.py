@@ -19,7 +19,7 @@ url = 'http://www.blog.pythonlibrary.org/wp-content/uploads/2012/06/wxDbViewer.z
 split = urlparse.urlsplit(url)
 filename = "/media/xuananh/data/Downloads/" + split.path.split("/")[-1]
 
-print filename
+print (filename)
 
 # Cach 1:  time download: 02.03.08 #
 try:

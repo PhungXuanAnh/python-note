@@ -11,11 +11,11 @@ Index    Attribute    Meaning
 from pwd import getpwnam
 import os 
 
-print getpwnam(os.environ.get('USER')).pw_uid
-print getpwnam(os.environ.get('USER')).pw_gid
+print (getpwnam(os.environ.get('USER')).pw_uid)
+print (getpwnam(os.environ.get('USER')).pw_gid)
 # or
-print os.getuid()
-print os.getgid()
+print (os.getuid())
+print (os.getgid())
 
 #============================================================== SAMPLE
 import pwd
@@ -23,10 +23,10 @@ import pwd
 username = os.environ.get('USER')
 user_info = pwd.getpwnam(username)
 
-print 'Username:', user_info.pw_name
-print 'Password:', user_info.pw_passwd
-print 'Comment :', user_info.pw_gecos
-print 'UID/GID :', user_info.pw_uid, '/', user_info.pw_gid
-print 'Home    :', user_info.pw_dir
-print 'Shell   :', user_info.pw_shell
+print ('Username:', user_info.pw_name)
+print ('Password:', user_info.pw_passwd)
+print ('Comment :', user_info.pw_gecos)
+print ('UID/GID :', user_info.pw_uid, '/', user_info.pw_gid)
+print ('Home    :', user_info.pw_dir)
+print ('Shell   :', user_info.pw_shell)
 

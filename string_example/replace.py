@@ -1,6 +1,6 @@
 sample_string = "192.168.0.1"
 
-print sample_string.replace(".","_")
+print (sample_string.replace(".","_"))
 
 Fname = "John"
 Lname = "Doe"

@@ -44,7 +44,7 @@ def worker():
 
     var1 = 4 
     while var1 < 9:
-        print var1
+        print (var1)
         var1 = var1 + 1
     
 
@@ -59,6 +59,6 @@ if __name__ == '__main__':
     var1 = 0
     while var1 < 3:
         var1 = var1 + 1
-        print var1
+        print (var1)
     
 

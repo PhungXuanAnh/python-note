@@ -13,7 +13,7 @@ dst = '/media/xuananh/data'
 
 from os.path import expanduser
 home = expanduser("~")
-print home
+print (home)
 
 # shutil.copyfile(src, dst + '/' + basename(src))
 # shutil.copy2(src, dst)
