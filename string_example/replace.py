@@ -13,11 +13,11 @@ print(test1)
 
 
 # PYTHON 3
-print '{} {} is {} years old.'.format(Fname, Lname, Age)
+print ('{} {} is {} years old.'.format(Fname, Lname, Age))
 
-print '{0} {1} is {2} years old.'.format(Fname, Lname, Age)
+print ('{0} {1} is {2} years old.'.format(Fname, Lname, Age))
 
-print '{0} {1} is {0} years old.'.format(Fname, Lname, Age)
+print ('{0} {1} is {0} years old.'.format(Fname, Lname, Age))
 
 ONBOARD_RUN_CMD = 'sudo docker run -d \ \n' \
                     '--name {containerName}-{hostPort} \ \n' \
@@ -31,7 +31,7 @@ ONBOARD_RUN_CMD = 'sudo docker run -d \ \n' \
 
 # docker run --name "container_name" --hostname "container_hostname" --net=host -p <host_port:container_port> -v <host_dir>:<absolute_container_path> image_name:tag
 
-print ONBOARD_RUN_CMD.format(containerName                  = "onboard-microservice",
+print (ONBOARD_RUN_CMD.format(containerName                  = "onboard-microservice",
                              containerHostName              = "onboard_microservice",
                              hostPort                       = "10000",
                              containerPort                  = "5000",
@@ -44,4 +44,4 @@ print ONBOARD_RUN_CMD.format(containerName                  = "onboard-microserv
                              image                          = "shark.viosoft.com/onboard-microservice",
                              tag                            = "0.4",
                              cmd                            = '/bin/bash -c ~/validium-nsb-backend/validium/microservices/onboad/onboard_microservice.sh'
-                            )
+                            ))

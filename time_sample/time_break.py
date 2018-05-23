@@ -82,7 +82,7 @@ def play_mp3():
         
     def exiter(dt):
         pyglet.app.exit()
-    print "Song length is: %f" % song.duration
+    print ("Song length is: %f" % song.duration)
     # song.duration is the song length
     pyglet.clock.schedule_once(exiter, song.duration)
         

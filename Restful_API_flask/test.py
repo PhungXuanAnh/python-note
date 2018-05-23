@@ -8,6 +8,6 @@ r = requests.get('http://localhost:5000/product/')
 # r = requests.post('http://localhost:5000/product/', 
 #                   data={'name': 'iPad Pro', 'price': 999})
 
-print r.json()
+print (r.json())
 
 

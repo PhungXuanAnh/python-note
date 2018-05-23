@@ -32,13 +32,13 @@ Tbl_Sample.create_table()
 #     print name.name
 
 # for name in Tbl_Sample.select().where(Tbl_Sample.id >= 3, Tbl_Sample.id <= 8):
-#     print name.id
+#     print (name.id)
 
 for name in Tbl_Sample.select():
     print (name.id)
 
 # for name in Tbl_Sample.select().limit(4):
-#     print name.id
+#     print (name.id)
 
 # for name in Tbl_Sample.select().limit(2).offset(0):
 #     print name.name
@@ -51,13 +51,13 @@ for name in Tbl_Sample.select():
 #     print name.name
 
 # for name in Tbl_Sample.select().columns(Tbl_Sample.id).limit(4):
-#     print name.id
+#     print (name.id)
 
 # for name in Tbl_Sample.select().columns(Tbl_Sample.id).paginate(2,4):
-#     print name.id
+#     print (name.id)
 
 # for name in Tbl_Sample.select().paginate(page=3, paginate_by=2):
-#     print name.id
+#     print (name.id)
 
 # fields = [Tbl_Sample.id, Tbl_Sample.name]
 # # rows = [(1, "123"), (2, "124"), (3, "125"), 

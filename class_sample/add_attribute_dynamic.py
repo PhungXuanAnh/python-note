@@ -9,4 +9,4 @@ class Foo(object):
 foo = Foo()
 foo.a = 3
 Foo.b = property(lambda self: self.a + 1)
-print foo.b
+print (foo.b)
