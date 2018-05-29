@@ -19,6 +19,7 @@ with open("Output.txt", "w") as text_file:
 # read data from file #
 file1 = open('Output.txt', 'r')    
 print (file1.read())
+print(type(file1.read()))
 
 # As you can see above, there are 2 ways to open a file to handle data #
 
