@@ -117,7 +117,7 @@ def working_time(times):
 def open_image():
     import signal
     images_dir = '/media/xuananh/data/github/python-note/time_sample/images'
-    command = 'eog -n {images_dir}/boss-baby-{num}.jpg'
+    command = 'eog -s --display=:0 {images_dir}/boss-baby-{num}.jpg'
     for i in range(1,8):
         p = subprocess.Popen(command.format(images_dir=images_dir, num=i), 
                          shell=True, 
@@ -249,6 +249,7 @@ if __name__ == '__main__':
     t_break = 2
     logging_config()
     # run_time_break(t_working, t_break)
-    turnon_screensaver()
-    lock_screen()
+    # turnon_screensaver()
+    # lock_screen()
+    open_image()
     
