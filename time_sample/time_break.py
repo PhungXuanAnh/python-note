@@ -10,7 +10,7 @@ import multiprocessing
 from logging.handlers import RotatingFileHandler
 
 pid_file = '/tmp/time_break.pid'
-time_short_break = 1
+count_short_break = 1
 
 def run_cmd(command):  
     process = subprocess.Popen(command, shell=True, 
@@ -127,10 +127,13 @@ def open_image():
         time.sleep(1)
         os.killpg(os.getpgid(p.pid), signal.SIGTERM) 
            
-def break_time(times):
-    global time_short_break
-    if time_short_break == 3:
+def break_time(time_long_break, time_short_break):
+    global count_short_break
+    if count_short_break == 3:
         lock_screen()
+        times = time_long_break
+    else:
+        times = time_short_break
 
     start = datetime.datetime.now()
     now = datetime.datetime.now()
@@ -159,12 +162,12 @@ def break_time(times):
     if is_screensaver_active():
         deactivate_screensaver()
 
-    if time_short_break == 3:
-        time_short_break = 1
+    if count_short_break == 3:
+        count_short_break = 1
     else:
-        time_short_break = time_short_break + 1
+        count_short_break = count_short_break + 1
     
-    logging.info(time_short_break)
+    logging.info(count_short_break)
 
 
 def check_script_running():
@@ -234,10 +237,10 @@ def logging_config():
     my_handler.setLevel(logging.INFO)
     logging.getLogger('').addHandler(my_handler)
     
-def run_time_break(time_to_work=1200, time_to_break=120):
+def run_time_break(time_to_work=1200, time_long_break=120, time_short_break=20):
     while True:
         working_time(times=time_to_work)
-        break_time(times=time_to_break)    
+        break_time(time_long_break, time_short_break)    
     
 def stop_youtube():
     run_cmd("xdotool windowfocus 75497476; xdotool key Control_R+Shift_R+Down")
@@ -247,9 +250,10 @@ if __name__ == '__main__':
      sudo apt install xdotool -y
     '''
     t_working = 3#1200
-    t_break = 2
+    t_short_break = 2
+    t_long_break = 5
     logging_config()
-    run_time_break(t_working, t_break)
+    run_time_break(t_working, t_long_break, t_short_break)
     # turnon_screensaver()
     # lock_screen()
     # open_image()
