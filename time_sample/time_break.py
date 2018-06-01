@@ -100,7 +100,7 @@ def working_time(times):
     while (now - start).seconds < times:
         logging.info("working time: {}".format((now - start).seconds))
         
-        if is_screen_locked():
+        if is_screen_locked() or is_screensaver_active():
             start = now
             deactivate_screensaver()
 #             stop_youtube()
@@ -117,7 +117,7 @@ def working_time(times):
 def open_image():
     import signal
     images_dir = '/media/xuananh/data/github/python-note/time_sample/images'
-    command = 'eog -s --display=:0 {images_dir}/boss-baby-{num}.jpg'
+    command = 'eog -fn {images_dir}/boss-baby-{num}.jpg'
     for i in range(1,8):
         p = subprocess.Popen(command.format(images_dir=images_dir, num=i), 
                          shell=True, 
