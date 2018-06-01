@@ -124,7 +124,7 @@ def open_image():
                          stdout=subprocess.PIPE, 
                          stderr=subprocess.PIPE,
                          preexec_fn=os.setsid)
-        time.sleep(1)
+        time.sleep(3)
         os.killpg(os.getpgid(p.pid), signal.SIGTERM) 
            
 def break_time(time_long_break, time_short_break):
