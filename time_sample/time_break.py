@@ -141,21 +141,22 @@ def break_time(times):
 
         open_image()
                 
-        if is_screen_locked():
-            now = datetime.datetime.now()
+        # if is_screen_locked():
+            # now = datetime.datetime.now()
 
 #             lock_screen()
 #             play_mp3()
-        now = datetime.datetime.now()
+        # now = datetime.datetime.now()
 #         if not is_screensaver_active():
 #             turnon_screensaver()
             
-        time.sleep(1)
+        # time.sleep(1)
 
 
              
 #     unlock_screen()
-    deactivate_screensaver()
+    if is_screensaver_active():
+        deactivate_screensaver()
 
     if time_short_break == 3:
         time_short_break = 1
@@ -247,5 +248,7 @@ if __name__ == '__main__':
     t_working = 3#1200
     t_break = 2
     logging_config()
-    run_time_break(t_working, t_break)
+    # run_time_break(t_working, t_break)
+    turnon_screensaver()
+    lock_screen()
     
