@@ -10,6 +10,7 @@ import multiprocessing
 from logging.handlers import RotatingFileHandler
 
 pid_file = '/tmp/time_break.pid'
+time_short_break = 0
 
 def run_cmd(command):  
     process = subprocess.Popen(command, shell=True, 
@@ -133,8 +134,6 @@ def break_time(times):
     while (now - start).seconds < times:
         logging.info("break time: {}".format((now - start).seconds))
 #         play_mp3()
-        
-        open_image()
         
         if is_screen_locked():
             now = datetime.datetime.now()
