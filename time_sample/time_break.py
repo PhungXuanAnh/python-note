@@ -249,9 +249,9 @@ if __name__ == '__main__':
     '''
      sudo apt install xdotool -y
     '''
-    t_working = 3#1200
-    t_short_break = 2
-    t_long_break = 5
+    t_working = 1200
+    t_short_break = 20
+    t_long_break = 120
     logging_config()
     run_time_break(t_working, t_long_break, t_short_break)
     # turnon_screensaver()
