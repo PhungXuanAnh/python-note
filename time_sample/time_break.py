@@ -124,7 +124,7 @@ def open_image():
                          stdout=subprocess.PIPE, 
                          stderr=subprocess.PIPE,
                          preexec_fn=os.setsid)
-        time.sleep(10)
+        time.sleep(1)
         os.killpg(os.getpgid(p.pid), signal.SIGTERM) 
            
 def break_time(times):
@@ -138,10 +138,11 @@ def break_time(times):
     while (now - start).seconds < times:
         logging.info("break time: {}".format((now - start).seconds))
 #         play_mp3()
-
-        open_image()
-                
-        # if is_screen_locked():
+        
+        if not is_screen_locked():
+            open_image()
+        now = datetime.datetime.now()
+        
             # now = datetime.datetime.now()
 
 #             lock_screen()
@@ -248,8 +249,8 @@ if __name__ == '__main__':
     t_working = 3#1200
     t_break = 2
     logging_config()
-    # run_time_break(t_working, t_break)
+    run_time_break(t_working, t_break)
     # turnon_screensaver()
     # lock_screen()
-    open_image()
+    # open_image()
     
