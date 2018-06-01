@@ -128,6 +128,10 @@ def open_image():
         os.killpg(os.getpgid(p.pid), signal.SIGTERM) 
            
 def break_time(times):
+    global time_short_break
+    if time_short_break == 3:
+        lock_screen()
+
     start = datetime.datetime.now()
     now = datetime.datetime.now()
     
@@ -135,8 +139,11 @@ def break_time(times):
         logging.info("break time: {}".format((now - start).seconds))
 #         play_mp3()
         
-        if is_screen_locked():
-            now = datetime.datetime.now()
+        # open_image()
+
+        # if is_screen_locked():
+        #     now = datetime.datetime.now()
+
 #             lock_screen()
 #             play_mp3()
          
@@ -148,6 +155,12 @@ def break_time(times):
              
 #     unlock_screen()
     deactivate_screensaver()
+
+    if time_short_break == 3:
+        time_short_break = 0
+    else:
+        time_short_break = time_short_break + 1
+
 
 def check_script_running():
     pid_file = '/tmp/time_break.pid'
@@ -228,8 +241,8 @@ if __name__ == '__main__':
     '''
      sudo apt install xdotool -y
     '''
-    t_working = 1200
-    t_break = 20
+    t_working = 3#1200
+    t_break = 2
     logging_config()
     run_time_break(t_working, t_break)
     
