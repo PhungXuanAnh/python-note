@@ -10,7 +10,7 @@ import multiprocessing
 from logging.handlers import RotatingFileHandler
 
 pid_file = '/tmp/time_break.pid'
-time_short_break = 0
+time_short_break = 1
 
 def run_cmd(command):  
     process = subprocess.Popen(command, shell=True, 
@@ -138,28 +138,31 @@ def break_time(times):
     while (now - start).seconds < times:
         logging.info("break time: {}".format((now - start).seconds))
 #         play_mp3()
-        
-        # open_image()
 
-        # if is_screen_locked():
-        #     now = datetime.datetime.now()
+        open_image()
+                
+        if is_screen_locked():
+            now = datetime.datetime.now()
 
 #             lock_screen()
 #             play_mp3()
-         
+        now = datetime.datetime.now()
 #         if not is_screensaver_active():
 #             turnon_screensaver()
             
-#         time.sleep(1)
+        time.sleep(1)
+
 
              
 #     unlock_screen()
     deactivate_screensaver()
 
     if time_short_break == 3:
-        time_short_break = 0
+        time_short_break = 1
     else:
         time_short_break = time_short_break + 1
+    
+    logging.info(time_short_break)
 
 
 def check_script_running():
