@@ -20,7 +20,7 @@ print(datetime.datetime(2008, 9, 3, 20, 56, 35, 450686))
 print(dateutil.parser.parse('20080903')) # ISO 8601 basic format, date only
 print(datetime.datetime(2008, 9, 3, 0, 0))
 
-print(dateutil.parser.parse('"2018-06-06T07:00:22.502Z"'))
+print(dateutil.parser.parse("2018-06-06T03:00:26.483-04:00"))
 
 
 print('==============================')
