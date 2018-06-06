@@ -3,21 +3,27 @@ Created on Jun 26, 2017
 
 @author: xuananh
 '''
-
-import dateutil.parser
-print(dateutil.parser.parse('2008-09-03T20:56:35.450686Z')) # RFC 3339 format
-datetime.datetime(2008, 9, 3, 20, 56, 35, 450686, tzinfo=tzutc())
-print(dateutil.parser.parse('2008-09-03T20:56:35.450686')) # ISO 8601 extended format
-datetime.datetime(2008, 9, 3, 20, 56, 35, 450686)
-print(dateutil.parser.parse('20080903T205635.450686')) # ISO 8601 basic format
-datetime.datetime(2008, 9, 3, 20, 56, 35, 450686)
-print(dateutil.parser.parse('20080903')) # ISO 8601 basic format, date only
-datetime.datetime(2008, 9, 3, 0, 0)
-
-
 import datetime
 import time
+import dateutil.parser # pip install python-dateutil
+from dateutil.tz import tzutc
 
+print(dateutil.parser.parse('2008-09-03T20:56:35.450686Z')) # RFC 3339 format
+print(datetime.datetime(2008, 9, 3, 20, 56, 35, 450686, tzinfo=tzutc()))
+
+print(dateutil.parser.parse('2008-09-03T20:56:35.450686')) # ISO 8601 extended format
+print(datetime.datetime(2008, 9, 3, 20, 56, 35, 450686))
+
+print(dateutil.parser.parse('20080903T205635.450686')) # ISO 8601 basic format
+print(datetime.datetime(2008, 9, 3, 20, 56, 35, 450686))
+
+print(dateutil.parser.parse('20080903')) # ISO 8601 basic format, date only
+print(datetime.datetime(2008, 9, 3, 0, 0))
+
+print(dateutil.parser.parse('"2018-06-06T07:00:22.502Z"'))
+
+
+print('==============================')
 timestr = time.strftime("[%Y-%m-%d]-[%H:%M:%S]-")
 print("111111111111111111 {}".format(timestr))
 
