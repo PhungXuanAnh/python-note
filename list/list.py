@@ -46,3 +46,5 @@ print (x[::-1])
 print (x[::-2])
 print (x[-3:-16:-2])
 
+print([] + "abc")
+
