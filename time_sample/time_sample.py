@@ -20,3 +20,9 @@ print("33333333333333333 now = {}".format(start))
  
 period = (now - start).seconds
 print("44444444444444444 period = {}".format(period))
+
+
+import dateutil.parser
+datestring= "2018-06-06T04:52:15.526Z"
+yourdate = dateutil.parser.parse(datestring)
+print(yourdate)
