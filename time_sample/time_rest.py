@@ -4,7 +4,6 @@ import time
 import logging
 import sys
 import os
-# import dbus
 from os import environ
 import multiprocessing
 from logging.handlers import RotatingFileHandler
@@ -34,13 +33,16 @@ def unlock_screen():
      or using command: sudo killall gnome-screensaver
     '''
     password = "nghigiailaonghigiailaonghigiailaonghigiailaonghigiailaonghigiailaonghigiailaonghigiailaonghigiailaonghigiailao"
-    command = '''gnome-screensaver-command -d ;\ 
-                xdotool type {}; xdotool key Return'''.format(password)
+    command = '''gnome-screensaver-command -d ; xdotool type {}; xdotool key Return'''.format(password)
     run_cmd(command)
     
 def deactivate_screensaver():
     command = "gnome-screensaver-command -d"
     run_cmd(command)
+
+def turnon_screensaver():
+    command = "gnome-screensaver-command -a"
+    run_cmd(command)    
     
 def is_screensaver_active():
     command = "gnome-screensaver-command -q"
@@ -53,10 +55,6 @@ def is_screensaver_active():
     elif result[0] == 'The screensaver is inactive\n':
         return False
 
-def turnon_screensaver():
-    command = "gnome-screensaver-command -a"
-    run_cmd(command)
-    
 def is_screen_locked():
     command = "gdbus call -e -d com.canonical.Unity -o /com/canonical/Unity/Session -m com.canonical.Unity.Session.IsLocked"
     process = subprocess.Popen(command, shell=True, 
@@ -75,25 +73,7 @@ def is_screen_locked():
     elif result[0] == '(false,)\n':
         return False
 
-def play_mp3(): 
-    song_file = "/media/xuananh/data/Downloads/.music/Magic-chimes.mp3"
-    import pyglet    
-    song = pyglet.media.load(song_file)
-    song.play()
-        
-    def exiter(dt):
-        pyglet.app.exit()
-    print ("Song length is: %f" % song.duration)
-    # song.duration is the song length
-    pyglet.clock.schedule_once(exiter, song.duration)
-        
-    pyglet.app.run()    
-
 def working_time(times):
-    '''
-    @times: time to work, in second
-                ex: 1200 = 20m
-    '''
     start = datetime.datetime.now()
     now = datetime.datetime.now()
     
@@ -103,36 +83,18 @@ def working_time(times):
         if is_screen_locked() or is_screensaver_active():
             start = now
             deactivate_screensaver()
-#             stop_youtube()
-#             pause_vlc()
-#         else:
-#             play_vlc()
+            
         time.sleep(1) 
         now = datetime.datetime.now()
-#     
-#     stop_youtube()
-#     pause_vlc()
-#     lock_screen()
     
-def open_image():
-    import signal
-    images_dir = '/media/xuananh/data/github/python-note/time_sample/images'
-    command = 'eog -fn {images_dir}/boss-baby-{num}.jpg'
-    for i in range(1,8):
-        p = subprocess.Popen(command.format(images_dir=images_dir, num=i), 
-                         shell=True, 
-                         stdout=subprocess.PIPE, 
-                         stderr=subprocess.PIPE,
-                         preexec_fn=os.setsid)
-        time.sleep(3)
-        os.killpg(os.getpgid(p.pid), signal.SIGTERM) 
-           
 def break_time(time_long_break, time_short_break):
     global count_short_break
+    
     if count_short_break == 3:
-        lock_screen()
+        count_short_break = 1
         times = time_long_break
     else:
+        count_short_break = count_short_break + 1
         times = time_short_break
 
     start = datetime.datetime.now()
@@ -140,38 +102,15 @@ def break_time(time_long_break, time_short_break):
     
     while (now - start).seconds < times:
         logging.info("break time: {}".format((now - start).seconds))
-#         play_mp3()
         
         if not is_screen_locked():
-            open_image()
-        else:
-            count_short_break = 1
-            
+            lock_screen()
+        time.sleep(1)
         now = datetime.datetime.now()
         
-            # now = datetime.datetime.now()
-
-#             lock_screen()
-#             play_mp3()
-        # now = datetime.datetime.now()
-#         if not is_screensaver_active():
-#             turnon_screensaver()
-            
-        # time.sleep(1)
-
-
-             
-#     unlock_screen()
     if is_screensaver_active():
         deactivate_screensaver()
 
-    
-
-    if count_short_break == 3:
-        count_short_break = 1
-    else:
-        count_short_break = count_short_break + 1
-    
     logging.info(count_short_break)
 
 
@@ -187,44 +126,6 @@ def check_script_running():
     else:
         file(pid_file, 'w+').write(str(os.getpid()))
 
-def play_vlc():
-    if not is_vlc_playing():
-        run_cmd("dbus-send --type=method_call --dest=org.mpris.MediaPlayer2.vlc /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Play")
-    
-def pause_vlc():
-    if is_vlc_playing():
-        run_cmd("dbus-send --type=method_call --dest=org.mpris.MediaPlayer2.vlc /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Pause")
-        
-def is_vlc_playing():
-    if 'DISPLAY' not in environ:
-        exit(0)
-    
-    # name = "rhythmbox"
-    name = 'vlc'
-    if len(sys.argv) > 1:
-        name = sys.argv[1]
-    
-    bus = dbus.SessionBus()
-    
-    try:
-        proxy = bus.get_object("org.mpris.MediaPlayer2.%s" % name, "/org/mpris/MediaPlayer2")
-        device_prop = dbus.Interface(proxy, "org.freedesktop.DBus.Properties")
-    
-        prop = device_prop.Get("org.mpris.MediaPlayer2.Player", "Metadata")
-    
-        status = device_prop.Get("org.mpris.MediaPlayer2.Player", "PlaybackStatus")
-    except dbus.exceptions.DBusException:
-        # Probably not running.
-        exit(0)
-    
-    if status == "Playing":
-        logging.info((prop.get("xesam:artist")[0] + " - " + prop.get("xesam:title")).encode('utf-8'))
-        return True
-    else:
-        logging.info("Not playing.")
-        return False
-
-    
 def logging_config():
     logging.basicConfig(level=logging.INFO,
                         format="[%(asctime)s] : %(message)s",
@@ -242,24 +143,28 @@ def logging_config():
     my_handler.setLevel(logging.INFO)
     logging.getLogger('').addHandler(my_handler)
     
-def run_time_break(time_to_work=1200, time_long_break=120, time_short_break=20):
+def run_time_break(time_to_work, time_long_break, time_short_break):
     while True:
         working_time(times=time_to_work)
         break_time(time_long_break, time_short_break)    
     
-def stop_youtube():
-    run_cmd("xdotool windowfocus 75497476; xdotool key Control_R+Shift_R+Down")
-    
 if __name__ == '__main__':
     '''
-     sudo apt install xdotool -y
+     install package for auto unlock screen:
+     sudo apt install xdotool -y 
     '''
     t_working = 1200
     t_short_break = 20
     t_long_break = 120
     logging_config()
-    run_time_break(t_working, t_long_break, t_short_break)
-    # turnon_screensaver()
-    # lock_screen()
-    # open_image()
+
+    process = multiprocessing.Process(name='rest_time', target=run_time_break, args=(t_working, t_long_break, t_short_break,))
+    process.start()
+
+    while True:
+        if not process.is_alive():
+            process = multiprocessing.Process(name='rest_time', target=run_time_break, args=(t_working, t_long_break, t_short_break,))
+            process.start()
+
+        time.sleep(5)
     
