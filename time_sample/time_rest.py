@@ -22,6 +22,10 @@ def run_cmd(command):
         'stdout': result[0],
         'stderr': result[1]
         })
+
+def open_file():
+    command = 'gedit /media/xuananh/data/Downloads/Temp.md'
+    run_cmd(command)
     
 def lock_screen():
     command = "gnome-screensaver-command -la"
@@ -101,6 +105,7 @@ def break_time(time_long_break, time_short_break):
     now = datetime.datetime.now()
     
     while (now - start).seconds < times:
+        open_file()
         logging.info("break time: {}".format((now - start).seconds))
         
         if not is_screen_locked():
