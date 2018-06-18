@@ -1,3 +1,4 @@
+#!/usr/bin/python
 import subprocess
 import datetime
 import time
@@ -24,8 +25,10 @@ def run_cmd(command):
         })
 
 def open_file():
-    command = 'gedit /media/xuananh/data/Downloads/Temp.md'
-    run_cmd(command)
+    command = 'eog -f /media/xuananh/data/github/python-note/time_sample/break.jpg'
+    subprocess.Popen(command, shell=True, 
+                stdout=subprocess.PIPE, 
+                stderr=subprocess.STDOUT)
     
 def lock_screen():
     command = "gnome-screensaver-command -la"
