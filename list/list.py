@@ -31,10 +31,12 @@ print('tu phan tu so 1 den phan tu so 4, khong tinh phan tu so 4: {}'.
     format(mylist[1:4]))
 print('tu phan tu so -5 den phan tu so -2, khong tinh phan tu so -2: {}'.
     format(mylist[-5:-2]))
-'''slices a list : cat lat 1 list
-x[startAt:endBefore:step]'''
+'''
+slices a list : cat lat 1 list
+x[startAt:endBefore:step]
+'''
 x = range(20)
-print (x)
+print (x)       #NOTE: python3 using print(list(x))
 print (x[::1])
 print (x[::2])
 print(x[3:16:2])
@@ -46,5 +48,24 @@ print (x[::-1])
 print (x[::-2])
 print (x[-3:-16:-2])
 
-print([] + "abc")
+
+data = range(0, 103)
+# python 2
+chunks = [data[x:x+10] for x in xrange(0, len(data), 10)]
+# python 3
+# chunks = [data[x:x+10] for x in range(0, len(data), 10)]
+print(chunks)
+
+# def chunks(l, n):
+#     # For item i in a range that is a length of l,
+#     # for i in xrange(0, len(l), n):      # python 2
+#     for i in range(0, len(l), n):     # python 3
+#         # Create an index range for l of n items:
+#         yield l[i:i+n]
+# # lst = list(chunks[xrange(0, 101), 10])
+# lst = list(chunks[range(0, 101), 10])
+# print(lst)
+
+
+
 
