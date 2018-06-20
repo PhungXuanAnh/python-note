@@ -100,6 +100,8 @@ def break_time(time_long_break, time_short_break):
     if count_short_break == 3:
         count_short_break = 1
         times = time_long_break
+        open_file()
+        time.sleep(2)
     else:
         count_short_break = count_short_break + 1
         times = time_short_break
@@ -108,7 +110,6 @@ def break_time(time_long_break, time_short_break):
     now = datetime.datetime.now()
     
     while (now - start).seconds < times:
-        open_file()
         logging.info("break time: {}".format((now - start).seconds))
         
         if not is_screen_locked():
