@@ -28,19 +28,35 @@ print(my_time.strftime("%Y-%m-%d %H:%M:%S"))
 
 
 print('==============================')
-timestr = time.strftime("[%Y-%m-%d]-[%H:%M:%S]-")
+timestr = time.strftime("[%Y-%m-%d]-[%H:%M:%S]")
 print("111111111111111111 {}".format(timestr))
 
 #=============================================
 start = datetime.datetime.now()
 print("22222222222222222 start = {}".format(start))
- 
-time.sleep(5)
+print("22222222222222222 start = {}".format(start.strftime("[%Y-%m-%d]-[%H:%M:%S]")))
+
+print('....spleeping 3s...')
+time.sleep(3)
  
 now = datetime.datetime.now()
-print("33333333333333333 now = {}".format(start))
- 
+print("33333333333333333 now = {}".format(now))
+print("33333333333333333 now = {}".format(now.strftime("[%Y-%m-%d]-[%H:%M:%S]")))
+
 period = (now - start).seconds
 print("44444444444444444 period = {}".format(period))
+
+datetime_7_day_ago = datetime.datetime.now() - datetime.timedelta(days=7)
+print("55555555555555555 date_7_day_ago = {}".format(datetime_7_day_ago))
+print("55555555555555555 now = {}".format(datetime_7_day_ago.strftime("[%Y-%m-%d]-[%H:%M:%S]")))
+
+today = datetime.date.today()
+print('666666666 today = {}'.format(today))
+
+date_7_day_ago = today - datetime.timedelta(days=7)
+print('666666666 date_7_day_ago = {}'.format(date_7_day_ago))
+
+
+
 
 
