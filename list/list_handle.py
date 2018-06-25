@@ -47,7 +47,8 @@ print(split_into_chunks(range(0, 50), 10))
 # ==========================================
 def combine_join_remove_duplicated_and_sort(list1, list2):
     new_lst = list1 + list2     # join 2 list
-    new_lst = set(new_lst)      # remove duplicated items
+    new_set = set(new_lst)      # convert list to set to remove duplicated items
+    new_lst = list(new_set)     # convert set to list again
     new_lst = sorted(new_lst)   # sort list
     return new_lst
     # return sorted(list(set(list1+list2)))
