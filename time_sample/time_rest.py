@@ -16,7 +16,6 @@ def run_cmd(command):
     process = subprocess.Popen(command, shell=True, 
                      stdout=subprocess.PIPE, 
                      stderr=subprocess.STDOUT)
-    result = process.communicate()
     
     logging.debug({
         'return-code': process.poll(),
@@ -25,11 +24,11 @@ def run_cmd(command):
         })
 
 def open_file():
-    command = 'eog -f /media/xuananh/data/github/python-note/time_sample/break.jpg'
-    subprocess.Popen(command, shell=True, 
-                stdout=subprocess.PIPE, 
-                stderr=subprocess.STDOUT)
-    
+    run_cmd('eog -f /media/xuananh/data/github/python-note/time_sample/break.jpg')
+
+def move_mouse():
+    run_cmd('xdotool mousemove 1 1')
+
 def lock_screen():
     command = "gnome-screensaver-command -la"
     run_cmd(command)
@@ -158,10 +157,6 @@ def run_time_break(time_to_work, time_long_break, time_short_break):
         break_time(time_long_break, time_short_break)    
     
 if __name__ == '__main__':
-    '''
-     install package for auto unlock screen:
-     sudo apt install xdotool -y 
-    '''
     t_working = 1200
     t_short_break = 20
     t_long_break = 120
