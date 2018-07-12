@@ -20,17 +20,17 @@ json_string = '''
 }
 '''
 
-# Load the contents from the file, which creates a new dictionary 
-with open(file_path,"r") as in_file:
+# Load the contents from the file, which creates a new dictionary
+with open(file_path, "r") as in_file:
     dict_data = json.load(in_file)
     print(dict_data)
-    print (json.dumps(dict_data, indent=4, sort_keys=True))
+    print(json.dumps(dict_data, indent=4, sort_keys=True))
 
 # Load the contents from the string variable
 parsed = json.loads(json_string)
-print (json.dumps(parsed, indent=4, sort_keys=True))
+print(json.dumps(parsed, indent=4, sort_keys=True))
 
- 
+
 response = '''
 {
         "SessionId": "59192bd771dfcc0da23ae3c6_test_handler",
@@ -43,4 +43,3 @@ response = '''
 response = json.loads(response)
 print(response)
 print(response["Result"])
-
