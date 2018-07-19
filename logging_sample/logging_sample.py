@@ -7,8 +7,8 @@ LOG_DIR = 'logs'
 if not os.path.exists(LOG_DIR):
     os.makedirs(LOG_DIR)
 
-with open('/media/xuananh/data/Dropbox/Work/Other/slack-token-api-key.json',"r") as in_file:
-    SLACK_API_KEY=json.load(in_file)['phungxuananh']
+with open('/home/xuananh/Dropbox/Work/Other/slack-token-api-key.json', "r") as in_file:
+    SLACK_API_KEY = json.load(in_file)['phungxuananh']
 
 LOGGING = {
     'version': 1,
@@ -32,7 +32,7 @@ LOGGING = {
             'class': 'logging.handlers.RotatingFileHandler',
             'formatter': 'verbose',
             'filename': LOG_DIR + '/app.log',
-            'maxBytes': 1 * 1024,  #1Kb       #100 * 1024 * 1024,  # 100Mb
+            'maxBytes': 1 * 1024,  # 1Kb       #100 * 1024 * 1024,  # 100Mb
             'backupCount': 3,
         },
         'app-error-file': {
@@ -40,7 +40,7 @@ LOGGING = {
             'class': 'logging.handlers.RotatingFileHandler',
             'formatter': 'verbose',
             'filename': LOG_DIR + '/app.ERROR.log',
-            'maxBytes': 1 * 1024,  #1Kb       #100 * 1024 * 1024,  # 100Mb
+            'maxBytes': 1 * 1024,  # 1Kb       #100 * 1024 * 1024,  # 100Mb
             'backupCount': 3,
         },
         'thirdparty-app-request-file': {
@@ -48,7 +48,7 @@ LOGGING = {
             'class': 'logging.handlers.RotatingFileHandler',
             'formatter': 'verbose',
             'filename': LOG_DIR + '/thirdparty-app.request.log',
-            'maxBytes': 1 * 1024,  #1Kb       #100 * 1024 * 1024,  # 100Mb
+            'maxBytes': 1 * 1024,  # 1Kb       #100 * 1024 * 1024,  # 100Mb
             'backupCount': 3,
         },
         'thirdparty-app-statistic-file': {
@@ -56,7 +56,7 @@ LOGGING = {
             'class': 'logging.handlers.RotatingFileHandler',
             'formatter': 'verbose',
             'filename': LOG_DIR + '/thirdparty-app.statistic.log',
-            'maxBytes': 1 * 1024,  #1Kb       #100 * 1024 * 1024,  # 100Mb
+            'maxBytes': 1 * 1024,  # 1Kb       #100 * 1024 * 1024,  # 100Mb
             'backupCount': 3,
         },
         'slack-error': {
