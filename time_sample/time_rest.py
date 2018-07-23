@@ -57,6 +57,7 @@ def working_time(times):
 
         if is_screensaver_active():
             start = now
+            time.sleep(10)
             move_mouse(1, 1)
 
         time.sleep(1)
