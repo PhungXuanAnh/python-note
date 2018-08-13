@@ -1,24 +1,20 @@
-class Stack(object):
-    def __init__(self):
-        self.stack = []
+import pika
 
-    def add(self, data):
-        if data not in self.stack:
-            self.stack.append(data)
-            return True
-        else:
-            return False
-
-    def peek(self):
-        return self.stack[0]
-
-    def remove(self):
-        if len(self.stack) <= 0:
-            return "No element in stack"
-        else:
-            return self.stack.pop()
+connection = pika.BlockingConnection(
+    pika.ConnectionParameters(host='rabbitmq_external'))
+channel = connection.channel()
 
 
-aList = [123, 'xyz', 'zara', 'abc']
-print("A List : ", aList.pop())
-print("B List : ", aList.pop(-2))
+# channel.queue_declare(queue='mail_channel')
+
+
+def callback(ch, method, properties, body):
+    print(" [x] Received %r" % body)
+
+
+channel.basic_consume(callback,
+                      queue='mail_channel',
+                      no_ack=True)
+
+print(' [*] Waiting for messages. To exit press CTRL+C')
+channel.start_consuming()

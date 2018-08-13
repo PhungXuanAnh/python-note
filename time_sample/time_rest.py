@@ -18,19 +18,18 @@ def run_cmd(command):
                      stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
 
-def open_file():
-    run_cmd('eog -f /media/xuananh/data/github/python-note/time_sample/break.jpg')
-
-
-def close_file():
-    run_cmd("kill $(ps -ef |\
-            grep 'eog -f /media/xuananh/data/github/python-note/time_sample/break.jpg' |\
-            awk '{print $2}' |\
-            sed -ne '1p')")
-
-
-def move_mouse(x, y):
+def _move_mouse(x, y):
     run_cmd('xdotool mousemove {} {}'.format(x, y))
+
+
+def move_mouse():
+    with open('/media/xuananh/data/github/python-note/time_sample/mouse-position.txt', 'r') as f:
+        for position in f.readlines():
+            command = 'xdotool mousemove {}'.format(position)
+            p = subprocess.Popen(command, shell=True,
+                                 stdout=subprocess.PIPE,
+                                 stderr=subprocess.STDOUT)
+            p.wait()
 
 
 def lock_screen():
@@ -57,8 +56,7 @@ def working_time(times):
 
         if is_screensaver_active():
             start = now
-            time.sleep(10)
-            move_mouse(1, 1)
+            move_mouse()
 
         time.sleep(1)
         now = datetime.datetime.now()
@@ -72,8 +70,7 @@ def break_time(time_long_break, time_short_break):
     if count_short_break == 3:
         count_short_break = 1
         times = time_long_break
-        open_file()
-        time.sleep(3)
+        move_mouse()
     else:
         count_short_break = count_short_break + 1
         times = time_short_break
@@ -91,7 +88,6 @@ def break_time(time_long_break, time_short_break):
             now = start
 
     logging.info(count_short_break)
-    close_file()
 
 
 def check_script_running():
@@ -141,9 +137,11 @@ if __name__ == '__main__':
     #         move_mouse(1, 1)
     # ===========================================================
 
+    # move_mouse()
+
     t_working = 1200
     t_short_break = 20
-    t_long_break = 120
+    t_long_break = 300
     logging_config()
 
     process = multiprocessing.Process(name='rest_time', target=run_time_break, args=(
