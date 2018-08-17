@@ -47,6 +47,10 @@ def is_screensaver_active():
         return False
 
 
+def active_screen():
+    run_cmd("gnome-screensaver-command --active")
+
+
 def working_time(times):
     start = datetime.datetime.now()
     now = datetime.datetime.now()
@@ -63,8 +67,6 @@ def working_time(times):
 
 
 def break_time(time_long_break, time_short_break):
-    lock_screen()
-
     global count_short_break
 
     if count_short_break == 3:
@@ -74,6 +76,9 @@ def break_time(time_long_break, time_short_break):
     else:
         count_short_break = count_short_break + 1
         times = time_short_break
+
+    lock_screen()
+    active_screen()
 
     start = datetime.datetime.now()
     now = datetime.datetime.now()
@@ -85,6 +90,7 @@ def break_time(time_long_break, time_short_break):
 
         if not is_screensaver_active():
             lock_screen()
+            active_screen()
             now = start
 
     logging.info(count_short_break)
