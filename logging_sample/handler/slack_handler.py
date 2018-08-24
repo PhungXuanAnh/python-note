@@ -13,6 +13,7 @@ logging.basicConfig(level=logging.INFO,
 with open('/home/xuananh/Dropbox/Work/Other/slack-token-api-key.json', "r") as in_file:
     SLACK_API_KEY = json.load(in_file)['phungxuananh']
 
+'''NOTE: tham so channel co the co hoac khong co # dang truoc cung duoc'''
 slack_handler = SlackerLogHandler(api_key=SLACK_API_KEY,
                                   channel='general', stack_trace=True, username='xuananh')
 
