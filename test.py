@@ -4,7 +4,6 @@ connection = pika.BlockingConnection(
     pika.ConnectionParameters(host='rabbitmq_external'))
 channel = connection.channel()
 
-
 # channel.queue_declare(queue='mail_channel')
 
 
