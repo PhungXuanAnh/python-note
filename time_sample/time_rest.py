@@ -23,7 +23,7 @@ def _move_mouse(x, y):
 
 
 def move_mouse():
-    with open('/media/xuananh/data/github/python-note/time_sample/mouse-position.txt', 'r') as f:
+    with open('/home/xuananh/data/repo/python-note/time_sample/mouse-position.txt', 'r') as f:
         for position in f.readlines():
             command = 'xdotool mousemove {}'.format(position)
             p = subprocess.Popen(command, shell=True,
