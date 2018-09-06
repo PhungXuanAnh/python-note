@@ -13,6 +13,16 @@ pid_file = '/tmp/time_break.pid'
 count_short_break = 1
 
 
+def is_run():
+    with open('/tmp/time_rest.is_run', 'r') as f:
+        data = f.read()
+        logging.error(data)
+        if data == "yes":
+            return True
+        else:
+            return False
+
+
 def run_cmd(command):
     subprocess.Popen(command, shell=True,
                      stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
@@ -55,7 +65,7 @@ def working_time(times):
     start = datetime.datetime.now()
     now = datetime.datetime.now()
 
-    while (now - start).seconds < times:
+    while is_run() and (now - start).seconds < times:
         logging.info("working time: {}".format((now - start).seconds))
 
         if is_screensaver_active():
@@ -83,7 +93,7 @@ def break_time(time_long_break, time_short_break):
     start = datetime.datetime.now()
     now = datetime.datetime.now()
 
-    while (now - start).seconds < times:
+    while is_run() and (now - start).seconds < times:
         logging.info("break time: {}".format((now - start).seconds))
         time.sleep(1)
         now = datetime.datetime.now()
@@ -129,7 +139,7 @@ def logging_config():
 
 
 def run_time_break(time_to_work, time_long_break, time_short_break):
-    while True:
+    while is_run():
         working_time(times=time_to_work)
         break_time(time_long_break, time_short_break)
 
@@ -145,19 +155,20 @@ if __name__ == '__main__':
 
     # move_mouse()
 
-    t_working = 1200
-    t_short_break = 20
-    t_long_break = 300
-    logging_config()
+    # t_working = 1200
+    # t_short_break = 20
+    # t_long_break = 300
+    # logging_config()
 
-    process = multiprocessing.Process(name='rest_time', target=run_time_break, args=(
-        t_working, t_long_break, t_short_break,))
-    process.start()
+    # process = multiprocessing.Process(name='rest_time', target=run_time_break, args=(
+    #     t_working, t_long_break, t_short_break,))
+    # process.start()
 
-    while True:
-        if not process.is_alive():
-            process = multiprocessing.Process(name='rest_time', target=run_time_break, args=(
-                t_working, t_long_break, t_short_break,))
-            process.start()
+    # while True:
+    #     if not process.is_alive():
+    #         process = multiprocessing.Process(name='rest_time', target=run_time_break, args=(
+    #             t_working, t_long_break, t_short_break,))
+    #         process.start()
 
-        time.sleep(5)
+    #     time.sleep(5)
+    pass

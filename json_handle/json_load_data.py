@@ -16,7 +16,8 @@ file_path = "test.json"
 json_string = '''
 {
     "key1": "value1",
-    "key2": "value2"    
+    "key2": "value2",
+    "key3": 1 
 }
 '''
 
@@ -43,3 +44,11 @@ response = '''
 response = json.loads(response)
 print(response)
 print(response["Result"])
+
+dict1 = {
+    "key1": "value1",
+    "key2": "value2",
+    "key3": int("1 ")
+}
+
+print(json.dumps(dict1, indent=4, sort_keys=True))

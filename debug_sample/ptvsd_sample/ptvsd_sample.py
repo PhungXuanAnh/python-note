@@ -3,7 +3,7 @@ NOTE 1:
     1. ptvsd khong giong nhu pydevd, phai dat breakpoint thi debugger moi dung
     2. tot nhat dat breakpoint tai nhieu diem truoc diem muon dung cho chac
         khong hieu sao ma no khong dung 
-    3. Sau khi xong cac buoc tren, chay file
+    3. Run file
     4. Start bugging
 
     Vi du: muon debug tai dong 23 thi tot nhat dat breakpoint
@@ -37,21 +37,22 @@ launch.json tren may localhost:  {
 '''
 import multiprocessing
 
+
 def worker():
     import ptvsd
-    ptvsd.enable_attach("my_secret", address = ('localhost', 27291))
+    ptvsd.enable_attach("my_secret", address=('localhost', 3000))
     ptvsd.wait_for_attach()
 
-    var1 = 4 
+    var1 = 4
     while var1 < 9:
-        print (var1)
+        print(var1)
         var1 = var1 + 1
-    
+
 
 if __name__ == '__main__':
     p1 = multiprocessing.Process(target=worker, args=())
     p1.start()
-    
+
     # import ptvsd
     # ptvsd.enable_attach("my_secret", address = ('0.0.0.0', 12345))
     # ptvsd.wait_for_attach()
@@ -59,6 +60,4 @@ if __name__ == '__main__':
     var1 = 0
     while var1 < 3:
         var1 = var1 + 1
-        print (var1)
-    
-
+        print(var1)
