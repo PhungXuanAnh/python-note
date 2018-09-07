@@ -33,5 +33,7 @@ result = driver.find_element_by_xpath(".//p[@class='verybigtext']").text
 # print it out to stdout
 print(result)
 
+print(driver.find_element_by_xpath(".//p[@class='aaa']"))
+
 # close browser
 driver.close()
