@@ -1,3 +1,4 @@
+import time
 from selenium.webdriver import Chrome
 from selenium.webdriver import ChromeOptions
 from selenium.webdriver.common.keys import Keys
@@ -17,5 +18,10 @@ element.clear()
 element.send_keys("pycon")
 element.send_keys(Keys.RETURN)
 
+# scroll to the end of page
+for i in range(1, 100):
+    driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+    time.sleep(4)
+
 assert "No results found." not in driver.page_source
-driver.close()
+# driver.close()

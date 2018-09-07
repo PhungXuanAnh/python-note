@@ -1,8 +1,15 @@
+import json
 import time
 from selenium.webdriver import Chrome
 from selenium.webdriver import ChromeOptions
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException
+
+
+with open('/home/xuananh/Dropbox/Work/Other/facebook-account.json', "r") as in_file:
+    accounts = json.load(in_file)
+    email = accounts[0]["email"]
+    password = accounts[0]["password"]
 
 
 def wait_for_element_display(webdriver, by, by_value, wait_in_second):
@@ -48,10 +55,14 @@ driver.get("https://facebook.com")
 driver.maximize_window()
 
 facebook_login = FacebookLogin(driver)
-home_page = facebook_login.login(email='test1.test@gmail.com', password='1234%^&*')
+home_page = facebook_login.login(email=email,
+                                 password=password)
 if home_page.is_displayed():
     print("Login Successfully")
 else:
     print("Login failed")
+
+
+driver.get("https://www.facebook.com/officialdoda/")
 
 # driver.close()
