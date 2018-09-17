@@ -1,9 +1,28 @@
-from mongodb_sample.sample1.micro_service_db import *
+from pymodm import connect, fields, MongoModel, EmbeddedMongoModel
 
-##### Init #####
-connect_database()
 
-##### Create/Insert #####
+class User(MongoModel):
+    email = fields.EmailField(primary_key=True)
+    first_name = fields.CharField()
+    last_name = fields.CharField()
+
+
+class Comment(EmbeddedMongoModel):
+    author = fields.ReferenceField(User)
+    content = fields.CharField()
+
+
+class Post(MongoModel):
+    title = fields.CharField()
+    author = fields.ReferenceField(User)
+    revised_on = fields.DateTimeField()
+    content = fields.CharField()
+    comments = fields.EmbeddedDocumentListField(Comment)
+    tags = fields.ListField(fields.CharField(max_length=20))
+
+
+connect('mongodb://127.0.0.1:27017/pymodm-test')
+
 anhdv = User('user@email.com', last_name='Ross', first_name='Bob').save()
 Post(
     # Since this is a ReferenceField, we had to save han_solo first.
@@ -16,6 +35,7 @@ Post(
         Comment(author=anhdv, content='xxxxxxxxxxxxxxxx!'),
     ]
 ).save()
+
 
 ###### Access #####
 # Find objects with a condition
