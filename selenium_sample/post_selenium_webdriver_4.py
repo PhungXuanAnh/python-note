@@ -3,8 +3,8 @@ import time
 from selenium.webdriver import Chrome
 from selenium.webdriver import ChromeOptions
 from selenium.webdriver.common.by import By
-from selenium.common.exceptions import NoSuchElementException
-
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.common.exceptions import NoSuchElementException, TimeoutException
 
 with open('/home/xuananh/Dropbox/Work/Other/facebook-account.json', "r") as in_file:
     accounts = json.load(in_file)
@@ -47,10 +47,28 @@ class FacebookHomePage(object):
             return False
 
 
+def scroll_until_loaded(driver):
+    check_height = driver.execute_script("return document.body.scrollHeight;")
+    while True:
+        driver.execute_script(
+            "window.scrollTo(0, document.body.scrollHeight);")
+        try:
+            WebDriverWait(driver, 10).until(lambda driver: driver.execute_script(
+                "return document.body.scrollHeight;") > check_height)
+            check_height = driver.execute_script(
+                "return document.body.scrollHeight;")
+        except TimeoutException:
+            break
+
+
 # test login facebook
 chrome_option = ChromeOptions()
+# chrome_option.set_headless()
+chrome_option.add_argument("--disable-notifications")
+
 driver = Chrome(executable_path='/home/xuananh/Downloads/chromedriver_linux64/chromedriver',
                 chrome_options=chrome_option)
+
 driver.get("https://facebook.com")
 driver.maximize_window()
 
@@ -62,7 +80,7 @@ if home_page.is_displayed():
 else:
     print("Login failed")
 
+driver.get("https://facebook.com/officialdoda/")
 
-driver.get("https://www.facebook.com/officialdoda/")
-
+scroll_until_loaded(driver)
 # driver.close()
