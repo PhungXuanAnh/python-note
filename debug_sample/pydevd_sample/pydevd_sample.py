@@ -14,19 +14,21 @@ NOTE 2: cac buoc test khi khong the ket noi den debug server
 
 import multiprocessing
 
+
 def worker():
-    import pydevd;pydevd.settrace(host="222.254.34.158",
-                                  port=5678,
-                                  stdoutToServer=True,
-                                  stderrToServer=True,
-                                  )
+    import pydevd
+    pydevd.settrace(host="222.254.34.158",
+                    port=5678,
+                    stdoutToServer=True,
+                    stderrToServer=True,
+                    )
 #     import pydevd;pydevd.settrace()
     var1 = 4
     while var1 < 9:
         var1 = var1 + 1
-        print (var1)
-    
-    
+        print(var1)
+
+
 if __name__ == '__main__':
     '''
     run on remote machine and local machine: pip install pydevd
@@ -38,10 +40,8 @@ if __name__ == '__main__':
     # export PATHS_FROM_ECLIPSE_TO_PYTHON='''[["/media/xuananh/data/Dropbox/Viosoft/Eclipse_workspace/validium-nsb-backend1","/home/ubuntu/Dropbox/validium-nsb-backend1"]]'''
     p1 = multiprocessing.Process(target=worker, args=())
     p1.start()
-    
+
     var1 = 0
     while var1 < 3:
         var1 = var1 + 1
-        print (var1)
-    
-
+        print(var1)

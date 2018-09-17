@@ -14,14 +14,18 @@
 
 import multiprocessing
 
+
 def set_trace():
-    import pdb, sys
+    import pdb
+    import sys
+
     class ForkedPdb(pdb.Pdb):
         """A Pdb subclass that may be used
         from a forked multiprocessing child
         usage: ForkedPdb().set_trace
-    
+
         """
+
         def interaction(self, *args, **kwargs):
             _stdin = sys.stdin
             try:
@@ -31,26 +35,24 @@ def set_trace():
                 sys.stdin = _stdin
     ForkedPdb().set_trace()
 
+
 def worker():
     i = 0
     set_trace()
     while i < 10:
         i = i + 1
-    
+
+
 if __name__ == '__main__':
     p1 = multiprocessing.Process(target=worker)
     p1.start()
-                
+
     a = "aaa"
-    
+
 #     import pdb
 #     pdb.set_trace()
-    
+
     b = "bbb"
     c = "ccc"
     final = a + b + c
-    print (final)
-  
-
-
-
+    print(final)
