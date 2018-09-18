@@ -8,3 +8,6 @@ print(num)
 
 str = '27K lượt xem'
 print(str[:-9])
+
+str = "https://facebook.com/officialdoda/"
+print(str.replace('https://', '').replace('www.', '').replace('facebook.com/', '').replace('/', ''))
