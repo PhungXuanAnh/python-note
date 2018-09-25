@@ -20,3 +20,6 @@ print(re.search(r'/(\d+)/', str).group(1))
 # https://www.facebook.com/officialdoda/posts/320666585359581
 # https://www.facebook.com/officialdoda/posts/2038010436244229
 
+str = "https://facebook.com/officialdoda/"
+print(re.search(r'facebook.com/([a-zA-Z0-9]+)/', str).group(1))
+
