@@ -11,3 +11,6 @@ print(str[:-9])
 
 str = "https://facebook.com/officialdoda/"
 print(str.replace('https://', '').replace('www.', '').replace('facebook.com/', '').replace('/', ''))
+
+print('0'.replace('.', ''))
+print('1111.2220'.replace('.', ''))
