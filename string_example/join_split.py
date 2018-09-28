@@ -83,4 +83,3 @@ str = 'hom1nay la ngay dep1troi'
 print(str[0:4])
 print(str[-5:-1])
 print(str[4:-5])
-

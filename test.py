@@ -1,74 +1,106 @@
-'''
-Viet code va testcase tao ra 100 nguoi dung lien tiep vang mat hoac lien tiep co mat va in ra
+"""
+Redis is an in-memory datastructure server. It has facility to manipulate
+bitstrings in their Strings datastructure. There are 100 users. Some of them
+come to the office, some are absent on any particular day. Everyday they
+come, they log-in to an attendance system. We have to know how many users
+logged-in on a particular day. Please use Redis Bitstrings to find a solution and
+code it (Python or GO) so that in real time we can query how many users (out
+of 100) have logged in till now and print their ids.
+We are also interested in knowing all the users who came on consecutive days
+and those who were absent on two consecutive days. Please write the code
+and test cases so that you generate 100 users attendance randomly on both
+days and print out
+- the total counts of presence each day (along with their ids)
+- the total count of absence each day (along with their ids)
+- the total count of users who were present on two consecutive days (along
+with their ids)
+- the total count of users who were absent on two consecutive days (along
+with their ids)
 
-- tong so nguoi co mat moi ngay va id
-- tong so nguoi vang mat moi ngay va id
-- tong so nguoi dung co mat 2 ngay lien tiep va id
-- tong so nguoi dung mat mat 2 ngay lien tiep va id
+key: logged-in:yyyy-mm-dd
+bit: 0-99
+1: logged in
+0: don't logged in
 
-model:
-- user_id - not null
-- date login - not null
-- time login - maybe null
-- status: present/absent - not null
+redis.setbit(logged-in:yyyy-mm-dd, user_id, 1)
+"""
 
-user_id: {
-    date:
-    time:
-    status:
-}
-
-user_id = [0, ..., 99]
-date:  [user_id, user_id, user_id ]
-'''
-
+import redis
 import random
+import datetime
 
 
-def genarate_user():
-    '''
-    - tao 100 nguoi dung ngau nhien co mat hoac vang mat lien tiep 2 ngay
-    - tao trong 30 ngay
-    '''
-    counts_present = random.randint(0, 100)
-    list_id_present = random.sample(range(0, 99), counts_present)
-
-    for i in range(1, 30):
-        write_database(i: list_id_present)
+pool = redis.ConnectionPool(host='localhost', port=6379, db=0)
+redis_cli = redis.Redis(connection_pool=pool)
 
 
-list_present_consecutive_day = []
-list_absent_consecutive_day = []
-
-list_id_present_tmp = []
-list_id_absent_tmp = []
-for i in range(1, 30):
-    list_id_present = get_date(i)
-
-    # in ra tong so nguoi co mat hang ngay va id
-    print(len(list_id_present), list_id_present)
-
-    list_id_absent = list(range(0, 99))
-    for id in list_id_present:
-        list_id_absent.remove(id)
-
-    # in ra tong so nguoi vang mat hang ngay va id
-    print(len(list_id_absent), list_absent)
-
-    for id in list_id_present_tmp:
-        if id in list_id_present:
-            list_present_consecutive_day.append(id)
-
-    for id in list_id_absent_tmp:
-        if id in list_id_absent:
-            list_absent_consecutive_day.append(id)
-
-    list_id_present_tmp = list_id_present
-    list_id_absent_tmp = list_id_absent
+def generate_attendance_randomly():
+    date = datetime.datetime(2018, 1, 1)
+    for i in range(0, 31):
+        for user_id in range(0, 99):
+            redis_cli.setbit(name='logged-in:{}'.format(date.strftime("%Y-%m-%d")), offset=user_id, value=random.choice([1, 1, 1, 0]))
+        date = date + datetime.timedelta(days=1)
 
 
-list_present_consecutive_day = list(set(list_present_consecutive_day))
-list_absent_consecutive_day = list(set(list_absent_consecutive_day))
+def print_output():
+    counts_present_2_consecutive_days = set()
+    counts_absence_2_consecutive_days = set()
 
-print(len(list_present_consecutive_day), list_present_consecutive_day)
-print(len(list_absent_consecutive_day), list_absent_consecutive_day)
+    date = datetime.datetime(2018, 1, 1)
+    for _ in range(0, 30):
+        next_date = date + datetime.timedelta(days=1)
+        counts_present = []
+        counts_absence = []
+
+        redis_cli.bitop('AND',
+                        'logged-in:present',
+                        'logged-in:{}'.format(date.strftime("%Y-%m-%d")),
+                        'logged-in:{}'.format(next_date.strftime("%Y-%m-%d")))
+
+        redis_cli.bitop('OR',
+                        'logged-in:absence',
+                        'logged-in:{}'.format(date.strftime("%Y-%m-%d")),
+                        'logged-in:{}'.format(next_date.strftime("%Y-%m-%d")))
+
+        for j in range(0, 100):
+            if redis_cli.getbit('logged-in:{}'.format(date.strftime("%Y-%m-%d")), j):
+                counts_present.append(j)
+            else:
+                counts_absence.append(j)
+            
+            if redis_cli.getbit('logged-in:present', j):
+                counts_present_2_consecutive_days.add(j)
+
+            if not redis_cli.getbit('logged-in:absence', j):
+                counts_absence_2_consecutive_days.add(j)
+
+        present = redis_cli.bitcount('logged-in:{}'.format(date.strftime("%Y-%m-%d")))
+        print('---------------- date: {}--------------'.format(date.strftime("%Y-%m-%d")))
+        print('counts present: ', present)
+        print('ids present: ', counts_present)
+        print('counts absence: ', 100 - present)
+        print('ids absence: ', counts_absence)                      
+
+        date = next_date
+    print('counts_present_2_consecutive_days: ', counts_present_2_consecutive_days)
+    print('counts_absence_2_consecutive_days: ', counts_absence_2_consecutive_days)
+
+
+if __name__ == '__main__':
+    # generate_attendance_randomly()
+    print_output()
+
+# key1 = 0101
+# key2 = 1100
+# key1 and key2 = 0100
+# key1 or key 2 = 1101
+
+# setbit key1 1 0
+# setbit key1 2 1
+# setbit key1 3 0
+# setbit key1 4 1
+
+# setbit key2 1 1
+# setbit key2 2 1
+# setbit key2 3 0
+# setbit key2 4 0

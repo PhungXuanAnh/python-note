@@ -24,3 +24,8 @@ pipe.get('bing')
 print(pipe.execute())
 # or combine all above command in one
 print(pipe.set('foo', 'bar').sadd('faz', 'baz').incr('auto_number').execute())
+
+
+pool = redis.ConnectionPool(host='localhost', port=6379, db=4)
+r = redis.Redis(connection_pool=pool)
+r.setbit('mykey', 3, 1)
