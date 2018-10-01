@@ -121,3 +121,7 @@ for index in range(0, len(t_list) - 1):
 
 print('--------------in ra noi dung cua range(5, 0, -1) trong python 3---------------')
 print(list(range(5, 0, -1)))  # print range for python 3
+
+list1 = [1]
+list2 = [0]
+print(list1 * 3 + list2 * 9)

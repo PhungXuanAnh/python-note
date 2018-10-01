@@ -36,9 +36,13 @@ redis_cli = redis.Redis(connection_pool=pool)
 
 def generate_attendance_randomly():
     date = datetime.datetime(2018, 1, 1)
-    for i in range(0, 31):
+    for _ in range(0, 31):
+        rate_present = random.randint(75, 99)
+        rate_attendance = [1] * rate_present + [0] * (100 - rate_present)
         for user_id in range(0, 99):
-            redis_cli.setbit(name='logged-in:{}'.format(date.strftime("%Y-%m-%d")), offset=user_id, value=random.choice([1, 1, 1, 0]))
+            redis_cli.setbit(name='logged-in:{}'.format(date.strftime("%Y-%m-%d")),
+                             offset=user_id,
+                             value=random.choice(rate_attendance))
         date = date + datetime.timedelta(days=1)
 
 
@@ -47,7 +51,7 @@ def print_output():
     counts_absence_2_consecutive_days = set()
 
     date = datetime.datetime(2018, 1, 1)
-    for _ in range(0, 30):
+    for _ in range(0, 31):
         next_date = date + datetime.timedelta(days=1)
         counts_present = []
         counts_absence = []
@@ -67,7 +71,7 @@ def print_output():
                 counts_present.append(j)
             else:
                 counts_absence.append(j)
-            
+
             if redis_cli.getbit('logged-in:present', j):
                 counts_present_2_consecutive_days.add(j)
 
@@ -79,28 +83,20 @@ def print_output():
         print('counts present: ', present)
         print('ids present: ', counts_present)
         print('counts absence: ', 100 - present)
-        print('ids absence: ', counts_absence)                      
+        print('ids absence: ', counts_absence)
 
         date = next_date
-    print('counts_present_2_consecutive_days: ', counts_present_2_consecutive_days)
-    print('counts_absence_2_consecutive_days: ', counts_absence_2_consecutive_days)
+
+    print('-------------------statistic 2 consecutive days ----------------------')
+    print('counts_present_2_consecutive_days: ', len(counts_present_2_consecutive_days))
+    print('ids present 2 consecutive days: ', counts_present_2_consecutive_days)
+    print('counts_absence_2_consecutive_days: ', len(counts_absence_2_consecutive_days))
+    print('id absence 2 consecutive days: ', counts_absence_2_consecutive_days)
+
 
 
 if __name__ == '__main__':
-    # generate_attendance_randomly()
+    generate_attendance_randomly()
     print_output()
+    redis_cli.flushall()
 
-# key1 = 0101
-# key2 = 1100
-# key1 and key2 = 0100
-# key1 or key 2 = 1101
-
-# setbit key1 1 0
-# setbit key1 2 1
-# setbit key1 3 0
-# setbit key1 4 1
-
-# setbit key2 1 1
-# setbit key2 2 1
-# setbit key2 3 0
-# setbit key2 4 0
