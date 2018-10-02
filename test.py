@@ -31,7 +31,9 @@ import datetime
 
 
 pool = redis.ConnectionPool(host='localhost', port=6379, db=0)
-redis_cli = redis.Redis(connection_pool=pool)
+client = redis.Redis(connection_pool=pool)
+
+USER_NUMBER = 100000
 
 
 def generate_attendance_randomly():
@@ -39,10 +41,10 @@ def generate_attendance_randomly():
     for _ in range(0, 31):
         rate_present = random.randint(75, 99)
         rate_attendance = [1] * rate_present + [0] * (100 - rate_present)
-        for user_id in range(0, 99):
-            redis_cli.setbit(name='logged-in:{}'.format(date.strftime("%Y-%m-%d")),
-                             offset=user_id,
-                             value=random.choice(rate_attendance))
+        for user_id in range(0, USER_NUMBER):
+            client.setbit(name='logged-in:{}'.format(date.strftime("%Y-%m-%d")),
+                          offset=user_id,
+                          value=random.choice(rate_attendance))
         date = date + datetime.timedelta(days=1)
 
 
@@ -56,47 +58,55 @@ def print_output():
         counts_present = []
         counts_absence = []
 
-        redis_cli.bitop('AND',
-                        'logged-in:present',
-                        'logged-in:{}'.format(date.strftime("%Y-%m-%d")),
-                        'logged-in:{}'.format(next_date.strftime("%Y-%m-%d")))
+        client.bitop('AND',
+                     'logged-in:present',
+                     'logged-in:{}'.format(date.strftime("%Y-%m-%d")),
+                     'logged-in:{}'.format(next_date.strftime("%Y-%m-%d")))
 
-        redis_cli.bitop('OR',
-                        'logged-in:absence',
-                        'logged-in:{}'.format(date.strftime("%Y-%m-%d")),
-                        'logged-in:{}'.format(next_date.strftime("%Y-%m-%d")))
+        client.bitop('OR',
+                     'logged-in:absence',
+                     'logged-in:{}'.format(date.strftime("%Y-%m-%d")),
+                     'logged-in:{}'.format(next_date.strftime("%Y-%m-%d")))
 
-        for j in range(0, 100):
-            if redis_cli.getbit('logged-in:{}'.format(date.strftime("%Y-%m-%d")), j):
+        for j in range(0, USER_NUMBER):
+            if client.getbit('logged-in:{}'.format(date.strftime("%Y-%m-%d")), j):
                 counts_present.append(j)
             else:
                 counts_absence.append(j)
 
-            if redis_cli.getbit('logged-in:present', j):
+            if client.getbit('logged-in:present', j):
                 counts_present_2_consecutive_days.add(j)
 
-            if not redis_cli.getbit('logged-in:absence', j):
+            if not client.getbit('logged-in:absence', j):
                 counts_absence_2_consecutive_days.add(j)
 
-        present = redis_cli.bitcount('logged-in:{}'.format(date.strftime("%Y-%m-%d")))
+        present = client.bitcount('logged-in:{}'.format(date.strftime("%Y-%m-%d")))
         print('---------------- date: {}--------------'.format(date.strftime("%Y-%m-%d")))
         print('counts present: ', present)
-        print('ids present: ', counts_present)
+        # print('ids present: ', counts_present)
         print('counts absence: ', 100 - present)
-        print('ids absence: ', counts_absence)
+        # print('ids absence: ', counts_absence)
 
         date = next_date
 
     print('-------------------statistic 2 consecutive days ----------------------')
     print('counts_present_2_consecutive_days: ', len(counts_present_2_consecutive_days))
-    print('ids present 2 consecutive days: ', counts_present_2_consecutive_days)
+    # print('ids present 2 consecutive days: ', counts_present_2_consecutive_days)
     print('counts_absence_2_consecutive_days: ', len(counts_absence_2_consecutive_days))
-    print('id absence 2 consecutive days: ', counts_absence_2_consecutive_days)
+    # print('id absence 2 consecutive days: ', counts_absence_2_consecutive_days)
 
+
+def print1():
+    date = datetime.datetime(2018, 1, 1)
+    for _ in range(0, 31):
+        next_date = date + datetime.timedelta(days=1)
+        print(client.bitcount('logged-in:{}'.format(date.strftime("%Y-%m-%d"))))
+        date = next_date
 
 
 if __name__ == '__main__':
-    generate_attendance_randomly()
+    # generate_attendance_randomly()
     print_output()
-    redis_cli.flushall()
-
+    # client.flushall()
+    # print1()
+    # client.eval()

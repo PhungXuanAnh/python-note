@@ -23,3 +23,6 @@ print(re.search(r'/(\d+)/', str).group(1))
 str = "https://facebook.com/officialdoda/"
 print(re.search(r'facebook.com/([a-zA-Z0-9]+)/', str).group(1))
 
+str = '/pages_reaction_units/more/?page_id=390567570966109&cursor=%7B%22card_id%22%3A%22page_photos%22%2C%22has_next_page%22%3Atrue%7D&surface=www_pages_home&unit_count=8&referrer'
+print(re.sub(r'&unit_count=[0-9]+&', '&unit_count=100&', str))
+
