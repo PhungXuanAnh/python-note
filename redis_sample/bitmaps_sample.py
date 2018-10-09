@@ -74,15 +74,44 @@ def bitop_sample():
     print(convert_to_binary(client.get('key_not')))
 
 
+def bitop_sample1():
+    #         01234567
+    key11 = [1, 0, 1, 0, 1, 0, 1, 0]
+    key12 = [1, 1, 0, 0, 1, 1, 0, 1]
+
+    for i in range(0, 8):
+        client.setbit('key11', i, key11[i])
+        client.setbit('key12', i, key12[i])
+    print('key11: ', convert_to_binary(client.get('key11')))
+    print('key12: ', convert_to_binary(client.get('key12')))
+
+    client.bitop('xor', 'key11', 'key11', 'key12')
+    print('xor11: ', convert_to_binary(client.get('key11')))
+
+    client.delete('key11', 'key12')
+
+
 def bitpos_sample():
     print(client.bitpos('key1', 1))
     print(client.bitpos('key2', 0))
     print(client.bitpos('key100', 1))
 
+
+def lua_sample():
+    lua = """
+        local value = redis.call('GET', KEYS[1])
+        value = tonumber(value)
+        return value * ARGV[1]
+        """
+    multiply = client.register_script(lua)
+    client.set('foo', 2)
+    print(multiply(keys=['foo'], args=[5]))
+
+
 if __name__ == '__main__':
     # create_data()
     # print_data()
     # bitop_sample()
-    bitpos_sample()
-    
-    
+    # bitop_sample1()
+    # bitpos_sample()
+    lua_sample()
