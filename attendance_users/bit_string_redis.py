@@ -29,9 +29,9 @@ def init_user_ids():
 
 def init_data_a_day(user_ids, day):
     '''
-        random users visit company one day
-        bit 1: presence
-        bit 0: absence
+    random users visit company one day
+    bit 1: presence
+    bit 0: absence
     '''
     r = get_redis()
     if r is None:

@@ -1,5 +1,3 @@
-__author__ = 'Hoangthang'
-
 import unittest
 import bit_string_redis as bt
 
