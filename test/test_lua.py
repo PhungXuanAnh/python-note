@@ -46,11 +46,11 @@ def print_attendance_every_day():
                 counts_absence.append(j)
 
         present = client.bitcount('logged-in:{}'.format(current_date.strftime("%Y-%m-%d")))
-        print('---------------- date: {}--------------'.format(current_date.strftime("%Y-%m-%d")))
-        print('counts present: ', present)
-        print('ids present: ', counts_present)
-        print('counts absence: ', USER_NUMBER - present)
-        print('ids absence: ', counts_absence)
+        # print('---------------- date: {}--------------'.format(current_date.strftime("%Y-%m-%d")))
+        # print('counts present: ', present)
+        # print('ids present: ', counts_present)
+        # print('counts absence: ', USER_NUMBER - present)
+        # print('ids absence: ', counts_absence)
 
         current_date = next_date
 
@@ -89,9 +89,6 @@ def print_attendance_consecutive_days():
 
         current_date = next_date
 
-    counts_present_2_consecutive_days = list()
-    counts_absence_2_consecutive_days = list()
-    
     lua = """
         local str = redis.call("GET", KEYS[1]);
         local ids = {}
@@ -111,15 +108,13 @@ def print_attendance_consecutive_days():
     multiply = client.register_script(lua)
    
     print('counts_present_2_consecutive_days: ', client.bitcount('logged-in:present_2_consecutive_days_sum'))
-    # multiply(keys=['logged-in:present_2_consecutive_days_sum'])
     print('ids present 2 consecutive days: ', multiply(keys=['logged-in:present_2_consecutive_days_sum']))
 
     print('counts_absence_2_consecutive_days: ', client.bitcount('logged-in:absence_2_consecutive_days_sum'))
-    # multiply(keys=['logged-in:absence_2_consecutive_days_sum'])
     print('ids absence 2 consecutive days: ', multiply(keys=['logged-in:absence_2_consecutive_days_sum']))
 
 
 if __name__ == '__main__':
-    # generate_attendance_randomly()
-    # print_attendance_every_day()
+    generate_attendance_randomly()
+    print_attendance_every_day()
     print_attendance_consecutive_days()
