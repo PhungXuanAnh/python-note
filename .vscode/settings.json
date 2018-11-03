@@ -2,5 +2,5 @@
     "python.formatting.autopep8Args": [
         "--max-line-length=200"
     ],
-    "python.pythonPath": ".pyenv/python2/bin/python"
+    "python.pythonPath": "/home/xuananh/.pyenv/python3/bin/python"
 }

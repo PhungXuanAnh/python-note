@@ -15,12 +15,12 @@ PRESENT_STATUS = 1
 ABSENCE_STATUS = 0
 
 
-def get_redis_client():
-    client = redis.StrictRedis(host='localhost', port=6379, db=1)
+def get_redis_client(host='localhost', port=6379, db=1):
     try:
+        client = redis.StrictRedis(host=host, port=port, db=db, socket_timeout=5)
         client.ping()
         return client
-    except redis.ConnectionError:
+    except:
         print('Can not connect to redis server')
         return None
 
@@ -139,6 +139,8 @@ def get_attendance_consecutive_days(year, month, day, number_users):
 
 
 if __name__ == '__main__':
+    print(get_redis_client(host='1.1.1.1'))
+    
     NUMBER_USERS = 100
     dates = [
         {
