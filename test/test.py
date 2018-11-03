@@ -11,36 +11,84 @@ import redis
 import random
 import datetime
 
-
-pool = redis.ConnectionPool(host='localhost', port=6379, db=0)
-client = redis.Redis(connection_pool=pool)
-pipe = client.pipeline()
-
-USER_NUMBER = 100
-DAY_NUMBER = 2
+NUMBER_USERS = 100
+NUMBER_DAYS = 2
 
 PRESENT_STATUS = 1
 ABSENCE_STATUS = 0
 
 
-def generate_attendance_randomly(number_days):
-    if number_days == 0:
+def get_redis_client():
+    client = redis.StrictRedis(host='localhost', port=6379, db=1)
+    try:
+        client.ping()
+        return client
+    except redis.ConnectionError:
+        print('Error while connect to Redis server')
+        return None
+
+
+def genrate_rate_attendance_randomly():
+    rate_present = random.randint(70, 99)
+    return [PRESENT_STATUS] * rate_present + [ABSENCE_STATUS] * (100 - rate_present)
+
+
+def generate_attendance_randomly(number_days, start_year, start_month, start_day, number_users):
+    if number_days <= 0 or number_users <= 0:
+        print('number_days or number_users must be unsigned integer')
         return False
 
-    date = datetime.datetime(2018, 1, 1)
+    try:
+        date = datetime.datetime(start_year, start_month, start_day)
+    except Exception as e:
+        print(e)
+        return False
+
+    r_client = get_redis_client()
+    if not r_client:
+        return False
 
     for _ in range(0, number_days):
-
-        rate_present = random.randint(70, 99)
-        rate_attendance = [PRESENT_STATUS] * rate_present + [ABSENCE_STATUS] * (100 - rate_present)
-
-        for user_id in range(0, USER_NUMBER):
-            client.setbit(name='attendance:{}'.format(date.strftime("%Y-%m-%d")),
-                          offset=user_id,
-                          value=random.choice(rate_attendance))
-
+        rate_attendance = genrate_rate_attendance_randomly()
+        for user_id in range(0, number_users):
+            r_client.setbit(name='attendance:{}'.format(date.strftime("%Y-%m-%d")),
+                            offset=user_id,
+                            value=random.choice(rate_attendance))
         date = date + datetime.timedelta(days=1)
     return True
+
+
+def print_attendance_a_day(number_users, year, month, day):
+    try:
+        date = datetime.datetime(2018, 1, 1)
+    except Exception as e:
+        print(e)
+        return False
+
+    r_client = get_redis_client()
+    if not r_client:
+        print("Can not connect to redis server")
+        return False
+
+    if number_users <= 0:
+        print("number_users must be an unsigned integer")
+        return False
+
+    ids_present = []
+    ids_absence = []
+
+    for user_id in range(0, number_users):
+        if r_client.getbit('attendance:{}'.format(date.strftime("%Y-%m-%d")), user_id) == PRESENT_STATUS:
+            ids_present.append(user_id)
+        else:
+            ids_absence.append(user_id)
+
+    print('---------------- date: {}--------------'.format(date.strftime("%Y-%m-%d")))
+    print('counts present: ', len(ids_present))
+    print('ids present: ', ids_present)
+    print('counts absence: ', len(ids_absence))
+    print('ids absence: ', ids_absence)
+    print("")
 
 
 def print_attendance_daily():
@@ -119,8 +167,12 @@ def print_attendance_consecutive_days():
 
 
 if __name__ == '__main__':
-    generate_attendance_randomly()
-    print_attendance_daily()
-    print_attendance_consecutive_days()
+    generate_attendance_randomly(number_days=2,
+                                 start_year=2018,
+                                 start_month=1,
+                                 start_day=1,
+                                 number_users=NUMBER_USERS)
+    # print_attendance_daily()
+    # print_attendance_consecutive_days()
 
-    client.flushall()
+    # client.flushall()

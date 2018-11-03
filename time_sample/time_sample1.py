@@ -12,6 +12,8 @@ from dateutil.tz import tzutc
 print('----------------------------------------------------------- timezone')
 print(time.tzname)
 
+print(datetime.datetime(2019, 2, -1))
+
 print('----------------------------------------------------------- convert other format to python datetime')
 print('UTC timestamp now : ', time.time())
 print('UTC timestamp now : ', datetime.datetime.now().timestamp())
