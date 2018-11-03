@@ -21,7 +21,7 @@ def get_redis_client():
         client.ping()
         return client
     except redis.ConnectionError:
-        print('Error while connect to Redis server')
+        print('Can not connect to redis server')
         return None
 
 
@@ -44,7 +44,6 @@ def generate_attendance_randomly(year, month, day, number_users):
 
     r_client = get_redis_client()
     if not r_client:
-        print("Can not connect to redis server")
         return False
 
     rate_attendance = genrate_rate_attendance_randomly()
@@ -70,7 +69,6 @@ def get_attendance_a_day(number_users, year, month, day):
 
     r_client = get_redis_client()
     if not r_client:
-        print("Can not connect to redis server")
         return None
 
     if not r_client.exists(key_name):
@@ -132,6 +130,8 @@ def get_attendance_consecutive_days(year, month, day, number_users):
         if r_client.getbit('absence_2_consecutive_days', user_id) == ABSENCE_STATUS:
             ids_absence_2_consecutive_days.append(user_id)
 
+    # print(r_client.bitcount('present_2_consecutive_days'))
+    
     return {
         "present_ids": ids_present_2_consecutive_days,
         "absence_ids": ids_absence_2_consecutive_days
