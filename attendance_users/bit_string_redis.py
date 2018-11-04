@@ -3,7 +3,7 @@ import traceback
 from redis_config import REDIS
 import random
 
-USERS = 100
+USERS = 4
 
 
 def get_redis():

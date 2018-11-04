@@ -25,9 +25,16 @@ def get_redis_client(host='localhost', port=6379, db=1):
         return None
 
 
-def genrate_rate_attendance_randomly():
-    rate_present = random.randint(70, 99)
-    return [PRESENT_STATUS] * rate_present + [ABSENCE_STATUS] * (100 - rate_present)
+def generate_binary_string_randomly(length):
+    if length < 0:
+        print("length of string must be larger than 0")
+        return None
+
+    random_number = random.randint(0, 2**length - 1)
+    _binary = format(random_number, 'b')
+    binary = "0" * (length - len(_binary))
+    binary = binary + _binary
+    return binary
 
 
 def generate_attendance_randomly(year, month, day, number_users):
@@ -46,12 +53,14 @@ def generate_attendance_randomly(year, month, day, number_users):
     if not r_client:
         return False
 
-    rate_attendance = genrate_rate_attendance_randomly()
+    binary_str = generate_binary_string_randomly(number_users)
+    print(date, binary_str)
 
     for user_id in range(0, number_users):
+
         r_client.setbit(name=key_name,
                         offset=user_id,
-                        value=random.choice(rate_attendance))
+                        value=int(binary_str[user_id]))
     return True
 
 
@@ -89,17 +98,17 @@ def get_attendance_a_day(year, month, day, number_users):
     }
 
 
-def get_attendance_consecutive_days(year, month, day, number_users):
+def get_attendance_consecutive_days(first_date, number_users):
     if number_users <= 0:
         print("number_users must be an unsigned integer")
         return None
 
     try:
-        current_date = datetime.datetime(year, month, day)
-        next_date = (current_date + datetime.timedelta(days=1))
+        _first_date = datetime.datetime(first_date["year"], first_date["month"], first_date["day"])
+        _second_date = (_first_date + datetime.timedelta(days=1))
 
-        key_current_date = 'attendance:{}'.format(current_date.strftime("%Y-%m-%d"))
-        key_next_date = 'attendance:{}'.format(next_date.strftime("%Y-%m-%d"))
+        key_first_date = 'attendance:{}'.format(_first_date.strftime("%Y-%m-%d"))
+        key_second_date = 'attendance:{}'.format(_second_date.strftime("%Y-%m-%d"))
     except Exception as e:
         print("You entered invalid date: {}".format(e))
         return None
@@ -108,17 +117,21 @@ def get_attendance_consecutive_days(year, month, day, number_users):
     if not r_client:
         return None
 
+    if not r_client.exists(key_first_date) or not r_client.exists(key_second_date):
+        print('Data of date {} or {} is not exist'.format(_first_date, _second_date))
+        return None
+
     # calculate users present 2 consecutive days
     r_client.bitop('AND',
                    'present_2_consecutive_days',
-                   key_current_date,
-                   key_next_date)
+                   key_first_date,
+                   key_second_date)
 
     # calculate users absence 2 consecutive days
     r_client.bitop('OR',
                    'absence_2_consecutive_days',
-                   key_current_date,
-                   key_next_date)
+                   key_first_date,
+                   key_second_date)
 
     ids_present_2_consecutive_days = []
     ids_absence_2_consecutive_days = []
@@ -139,8 +152,6 @@ def get_attendance_consecutive_days(year, month, day, number_users):
 
 
 if __name__ == '__main__':
-    print(get_redis_client(host='1.1.1.1'))
-
     NUMBER_USERS = 100
     dates = [
         {
@@ -155,8 +166,8 @@ if __name__ == '__main__':
         }
     ]
 
-    # -------------------- generate data -------------------------------------
     for date in dates:
+        # -------------------- generate data -------------------------------------
         generate_attendance_randomly(year=date['year'],
                                      month=date['month'],
                                      day=date['day'],
@@ -179,8 +190,7 @@ if __name__ == '__main__':
             print('There is no data')
 
     print('-------------------statistic 2 consecutive days ----------------------')
-    date = dates[0]
-    result = get_attendance_consecutive_days(date['year'], date['month'], date['day'], NUMBER_USERS)
+    result = get_attendance_consecutive_days(dates[0], NUMBER_USERS)
     if result:
         print('counts present 2 consecutive days: ', len(result['present_ids']))
         print('ids present 2 consecutive days: ', result['present_ids'])
