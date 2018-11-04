@@ -55,7 +55,7 @@ def generate_attendance_randomly(year, month, day, number_users):
     return True
 
 
-def get_attendance_a_day(number_users, year, month, day):
+def get_attendance_a_day(year, month, day, number_users):
     if number_users <= 0:
         print("number_users must be an unsigned integer")
         return None
@@ -131,7 +131,7 @@ def get_attendance_consecutive_days(year, month, day, number_users):
             ids_absence_2_consecutive_days.append(user_id)
 
     # print(r_client.bitcount('present_2_consecutive_days'))
-    
+
     return {
         "present_ids": ids_present_2_consecutive_days,
         "absence_ids": ids_absence_2_consecutive_days
@@ -140,7 +140,7 @@ def get_attendance_consecutive_days(year, month, day, number_users):
 
 if __name__ == '__main__':
     print(get_redis_client(host='1.1.1.1'))
-    
+
     NUMBER_USERS = 100
     dates = [
         {
@@ -164,10 +164,10 @@ if __name__ == '__main__':
 
     # ------------------------ statistic attendance every day ----------------
     for date in dates:
-        result = get_attendance_a_day(number_users=NUMBER_USERS,
-                                      year=date['year'],
+        result = get_attendance_a_day(year=date['year'],
                                       month=date['month'],
-                                      day=date['day'])
+                                      day=date['day'],
+                                      number_users=NUMBER_USERS)
         print('---------------- date: {}-{}-{}--------------'.format(date['year'], date['month'], date['day']))
         if result:
             print('counts present: ', len(result["ids_present"]))
