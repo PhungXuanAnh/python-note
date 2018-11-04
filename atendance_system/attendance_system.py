@@ -1,10 +1,5 @@
 """
-key: attendance:yyyy-mm-dd
-bit: 0-99
-1: present status
-0: absence status
-
-redis.setbit(attendance:yyyy-mm-dd, user_id, 1)
+Author: Phung Xuan Anh
 """
 
 import redis

@@ -37,11 +37,9 @@ class UnittestAttendaceSystem(unittest.TestCase):
 
     def test_generate_binary_string_randomly(self):
         # pass
-        length = 100
-        self.assertEqual(len(at.generate_binary_string_randomly(length)), length)
+        self.assertEqual(len(at.generate_binary_string_randomly(self.valid_number_user)), self.valid_number_user)
         # fail
-        length = -1
-        self.assertIsNone(at.generate_binary_string_randomly(length))
+        self.assertIsNone(at.generate_binary_string_randomly(self.invalid_number_user))
 
     def test_generate_attendance_randomly(self):
         # pass

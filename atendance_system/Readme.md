@@ -1,0 +1,40 @@
+- [Idea](#idea)
+- [Tested system](#tested-system)
+- [Setup environment](#setup-environment)
+- [Run main file](#run-main-file)
+- [Run test](#run-test)
+
+# Idea
+
+The idea is using key with format 'attendance:yyyy-mm-dd' and length 100 to save
+status of 100 user in a specified day
+    1: present status
+    0: absence status
+
+To set status of user in a specific day using command:
+    redis.setbit(attendance:yyyy-mm-dd, user_id, 1)
+
+To get status of a user in a specific day using command:
+    redis.getbit(attendance:yyyy-mm-dd, user_id)
+
+To improve performance of system, we can use lua script for get bit position
+based on value 1/0
+
+# Tested system
+- ubuntu 18.08
+- python 3.6.6
+- redis server: host='localhost', port=6379, db=1
+
+# Setup environment
+
+pip install -r requirements.txt
+
+# Run main file
+
+python attendance_system.py
+
+# Run test
+
+python atten_system_unittest.py
+    
+
