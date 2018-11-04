@@ -6,7 +6,7 @@
 # Idea
 
 The idea is using key with format **attendance:yyyy-mm-dd** and length 100 to save status of 100 user in a specific day
-    1: is present status
+    1: is presence status
     0: is absence status
 
 To set status of user in a specific day using command:

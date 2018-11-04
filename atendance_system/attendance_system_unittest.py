@@ -5,6 +5,7 @@ import unittest
 import attendance_system as at
 import redis
 
+
 class UnittestAttendaceSystem(unittest.TestCase):
 
     dates_valid = [
@@ -73,6 +74,7 @@ class UnittestAttendaceSystem(unittest.TestCase):
         self.assertIsNone(at.get_attendance_consecutive_days(self.date_invalid_year, self.valid_number_user))
         self.assertIsNone(at.get_attendance_consecutive_days(self.date_invalid_month, self.valid_number_user))
         self.assertIsNone(at.get_attendance_consecutive_days(self.date_invalid_day, self.valid_number_user))
+
 
 if __name__ == '__main__':
     unittest.main()

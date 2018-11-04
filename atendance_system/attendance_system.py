@@ -6,7 +6,7 @@ import redis
 import random
 import datetime
 
-PRESENT_STATUS = 1
+PRESENCE_STATUS = 1
 ABSENCE_STATUS = 0
 REDIS_CONFIGS = {'host': 'localhost', 'port': 6379, 'db': 1}
 
@@ -79,16 +79,16 @@ def get_attendance_a_day(date, number_users):
         print("Data of day {} does not exist".format(date))
         return None
 
-    ids_present = []
+    ids_presence = []
     ids_absence = []
 
     for user_id in range(0, number_users):
-        if r_client.getbit(key_name, user_id) == PRESENT_STATUS:
-            ids_present.append(user_id)
+        if r_client.getbit(key_name, user_id) == PRESENCE_STATUS:
+            ids_presence.append(user_id)
         else:
             ids_absence.append(user_id)
     return {
-        "ids_present": ids_present,
+        "ids_presence": ids_presence,
         "ids_absence": ids_absence
     }
 
@@ -116,9 +116,9 @@ def get_attendance_consecutive_days(first_date, number_users):
         print('Data of date {} or {} is not exist'.format(_first_date, _second_date))
         return None
 
-    # calculate users present 2 consecutive days
+    # calculate users presence 2 consecutive days
     r_client.bitop('AND',
-                   'present_2_consecutive_days',
+                   'presence_2_consecutive_days',
                    key_first_date,
                    key_second_date)
 
@@ -128,21 +128,21 @@ def get_attendance_consecutive_days(first_date, number_users):
                    key_first_date,
                    key_second_date)
 
-    ids_present_2_consecutive_days = []
+    ids_presence_2_consecutive_days = []
     ids_absence_2_consecutive_days = []
 
     for user_id in range(0, number_users):
-        if r_client.getbit('present_2_consecutive_days', user_id) == PRESENT_STATUS:
-            ids_present_2_consecutive_days.append(user_id)
+        if r_client.getbit('presence_2_consecutive_days', user_id) == PRESENCE_STATUS:
+            ids_presence_2_consecutive_days.append(user_id)
 
         if r_client.getbit('absence_2_consecutive_days', user_id) == ABSENCE_STATUS:
             ids_absence_2_consecutive_days.append(user_id)
 
-    # print(r_client.bitcount('present_2_consecutive_days'))
+    # print(r_client.bitcount('presence_2_consecutive_days'))
 
     return {
-        "present_ids": ids_present_2_consecutive_days,
-        "absence_ids": ids_absence_2_consecutive_days
+        "ids_presence": ids_presence_2_consecutive_days,
+        "ids_absence": ids_absence_2_consecutive_days
     }
 
 
@@ -161,31 +161,31 @@ if __name__ == '__main__':
         }
     ]
 
+    print("-------------------- generate attendance system data -------------------------------------")
     for date in dates:
-        # -------------------- generate data -------------------------------------
         generate_attendance_randomly(date=date,
                                      number_users=NUMBER_USERS)
 
-    # ------------------------ statistic attendance every day ----------------
+    print("------------------------ statistic attendance every day ----------------")
     for date in dates:
         result = get_attendance_a_day(date=date,
                                       number_users=NUMBER_USERS)
         print('---------------- date: {}-{}-{}--------------'.format(date['year'], date['month'], date['day']))
         if result:
-            print('counts present: ', len(result["ids_present"]))
-            print('ids present: ', result["ids_present"])
+            print('counts presence: ', len(result["ids_presence"]))
+            print('ids presence: ', result["ids_presence"])
             print('counts absence: ', len(result["ids_absence"]))
             print('ids absence: ', result["ids_absence"])
             print("")
         else:
             print('There is no data')
 
-    print('-------------------statistic 2 consecutive days ----------------------')
+    print('-------------------statistic attendance 2 consecutive days ----------------------')
     result = get_attendance_consecutive_days(dates[0], NUMBER_USERS)
     if result:
-        print('counts present 2 consecutive days: ', len(result['present_ids']))
-        print('ids present 2 consecutive days: ', result['present_ids'])
-        print('counts absence 2 consecutive days: ', len(result['absence_ids']))
-        print('ids absence 2 consecutive days: ', result['absence_ids'])
+        print('counts presence 2 consecutive days: ', len(result['ids_presence']))
+        print('ids presence 2 consecutive days: ', result['ids_presence'])
+        print('counts absence 2 consecutive days: ', len(result['ids_absence']))
+        print('ids absence 2 consecutive days: ', result['ids_absence'])
     else:
         print("There is no data")
