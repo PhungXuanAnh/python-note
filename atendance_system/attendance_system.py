@@ -13,11 +13,12 @@ import datetime
 
 PRESENT_STATUS = 1
 ABSENCE_STATUS = 0
+REDIS_CONFIGS = {'host': 'localhost', 'port': 6379, 'db': 1}
 
 
-def get_redis_client(host='localhost', port=6379, db=1):
+def get_redis_client(redis_configs):
     try:
-        client = redis.StrictRedis(host=host, port=port, db=db, socket_timeout=5)
+        client = redis.StrictRedis(host=redis_configs["host"], port=redis_configs["port"], db=redis_configs["db"], socket_timeout=5)
         client.ping()
         return client
     except:
@@ -37,46 +38,45 @@ def generate_binary_string_randomly(length):
     return binary
 
 
-def generate_attendance_randomly(year, month, day, number_users):
+def generate_attendance_randomly(date, number_users):
     if number_users <= 0:
         print('number_users must be unsigned integer')
         return False
 
     try:
-        date = datetime.datetime(year, month, day).strftime("%Y-%m-%d")
+        date = datetime.datetime(date["year"], date["month"], date["day"]).strftime("%Y-%m-%d")
         key_name = 'attendance:{}'.format(date)
     except Exception as e:
         print("You entered invalid date: {}".format(e))
         return False
 
-    r_client = get_redis_client()
+    r_client = get_redis_client(REDIS_CONFIGS)
     if not r_client:
         return False
 
     binary_str = generate_binary_string_randomly(number_users)
-    print(date, binary_str)
+    print("Data of {} is {}".format(date, binary_str))
 
     for user_id in range(0, number_users):
-
         r_client.setbit(name=key_name,
                         offset=user_id,
                         value=int(binary_str[user_id]))
     return True
 
 
-def get_attendance_a_day(year, month, day, number_users):
+def get_attendance_a_day(date, number_users):
     if number_users <= 0:
         print("number_users must be an unsigned integer")
         return None
 
     try:
-        date = datetime.datetime(year, month, day).strftime("%Y-%m-%d")
+        date = datetime.datetime(date["year"], date["month"], date["day"]).strftime("%Y-%m-%d")
         key_name = 'attendance:{}'.format(date)
     except Exception as e:
         print("You entered invalid date: {}".format(e))
         return None
 
-    r_client = get_redis_client()
+    r_client = get_redis_client(REDIS_CONFIGS)
     if not r_client:
         return None
 
@@ -113,7 +113,7 @@ def get_attendance_consecutive_days(first_date, number_users):
         print("You entered invalid date: {}".format(e))
         return None
 
-    r_client = get_redis_client()
+    r_client = get_redis_client(REDIS_CONFIGS)
     if not r_client:
         return None
 
@@ -168,16 +168,12 @@ if __name__ == '__main__':
 
     for date in dates:
         # -------------------- generate data -------------------------------------
-        generate_attendance_randomly(year=date['year'],
-                                     month=date['month'],
-                                     day=date['day'],
+        generate_attendance_randomly(date=date,
                                      number_users=NUMBER_USERS)
 
     # ------------------------ statistic attendance every day ----------------
     for date in dates:
-        result = get_attendance_a_day(year=date['year'],
-                                      month=date['month'],
-                                      day=date['day'],
+        result = get_attendance_a_day(date=date,
                                       number_users=NUMBER_USERS)
         print('---------------- date: {}-{}-{}--------------'.format(date['year'], date['month'], date['day']))
         if result:

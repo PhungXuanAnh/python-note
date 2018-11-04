@@ -5,62 +5,74 @@ import redis
 
 class UnittestAttendaceSystem(unittest.TestCase):
 
+    dates_valid = [
+        {
+            "year": 2018,
+            "month": 11,
+            "day": 3
+        },
+        {
+            "year": 2018,
+            "month": 11,
+            "day": 4
+        }
+    ]
+    date_invalid_year = {"year": 12018, "month": 11, "day": 4}
+    date_invalid_month = {"year": 2018, "month": 15, "day": 4}
+    date_invalid_day = {"year": 2018, "month": 11, "day": 50}
+    valid_number_user = 100
+    invalid_number_user = -1
+
     def test_get_redis_client(self):
+        redis_valid_config = {"host": "localhost", "port": 6379, "db": 1}
+        redis_invalid_host = {"host": "1.1.1.1", "port": 6379, "db": 1}
+        redis_invalid_port = {"host": "localhost", "port": 63790, "db": 1}
+        redis_invalid_db = {"host": "localhost", "port": 6379, "db": 100}
         # pass
-        r_client = at.get_redis_client()
-        self.assertIsInstance(r_client, redis.StrictRedis)
+        self.assertIsInstance(at.get_redis_client(redis_valid_config), redis.StrictRedis)
         # fail
-        r_client = at.get_redis_client(host="1.1.1.1")
-        self.assertEqual(r_client, None)
-        r_client = at.get_redis_client(port=1234)
-        self.assertEqual(r_client, None)
-        r_client = at.get_redis_client(db=20)
-        self.assertEqual(r_client, None)
+        self.assertIsNone(at.get_redis_client(redis_invalid_host))
+        self.assertIsNone(at.get_redis_client(redis_invalid_port))
+        self.assertIsNone(at.get_redis_client(redis_invalid_db))
+
+    def test_generate_binary_string_randomly(self):
+        # pass
+        length = 100
+        self.assertEqual(len(at.generate_binary_string_randomly(length)), length)
+        # fail
+        length = -1
+        self.assertIsNone(at.generate_binary_string_randomly(length))
 
     def test_generate_attendance_randomly(self):
         # pass
-        self.assertTrue(at.generate_attendance_randomly(2011, 1, 1, 100))
+        self.assertTrue(at.generate_attendance_randomly(self.dates_valid[0], self.valid_number_user))
         # fail
-        self.assertFalse(at.generate_attendance_randomly(-2018, 1, 1, 100))
-        self.assertFalse(at.generate_attendance_randomly(2018, 15, 1, 100))
-        self.assertFalse(at.generate_attendance_randomly(2018, 1, 100, 100))
-        self.assertFalse(at.generate_attendance_randomly(2018, 1, 1, 0))
+        self.assertFalse(at.generate_attendance_randomly(self.date_invalid_year, self.valid_number_user))
+        self.assertFalse(at.generate_attendance_randomly(self.date_invalid_month, self.valid_number_user))
+        self.assertFalse(at.generate_attendance_randomly(self.date_invalid_day, self.valid_number_user))
+        self.assertFalse(at.generate_attendance_randomly(self.dates_valid[0], self.invalid_number_user))
 
     def test_get_attendance_a_day(self):
-        at.generate_attendance_randomly(2010, 10, 10, 100)
+        at.generate_attendance_randomly(self.dates_valid[0], self.valid_number_user)
         # pass
-        self.assertIsInstance(at.get_attendance_a_day(2010, 10, 10, 100), dict)
+        self.assertIsInstance(at.get_attendance_a_day(self.dates_valid[0], self.valid_number_user), dict)
         # fail
-        self.assertIsNone(at.get_attendance_a_day(2010, 10, 10, -1))
-        self.assertIsNone(at.get_attendance_a_day(12010, 10, 10, 100))
-        self.assertIsNone(at.get_attendance_a_day(2010, 15, 10, 100))
-        self.assertIsNone(at.get_attendance_a_day(2010, 10, 0, 100))
+        self.assertIsNone(at.get_attendance_a_day(self.dates_valid[0], self.invalid_number_user))
+        self.assertIsNone(at.get_attendance_a_day(self.date_invalid_year, self.valid_number_user))
+        self.assertIsNone(at.get_attendance_a_day(self.date_invalid_month, self.valid_number_user))
+        self.assertIsNone(at.get_attendance_a_day(self.date_invalid_day, self.valid_number_user))
 
     def test_get_attendance_consecutive_days(self):
-        NUMBER_USERS = 100
-        dates = [
-            {
-                "year": 2018,
-                "month": 11,
-                "day": 3
-            },
-            {
-                "year": 2018,
-                "month": 11,
-                "day": 4
-            }
-        ]
-        for date in dates:
-            at.generate_attendance_randomly(date["year"], date["month"], date["day"], NUMBER_USERS)
+        for date in self.dates_valid:
+            at.generate_attendance_randomly(date, self.valid_number_user)
         # pass
-        self.assertIsInstance(at.get_attendance_consecutive_days(dates[0], NUMBER_USERS), dict)
+        self.assertIsInstance(at.get_attendance_consecutive_days(self.dates_valid[0], self.valid_number_user), dict)
         # fail
-        self.assertIsNone(at.get_attendance_consecutive_days(dates[1], NUMBER_USERS))
-        self.assertIsNone(at.get_attendance_consecutive_days({"year": 20091, "month": 1, "day": 2}, NUMBER_USERS))
-        self.assertIsNone(at.get_attendance_consecutive_days({"year": 2009, "month": 21, "day": 2}, NUMBER_USERS))
-        self.assertIsNone(at.get_attendance_consecutive_days({"year": 2009, "month": 1, "day": 92}, NUMBER_USERS))
-        self.assertIsNone(at.get_attendance_consecutive_days({"year": 20091, "month": 1, "day": 1}, -100))
-
+        self.assertIsNone(at.get_attendance_consecutive_days(self.dates_valid[0], self.invalid_number_user))
+        self.assertIsNone(at.get_attendance_consecutive_days(self.dates_valid[1], self.valid_number_user))
+        self.assertIsNone(at.get_attendance_consecutive_days(self.date_invalid_year, self.valid_number_user))
+        self.assertIsNone(at.get_attendance_consecutive_days(self.date_invalid_month, self.valid_number_user))
+        self.assertIsNone(at.get_attendance_consecutive_days(self.date_invalid_day, self.valid_number_user))
 
 if __name__ == '__main__':
     unittest.main()
