@@ -161,31 +161,32 @@ if __name__ == '__main__':
         }
     ]
 
-    print("-------------------- generate attendance system data -------------------------------------")
+    print("\n_________________________ generate attendance system data ___________________________")
     for date in dates:
         generate_attendance_randomly(date=date,
                                      number_users=NUMBER_USERS)
 
-    print("------------------------ statistic attendance every day ----------------")
+    print("\n_________________________ statistic attendance each day _____________________________")
     for date in dates:
         result = get_attendance_a_day(date=date,
                                       number_users=NUMBER_USERS)
-        print('---------------- date: {}-{}-{}--------------'.format(date['year'], date['month'], date['day']))
+        print('-------------- date: {}-{}-{}-----------'.format(date['year'], date['month'], date['day']))
         if result:
-            print('counts presence: ', len(result["ids_presence"]))
+            print('counts of presence: ', len(result["ids_presence"]))
             print('ids presence: ', result["ids_presence"])
-            print('counts absence: ', len(result["ids_absence"]))
+            print('counts of absence: ', len(result["ids_absence"]))
             print('ids absence: ', result["ids_absence"])
             print("")
         else:
             print('There is no data')
 
-    print('-------------------statistic attendance 2 consecutive days ----------------------')
-    result = get_attendance_consecutive_days(dates[0], NUMBER_USERS)
+    print('\n__________________________ statistic attendance on 2 consecutive days ______________________')
+    result = get_attendance_consecutive_days(first_date=dates[0],
+                                             number_users=NUMBER_USERS)
     if result:
-        print('counts presence 2 consecutive days: ', len(result['ids_presence']))
-        print('ids presence 2 consecutive days: ', result['ids_presence'])
-        print('counts absence 2 consecutive days: ', len(result['ids_absence']))
-        print('ids absence 2 consecutive days: ', result['ids_absence'])
+        print('counts of presence on 2 consecutive days: ', len(result['ids_presence']))
+        print('user id present on 2 consecutive days: ', result['ids_presence'])
+        print('counts of absence on 2 consecutive days: ', len(result['ids_absence']))
+        print('user id absent on 2 consecutive days: ', result['ids_absence'])
     else:
         print("There is no data")
