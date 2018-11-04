@@ -15,7 +15,7 @@ To set status of user in a specific day using command:
 To get status of a user in a specific day using command:
     `redis.getbit(attendance:yyyy-mm-dd, user_id)`
 
-To improve performance of system, we can use lua script for get bit position based on value 1/0
+**Note:** With large counts of user (let say 1 million user), `getbit` will consume large amount of bandwitch, to improve performance of system, we can use lua script running in Redis server for get bit position based on value 0 or 1
 
 # Setup environment
 
