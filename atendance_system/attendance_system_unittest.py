@@ -1,7 +1,9 @@
+"""
+Author: Phung Xuan Anh
+"""
 import unittest
 import attendance_system as at
 import redis
-
 
 class UnittestAttendaceSystem(unittest.TestCase):
 
