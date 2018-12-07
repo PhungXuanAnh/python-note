@@ -7,7 +7,7 @@ from selenium.webdriver.common.keys import Keys
 chrome_option = ChromeOptions()
 # chrome_option.set_headless()
 
-driver = Chrome(executable_path='/home/xuananh/Downloads/chromedriver_linux64/chromedriver',
+driver = Chrome(executable_path='/home/xuananh/data/Downloads/chromedriver_linux64/chromedriver',
                 chrome_options=chrome_option)
 
 driver.maximize_window()

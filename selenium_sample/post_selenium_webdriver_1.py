@@ -3,7 +3,7 @@ from selenium.webdriver import ChromeOptions
 
 # set chrome driver and its options
 chrome_option = ChromeOptions()
-driver = Chrome(executable_path='/home/xuananh/Downloads/chromedriver_linux64/chromedriver',
+driver = Chrome(executable_path='/home/xuananh/data/Downloads/chromedriver_linux64/chromedriver',
                 chrome_options=chrome_option)
 
 # get website
