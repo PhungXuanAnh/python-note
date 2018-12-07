@@ -19,10 +19,10 @@ driver.find_element_by_xpath(".//td[3]/div[2]/a").click()
 driver.find_element_by_xpath(".//a[@href='/percent-calculator.html' and contains(text(),'Percentage Calculator')]").click()
 
 # enter value 10 in the first number of the percentage calculator
-driver.find_element_by_id('cpar1').send_keys('10')
+driver.find_element_by_id('cpar1').send_keys('123')
 
 # enter value 50 in the second number of the percentage calculator
-driver.find_element_by_id('cpar2').send_keys('50')
+driver.find_element_by_id('cpar2').send_keys('555')
 
 # click the calculate button
 driver.find_element_by_css_selector('input[value="Calculate"').click()
