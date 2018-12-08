@@ -2,7 +2,7 @@ import time
 from selenium.webdriver import Chrome
 from selenium.webdriver import ChromeOptions
 from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.common.action_chains import ActionChains, ActionBuilder
+from selenium.webdriver.common.action_chains import ActionChains
 
 
 url = "https://demos.devexpress.com/aspxeditorsdemos/ListEditors/MultiSelect.aspx"
@@ -17,9 +17,9 @@ driver.get(url)
 
 # set select mode to Multiple
 driver.find_element_by_id("ControlOptionsTopHolder_lbSelectionMode_B-1").click()
-time.sleep(1.5)
+time.sleep(0.5)
 driver.find_element_by_id("ControlOptionsTopHolder_lbSelectionMode_DDD_L_LBI1T0").click()
-time.sleep(3)
+time.sleep(1.5)
 
 # perform Multiple Select
 select = driver.find_element_by_id("ContentHolder_lbFeatures_LBT")

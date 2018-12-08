@@ -17,7 +17,11 @@ driver.get(url)
 
 # selecting an item from Drop Down list Box
 drop_down = Select(driver.find_element_by_id("ccompound"))
-drop_down.select_by_visible_text("continuously")
+drop_down.select_by_visible_text("monthly")
+
+# cach 2 de chon 1 item
+# driver.find_element_by_id("ccompound").click()
+# driver.find_element_by_xpath('//option[@value="monthly"]').click()
 
 # ban cung co the su dung cac phuong thuc sau:
 # drop_down.select_by_index(1)
@@ -26,3 +30,4 @@ drop_down.select_by_visible_text("continuously")
 print('Is Selected:  ', driver.find_element_by_id('ccompound').is_selected())
 print('Is Enabled:   ', driver.find_element_by_id('ccompound').is_enabled())
 print('Is Displayed: ', driver.find_element_by_id('ccompound').is_displayed())
+print('text:         ', drop_down.first_selected_option.text)
