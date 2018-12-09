@@ -3,6 +3,7 @@ import subprocess
 from selenium import webdriver
 from PIL import Image
 from cStringIO import StringIO
+import shutil
 
 
 def take_full_screenshot(driver, filename):
@@ -11,8 +12,9 @@ def take_full_screenshot(driver, filename):
     if not is_run:
         return
 
-    if os.path.exists('screenshots/' + filename):
-        return
+    image = 'screenshots/' + filename
+    if os.path.exists(image):
+        os.remove(image)
 
     verbose = 0
 
@@ -45,7 +47,7 @@ def take_full_screenshot(driver, filename):
         screenshot.paste(img, (0, offset))
         offset += img.size[1]
 
-    screenshot.save('screenshots/' + filename)
+    screenshot.save(image)
 
 
 def run_cmd(command):
@@ -54,12 +56,65 @@ def run_cmd(command):
 
 
 def save_page(filename):
-    if not os.path.exists('/home/xuananh/Downloads/' + filename + '.html'):
-        command = 'xdotool keydown ctrl; \
-                xdotool keydown s; \
-                xdotool keyup ctrl; \
-                xdotool keyup s; \
-                sleep 0.5; \
-                xdotool type {filename}; \
-                xdotool key Return'
-        run_cmd(command.format(filename=filename))
+    page_file = '/home/xuananh/Downloads/' + filename + '.html'
+    page_dir = '/home/xuananh/Downloads/' + filename + '_files'
+    if os.path.exists(page_file):
+        try:
+            os.remove(page_file)
+            shutil.rmtree(page_dir)
+        except:
+            pass
+
+    command = 'xdotool keydown ctrl; \
+            xdotool keydown s; \
+            xdotool keyup ctrl; \
+            xdotool keyup s; \
+            sleep 0.5; \
+            xdotool type {filename}; \
+            xdotool key Return'
+    run_cmd(command.format(filename=filename))
+
+
+def click_tiep_tuc(driver):
+    try:
+        btn = driver.find_element_by_xpath("//button[contains(text(), 'TIẾP TỤC')]")
+        return btn
+    except:
+        pass
+
+    try:
+        btn = driver.find_element_by_xpath("//button[contains(text(), 'Tiếp tục')]")
+        return btn
+    except:
+        pass
+
+    try:
+        btn = driver.find_element_by_xpath("//button[contains(text(), 'Tiếp Tục')]")
+        return btn
+    except:
+        pass
+
+    try:
+        btn = driver.find_element_by_xpath("//a[contains(text(), 'TIẾP TỤC')]")
+        return btn
+    except:
+        pass
+
+    try:
+        btn = driver.find_element_by_xpath("//a[contains(text(), 'Tiếp tục')]")
+        return btn
+    except:
+        pass
+
+    try:
+        btn = driver.find_element_by_xpath("//a[contains(text(), 'Tiếp Tục')]")
+        return btn
+    except:
+        pass
+
+    try:
+        btn = driver.find_element_by_link_text("TIẾP TỤC").click()
+        return btn
+    except:
+        pass
+        
