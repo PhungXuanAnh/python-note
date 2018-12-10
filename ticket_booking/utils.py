@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import os
 import subprocess
 from selenium import webdriver
@@ -117,4 +118,3 @@ def click_tiep_tuc(driver):
         return btn
     except:
         pass
-        

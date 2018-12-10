@@ -93,11 +93,11 @@ while not button_mua_ve:
     except:
         print('dang lay button mua ve 23')
 
-    try:
-        button_mua_ve = driver.find_element_by_link_text("MUA VÉ")
-        break
-    except:
-        print('dang lay button mua ve 31')
+    # try:
+    #     button_mua_ve = driver.find_element_by_link_text("MUA VÉ")
+    #     break
+    # except:
+    #     print('dang lay button mua ve 31')
 
     time.sleep(1)
     driver.refresh()
@@ -117,7 +117,7 @@ try:
     # drop_down.select_by_visible_text(gia_ve_value[configs["menh_gia_ve"]])
 except Exception as e:
     print('eeeeeeeeeeeeeeeeeeeeeeeeeeee 2.11')
-    print(e)
+    # print(e)
     # try:
     #     driver.find_element_by_link_text("CHỌN MỆNH GIÁ VÉ").click()
     #     driver.find_element_by_link_text(configs["menh_gia_ve"]).click()
@@ -133,7 +133,7 @@ try:
     drop_down.select_by_index(so_luong_ve[configs["so_luong_ve"]])
 except Exception as e:
     print('eeeeeeeeeeeeeeeeeeeeeeeeeeee 2.21')
-    print(e)
+    # print(e)
     # try:
     #     driver.find_element_by_link_text("CHỌN SỐ LƯỢNG VÉ").click()
     #     driver.find_element_by_link_text(configs["so_luong_ve"]).click()
