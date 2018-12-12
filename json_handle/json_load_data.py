@@ -28,7 +28,9 @@ with open(file_path, "r") as in_file:
     print(json.dumps(dict_data, indent=4, sort_keys=True))
 
 # Load the contents from the string variable
+
 parsed = json.loads(json_string)
+
 print(json.dumps(parsed, indent=4, sort_keys=True))
 
 

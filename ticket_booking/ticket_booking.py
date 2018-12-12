@@ -16,141 +16,78 @@ from selenium.webdriver.common.action_chains import ActionChains
 
 import utils
 
-gia_ve_value = {
-    "200": "200,000",
-    "350": "350,000",
-    "500": "500,000",
-    "600": "600,000",
-}
-
-gia_ve_index = {
-    "200": 1,
-    "350": 2,
-    "500": 3,
-    "600": 4,
-}
-
-so_luong_ve = {
-    "1": "01",
-    "2": "02"
-}
-
 with open('configs.json', "r") as in_file:
     configs = json.load(in_file)
     print(json.dumps(configs, indent=4, sort_keys=True))
 
-url = "https://www.vebongdaonline.vn/"
-# url = "https://vnexpress.net/"
-chrome_path = configs['duong_dan_den_file_chrome']
-# chrome driver download from link: https://chromedriver.storage.googleapis.com/index.html?path=2.44/
+# url = "https://www.vebongdaonline.vn"
+url = "https://www.vebongdaonline.vn/bookTicket"
+# url = "file:///home/xuananh/2-chon-thong-tin-ve-khong-dang-nhap/HE%CC%A3%CC%82%20THO%CC%82%CC%81NG%20%C4%90A%CC%A3%CC%86T%20VE%CC%81%20ONLINE.html"
+# url = "file:///home/xuananh/2-chon-thong-tin-ve-khong-dang-nhap(chinh-sua)/HE%CC%A3%CC%82%20THO%CC%82%CC%81NG%20%C4%90A%CC%A3%CC%86T%20VE%CC%81%20ONLINE.html"
+# url = "file:///home/xuananh/2-chon-thong-tin-ve-he-thong-dang-ban/H%E1%BB%86%20TH%E1%BB%90NG%20%C4%90%E1%BA%B6T%20V%C3%89%20ONLINE.html"
 
 chrome_option = ChromeOptions()
-driver = Chrome(executable_path=chrome_path, chrome_options=chrome_option)
+driver = Chrome(executable_path=configs['duong_dan_den_file_chrome'], chrome_options=chrome_option)
 
 # firefox_option = FirefoxOptions()
 # driver = Firefox(executable_path="/home/xuananh/data/Downloads/geckodriver-v0.23.0-linux64/geckodriver")
 
 driver.maximize_window()
+driver.implicitly_wait(1)
 driver.get(url)
 
-# =========== BUOC 1 chon tran dau =================================
+# driver.find_element_by_xpath('//input[@class="btn_muave"]').click()
 
-button_mua_ve = None
-while not button_mua_ve:
+thong_bao_ban_xu_ly = "dang ban"
+while thong_bao_ban_xu_ly:
     try:
-        button_mua_ve = driver.find_element_by_xpath("//button[contains(text(), 'Mua vé')]")
-        break
+        # thong_bao_ban_xu_ly = driver.find_element_by_link_text("Hệ thống đang bận xử lý. Quý khách vui lòng quay trở lại sau ít phút. Rất xin lỗi Quý khách về sự bất tiện này.")
+        thong_bao_ban_xu_ly = driver.find_element_by_xpath("//p[contains(text(), 'Hệ thống đang bận xử lý')]")
     except:
-        print('dang lay button mua ve 11')
-
-    try:
-        button_mua_ve = driver.find_element_by_xpath("//button[contains(text(), 'MUA VÉ')]")
-        break
-    except:
-        print('dang lay button mua ve 12')
-
-    try:
-        button_mua_ve = driver.find_element_by_xpath("//button[contains(text(), 'Mua Vé')]")
-        break
-    except:
-        print('dang lay button mua ve 13')
-
-    try:
-        button_mua_ve = driver.find_element_by_xpath("//a[contains(text(), 'Mua vé')]")
-        break
-    except:
-        print('dang lay button mua ve 21')
-
-    try:
-        button_mua_ve = driver.find_element_by_xpath("//a[contains(text(), 'MUA VÉ')]")
-        break
-    except:
-        print('dang lay button mua ve 22')
-
-    try:
-        button_mua_ve = driver.find_element_by_xpath("//a[contains(text(), 'Mua Vé')]")
-        break
-    except:
-        print('dang lay button mua ve 23')
-
-    # try:
-    #     button_mua_ve = driver.find_element_by_link_text("MUA VÉ")
-    #     break
-    # except:
-    #     print('dang lay button mua ve 31')
-
-    time.sleep(1)
+        thong_bao_ban_xu_ly = None
+    # print(thong_bao_ban_xu_ly)
+    print('he thong dan ban xy ly')
     driver.refresh()
 
-button_mua_ve.click()
-utils.take_full_screenshot(driver, 'homepage.png')
-utils.save_page('homepage')
-
-# =========== BUOC 2 lua chon thong tin ve =========================
-utils.take_full_screenshot(driver, 'thong-tin-ve.png')
-utils.save_page('thong_tin_ve')
-# ----------- chon menh gia ve -------------------------------
-try:
-    # drop_down = Select(driver.find_element_by_id("chon-menh-gia-ve"))
-    drop_down = Select(driver.find_element_by_xpath("//option[contains(text(), 'Chọn mệnh giá')]/.."))
-    drop_down.select_by_index(gia_ve_index[configs["menh_gia_ve"]])
-    # drop_down.select_by_visible_text(gia_ve_value[configs["menh_gia_ve"]])
-except Exception as e:
-    print('eeeeeeeeeeeeeeeeeeeeeeeeeeee 2.11')
-    # print(e)
     # try:
-    #     driver.find_element_by_link_text("CHỌN MỆNH GIÁ VÉ").click()
-    #     driver.find_element_by_link_text(configs["menh_gia_ve"]).click()
-    # except Exception as e:
-    #     print('eeeeeeeeeeeeeeeeeeeeeeeeeeee 2.12')
-    #     print(e)
+    #     # thong_bao_ban_xu_ly = driver.find_element_by_link_text("Hệ thống đang bận xử lý. Quý khách vui lòng quay trở lại sau ít phút. Rất xin lỗi Quý khách về sự bất tiện này.")
+    #     thong_bao_ban_xu_ly = driver.find_element_by_xpath("//p[contains(text(), 'Hệ thống đang bận xử lý')]")
+    # except:
+    #     thong_bao_ban_xu_ly = None
+    # # print(thong_bao_ban_xu_ly)
+    # print('he thong dan ban xy ly')
+    # driver.refresh()
+
+# <h3>
+# 										Đã xảy ra lỗi
+# 									</h3>
+print('================================================== xong buoc 1')
+
+# ----------- chon menh gia ve -------------------------------
+menh_gia = Select(driver.find_element_by_id("selectPrice"))
+# menh_gia.select_by_value("600000")
+# if menh_gia.first_selected_option.text.encode('utf-8') == " Chọn mệnh giá ":
+menh_gia.select_by_value("500000")
+if menh_gia.first_selected_option.text.encode('utf-8') == " Chọn mệnh giá ":
+    menh_gia.select_by_value("350000")
+    if menh_gia.first_selected_option.text.encode('utf-8') == " Chọn mệnh giá ":
+        menh_gia.select_by_value("200000")
 
 # ----------- chon so luong ve -------------------------------
-try:
-    # drop_down = Select(driver.find_element_by_id("chon-so-luong-ve"))
-    drop_down = Select(driver.find_element_by_xpath("//option[contains(text(), '01')]/.."))
-    # drop_down.select_by_visible_text(configs["so_luong_ve"])
-    drop_down.select_by_index(so_luong_ve[configs["so_luong_ve"]])
-except Exception as e:
-    print('eeeeeeeeeeeeeeeeeeeeeeeeeeee 2.21')
-    # print(e)
-    # try:
-    #     driver.find_element_by_link_text("CHỌN SỐ LƯỢNG VÉ").click()
-    #     driver.find_element_by_link_text(configs["so_luong_ve"]).click()
-    # except Exception as e:
-    #     print('eeeeeeeeeeeeeeeeeeeeeeeeeeee 2.22')
-    #     print(e)
+so_luong = Select(driver.find_element_by_id("seatSelect"))
+so_luong.select_by_value("2")
 
 # ----------- click TIẾP TỤC -------------------------------
-utils.click_tiep_tuc(driver).click()
+driver.find_element_by_id("btnSubmit").click()
+
+print('================================================== xong buoc 2')
 
 # =========== BUOC 2.1 mua ve ma khong can dang nhap ===============
-utils.take_full_screenshot(driver, 'chon-dang-nhap-hoac-khong.png')
-utils.save_page('chon_dan_nhap_hoac_khong')
-utils.click_tiep_tuc(driver).click()
+driver.find_element_by_id("btnSubmit").click()
+
+print('================================================== xong buoc 2.1')
 
 # =========== BUOC 3 xac nhan thong tin thanh toan =================
-utils.save_page('thong_tin_thanh_toan')
 # ----------- nhập thông tin thanh toán ---------------------------
 # driver.find_element_by_link_text("Địa chỉ email").send_keys(configs["email"])
 # driver.find_element_by_link_text("Họ tên").send_keys(configs["ho_ten"])
@@ -167,13 +104,12 @@ driver.find_element_by_xpath("input[@placeholder='021345678']").send_keys(config
 # driver.find_element_by_xpath("input[@id='phoneNumber']").send_keys(configs["dien_thoai"])
 # driver.find_element_by_xpath("input[@id='identifyNumber']").send_keys(configs["cmnd_or_can_cuoc"])
 
-# ----------- chọn hình thức nhận vé ------------------------------
-driver.find_element_by_link_text("Nhận vé tại Liên đoàn bóng đã Việt Nam (VFF)").click()
-# ----------- chọn hình thức thanh toán ---------------------------
-driver.find_element_by_link_text("Thanh toán bằng mã VNPAY-QR").click()
-# ----------- xác nhận thông tin ----------------------------------
-driver.find_element_by_link_text("Tôi đã đọc và đồng ý tuân theo điều khoản").click()
+driver.find_element_by_xpath("//label[contains(text(), 'Nhận vé tại Liên đoàn bóng đã Việt Nam (VFF)')]").click()
+driver.find_element_by_xpath("//label[contains(text(), 'Thanh toán bằng mã VNPAY-QR')]").click()
+# driver.find_element_by_link_text("Tôi đã đọc và đồng ý tuân theo điều khoản").click()
+driver.find_element_by_xpath("//label[contains(text(), 'Tôi đã đọc và đồng ý')]").click()
 
-utils.take_full_screenshot(driver, 'thong-tin-thanh-toan.png')
-utils.click_tiep_tuc(driver).click()
+# driver.find_element_by_id("btnSubmit").click()
+print('================================================== xong buoc 3')
+
 # =========== BUOC 4 thanh toan online, cai nay nguoi lam ==========

@@ -3,13 +3,14 @@ import logging
 import os
 import json
 
-LOG_DIR = 'logs'
-if not os.path.exists(LOG_DIR):
-    os.makedirs(LOG_DIR)
 
 with open('/home/xuananh/Dropbox/Work/Other/slack-token-api-key.json', "r") as in_file:
     SLACK_API_KEY = json.load(in_file)['phungxuananh']
 
+
+LOGGING_SLACK_API_KEY = ""
+LOGGING_SLACK_CHANNEL = "#general"
+LOG_DIR = 'logs'
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -27,7 +28,7 @@ LOGGING = {
             'class': 'logging.StreamHandler',
             'formatter': 'verbose'
         },
-        'app-file': {
+        'app.DEBUG': {
             'level': 'DEBUG',
             'class': 'logging.handlers.RotatingFileHandler',
             'formatter': 'verbose',
@@ -35,7 +36,7 @@ LOGGING = {
             'maxBytes': 1 * 1024,  # 1Kb       #100 * 1024 * 1024,  # 100Mb
             'backupCount': 3,
         },
-        'app-error-file': {
+        'app.ERROR': {
             'level': 'ERROR',
             'class': 'logging.handlers.RotatingFileHandler',
             'formatter': 'verbose',
@@ -43,53 +44,24 @@ LOGGING = {
             'maxBytes': 1 * 1024,  # 1Kb       #100 * 1024 * 1024,  # 100Mb
             'backupCount': 3,
         },
-        'thirdparty-app-request-file': {
-            'level': 'INFO',
-            'class': 'logging.handlers.RotatingFileHandler',
-            'formatter': 'verbose',
-            'filename': LOG_DIR + '/thirdparty-app.request.log',
-            'maxBytes': 1 * 1024,  # 1Kb       #100 * 1024 * 1024,  # 100Mb
-            'backupCount': 3,
-        },
-        'thirdparty-app-statistic-file': {
-            'level': 'INFO',
-            'class': 'logging.handlers.RotatingFileHandler',
-            'formatter': 'verbose',
-            'filename': LOG_DIR + '/thirdparty-app.statistic.log',
-            'maxBytes': 1 * 1024,  # 1Kb       #100 * 1024 * 1024,  # 100Mb
-            'backupCount': 3,
-        },
-        'slack-error': {
+        'slack.ERROR': {
             'level': 'ERROR',
-            'api_key': SLACK_API_KEY,
+            'api_key': LOGGING_SLACK_API_KEY,
             'class': 'slacker_log_handler.SlackerLogHandler',
-            'channel': '#general'
-        },
-        'slack-info': {
-            'level': 'INFO',
-            'api_key': SLACK_API_KEY,
-            'class': 'slacker_log_handler.SlackerLogHandler',
-            'channel': '#general'
+            'channel': LOGGING_SLACK_CHANNEL
         },
     },
     'loggers': {
         'app': {
-            'handlers': ['app-file', 'console', 'app-error-file', 'slack-error'],
-            'propagate': False,
-            'level': 'INFO',
-        },
-        'thirdparty-app.request': {
-            'handlers': ['thirdparty-app-request-file', 'console', 'slack-error'],
-            'propagate': False,
-            'level': 'INFO',
-        },
-        'thirdparty-app.statistic': {
-            'handlers': ['thirdparty-app-statistic-file', 'console', 'slack-error'],
+            'handlers': ['console', 'app.DEBUG', 'app.ERROR', 'slack.ERROR'],
             'propagate': False,
             'level': 'INFO',
         },
     }
 }
+
+if not os.path.exists(LOG_DIR):
+    os.makedirs(LOG_DIR)
 
 dictConfig(LOGGING)
 
@@ -99,8 +71,8 @@ print(logging.Logger.manager.loggerDict)
 print('--------------------------------------------------------')
 
 logger_app = logging.getLogger('app')
-logger_thirdparty_app_request = logging.getLogger('thirdparty-app.request')
-logger_thirdparty_app_statistic = logging.getLogger('thirdparty-app.statistic')
+logger_thirdparty_app_request = logging.getLogger('app')
+logger_thirdparty_app_statistic = logging.getLogger('app')
 
 logger_app.error('aaaaaaaaaaaaaaaaaaa')
 logger_thirdparty_app_request.error('bbbbbbbbbbbbbbbbb')

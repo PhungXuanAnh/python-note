@@ -1,3 +1,4 @@
+#!/usr/bin/python
 import subprocess
 import threading
 from flask import Flask, jsonify, abort, make_response, request, url_for
