@@ -1,6 +1,6 @@
 {
     "python.pythonPath": ".venv/python3/bin/python",
-    "python.linting.pep8Args": [
-        "--ignore=E302,E402,E501",
-    ],
+    // "python.linting.pep8Args": [
+    //     "--ignore=E302,E402,E501",
+    // ],
 }
