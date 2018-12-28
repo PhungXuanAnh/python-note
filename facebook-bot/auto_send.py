@@ -4,4 +4,5 @@ ACCESS_TOKEN = 'EAAfpwrZCIZBzMBAJf8ulaGYZCr0CN7H1hGpptm9hNJEZBtn4dY6FXdg8Ov0fGfB
 
 bot = Bot(ACCESS_TOKEN)
 
-bot.send_text_message(recipient_id='1773609542745814', message='bbbbbbbb')
+# bot.send_text_message(recipient_id='1773609542745814', message='bbbbbbbb')
+bot.send_text_message(recipient_id='238373056793324', message='peo')
