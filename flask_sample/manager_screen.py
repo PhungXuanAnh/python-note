@@ -1,13 +1,14 @@
 #!/usr/bin/python
-import subprocess
-import threading
-from flask import Flask, jsonify, abort, make_response, request, url_for
-from response_function import response_200
 import sys
 import time
 from os.path import abspath, join, dirname
+
 sys.path.append(abspath(join(dirname(__file__), '..')))
+
 from time_sample import time_rest
+import subprocess
+import threading
+from flask import Flask, jsonify, abort, make_response, request, url_for
 
 app = Flask(__name__)
 
@@ -37,7 +38,12 @@ def not_found(error):
 
 @app.route('/screen/unlock', methods=['GET'])
 def unlock_screen():
-    threading.Thread(target=kill_time_rest, args=[]).start()
+    # threading.Thread(target=kill_time_rest, args=[]).start()
+
+    command = 'gnome-screensaver-command -d ; xdotool mousemove 100 100 ; xdotool mousemove 200 200'
+    subprocess.Popen(
+        command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+
     return jsonify({'servers': 'da nhan'})
 
 
@@ -61,14 +67,14 @@ def kill_time_rest():
 
 
 if __name__ == '__main__':
-    allow_run('yes')
-    t_working = 1200
-    t_short_break = 20
-    t_long_break = 300
-    time_rest.logging_config()
+    # allow_run('yes')
+    # t_working = 1200
+    # t_short_break = 20
+    # t_long_break = 300
+    # time_rest.logging_config()
 
-    time_rest_t = threading.Thread(target=time_rest.run_time_break, args=[
-                                   t_working, t_long_break, t_short_break])
-    time_rest_t.start()
+    # time_rest_t = threading.Thread(target=time_rest.run_time_break, args=[
+    #                                t_working, t_long_break, t_short_break])
+    # time_rest_t.start()
 
     app.run(host='0.0.0.0', port=6688, debug=True)
