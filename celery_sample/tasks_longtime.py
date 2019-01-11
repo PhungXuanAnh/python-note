@@ -1,4 +1,4 @@
-from celery_sample.celery import app
+from celery_declared import app
 import time
 
 

@@ -5,7 +5,7 @@ from celery import Celery
 #              backend='rpc://',
 #              include=['test_celery.tasks'])
 
-app = Celery('task_1',
+app = Celery('task_name_1',
              broker='amqp://guest@localhost//',
              backend='rpc://',
-             include=['celery_sample.tasks'])
+             include=['tasks_longtime'])
