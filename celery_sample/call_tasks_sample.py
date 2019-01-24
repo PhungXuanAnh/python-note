@@ -1,4 +1,4 @@
-from tasks_longtime import longtime_add
+from tasks_sample import longtime_add
 import time
 
 if __name__ == '__main__':

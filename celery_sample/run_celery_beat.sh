@@ -1,0 +1,1 @@
+celery beat -A tasks_sample --loglevel=info

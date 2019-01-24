@@ -1,0 +1,1 @@
+celery worker -A tasks_sample --loglevel=info
