@@ -1,0 +1,1 @@
+celery worker -A tasks_longtime --loglevel=info
