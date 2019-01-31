@@ -1,0 +1,1 @@
+watchdog    # this for autoreload in development celery app

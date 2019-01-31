@@ -1,1 +1,1 @@
-celery worker -A tasks_sample --loglevel=info
+watchmedo auto-restart -d . -p '*.py' -- celery worker -A tasks_sample --loglevel=info

@@ -1,1 +1,1 @@
-celery beat -A tasks_sample --loglevel=info
+watchmedo auto-restart -d . -p '*.py' -- celery beat -A tasks_sample --loglevel=info
