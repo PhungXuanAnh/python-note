@@ -20,10 +20,10 @@ def print_hello():
 @app.on_after_configure.connect
 def setup_periodic_tasks(sender, **kwargs):
     # Calls test('hello') every 2 seconds.
-    sender.add_periodic_task(2.0, test.s('hello'), name='add every 10')
+    sender.add_periodic_task(2.0, test.s(' ------- hello'), name='add every 10')
 
     # Calls test('world') every 3 seconds
-    sender.add_periodic_task(3.0, test.s('world'), expires=10)
+    sender.add_periodic_task(3.0, test.s(' ------- world'), expires=10)
 
     # Executes every Monday morning at 7:30 a.m.
     sender.add_periodic_task(
