@@ -28,3 +28,15 @@ docker run -d --name mysql-sqlalchemy-tutorial \
          --character-set-server=utf8 \
          --collation-server=utf8_unicode_ci
 ```
+
+# Cấu trúc thư mục
+
+[config.py](config.py): chứa các config để kết nối đến db server
+[models.py](models.py): chứa các định nghĩa về model
+[main.py](main.py): chứa các hàm thao tác với db, gồm tạo data, clean data...
+
+
+# Cách test
+- Chạy hàm [main.py](main.py)
+- Chạy create db trước
+- Bỏ comment các hàm muốn test rồi chạy

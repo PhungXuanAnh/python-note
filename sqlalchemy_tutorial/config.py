@@ -27,6 +27,7 @@ POSTGRES_URL = "postgresql+psycopg2://{user}:{password}@{host}/{database}".forma
     database=DB
 )
 
+
 def init_session(server_type='mysql', server_echo=True):
     if server_type == 'mysql':
         engine = create_engine(MYSQL_URL, encoding='utf-8', echo=server_echo)
@@ -39,4 +40,4 @@ def init_session(server_type='mysql', server_echo=True):
     Session = sessionmaker()
     Session.configure(bind=engine)
 
-    return Session
+    return Session, engine
