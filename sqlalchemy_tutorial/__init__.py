@@ -1,1 +1,0 @@
-# This is example show how to save an class instance to database and reload to use it
