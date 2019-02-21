@@ -1,12 +1,13 @@
+# -*- coding: utf-8 -*-
 '''
- Execute the next statement with 'n' (next)
- Repeating the last debugging command with ENTER
- Quitting it all with 'q' (quit)
- Printing the value of variables with 'p' (print)
- Turning off the (Pdb) prompt with 'c' (continue)
- Seeing where you are with 'l' (list)
- 
- Stepping into subroutines with 's' (step into subroutine or sub function)
+Hướng dẫn:
+ 'n' (next): chạy lệnh tiếp theo
+ ENTER: lặp lại lệnh debug trước đó
+ 'q' (quit): tắt tất cả, cả pdb và chương trình đang chạy
+ 'p' (print): in ra gía trị của biến
+ 'c' (continue): tắt dấu nhắc của Pdb và chạy tiếp
+ 'l' (list): xem đang chạy đến dòng nào trong code
+ 's' (step) nhảy vào trong hàm con hoặc thủ tục con
  
  https://www.youtube.com/watch?v=P0pIW5tJrRM
  
@@ -36,6 +37,13 @@ def set_trace():
     ForkedPdb().set_trace()
 
 
+def sub_func():
+    a = 1
+    b = 2
+    c = a + b
+    print(c)
+
+
 def worker():
     i = 0
     set_trace()
@@ -44,15 +52,15 @@ def worker():
 
 
 if __name__ == '__main__':
-    p1 = multiprocessing.Process(target=worker)
-    p1.start()
+    # p1 = multiprocessing.Process(target=worker)
+    # p1.start()
 
     a = "aaa"
 
-#     import pdb
-#     pdb.set_trace()
+    set_trace()
 
     b = "bbb"
     c = "ccc"
     final = a + b + c
     print(final)
+    print(sub_func())
