@@ -1,3 +1,4 @@
+from operator import itemgetter
 import operator
 import json
 
@@ -26,14 +27,26 @@ list1 = [
     {'name': 'Cart', 'age': 11},
     {'name': 'Aart', 'age': 14}
 ]
+
 newlist = sorted(list1, key=lambda k: k['name'])
 print(newlist)
 newlist = sorted(list1, key=lambda k: k['age'])
 print(newlist)
-from operator import itemgetter
-newlist = sorted(list1, key=itemgetter('name')) 
+newlist = sorted(list1, key=itemgetter('name'))
 print(newlist)
-newlist = sorted(list1, key=itemgetter('age')) 
+newlist = sorted(list1, key=itemgetter('age'))
 print(newlist)
 newlist = sorted(list1, key=itemgetter('age'), reverse=True)
 
+dict1 = {
+    "17292": 5000,
+    "sigma_v2": 870,
+    "sigma_v4": 230,
+    "sigma_v3": 245,
+    "sigma_v2": 870,
+    "sigma_v10": 878,
+    "27291": 50,
+    "sigma_v1": 4100
+}
+sorted_by_value = sorted(dict1.items(), key=lambda kv: kv[1])
+print(sorted_by_value)
