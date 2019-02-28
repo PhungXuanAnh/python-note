@@ -1,6 +1,7 @@
 from operator import itemgetter
 import operator
 import json
+from collections import OrderedDict
 
 x = {'value2': 2, 'value3': 4, 'value3': 3, 'value1': 1, 'value0': 0}
 
@@ -38,6 +39,8 @@ newlist = sorted(list1, key=itemgetter('age'))
 print(newlist)
 newlist = sorted(list1, key=itemgetter('age'), reverse=True)
 
+print('==========================================================')
+
 dict1 = {
     "17292": 5000,
     "sigma_v2": 870,
@@ -48,5 +51,19 @@ dict1 = {
     "27291": 50,
     "sigma_v1": 4100
 }
-sorted_by_value = sorted(dict1.items(), key=lambda kv: kv[1])
-print(sorted_by_value)
+sorted_by_value_descending = sorted(dict1.items(), key=lambda kv: kv[1], reverse=True)
+sorted_by_value_ascending = sorted(dict1.items(), key=lambda kv: kv[1])
+print(sorted_by_value_descending)
+print(sorted_by_value_ascending)
+
+print('==========================================================')
+
+
+d = {'123': {'key1': 3, 'key2': 11, 'key3': 3},
+     '124': {'key1': 6, 'key2': 56, 'key3': 6},
+     '125': {'key1': 7, 'key2': 44, 'key3': 9},
+     }
+d_ascending = OrderedDict(sorted(d.items(), key=lambda kv: kv[1]['key3']))
+d_descending = OrderedDict(sorted(d.items(), key=lambda kv: kv[1]['key3'], reverse=True))
+print(d_ascending)
+print(d_descending)
