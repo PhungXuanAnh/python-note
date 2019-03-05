@@ -1,4 +1,3 @@
-#!/usr/bin/python
 import sys
 import time
 from os.path import abspath, join, dirname
@@ -20,25 +19,9 @@ def allow_run(data):
         f.write(data)
 
 
-def make_publish_server(server):
-    new_server = {}
-    for field in server:
-        if field == 'id':
-            new_server['uri'] = url_for(
-                'get_server', server_id=server['id'], _external=True)
-        else:
-            new_server[field] = server[field]
-    return new_server
-
-
-@app.errorhandler(404)
-def not_found(error):
-    return make_response(jsonify({'error': 'Not found'}), 404)
-
-
 @app.route('/screen/unlock', methods=['GET'])
 def unlock_screen():
-    # threading.Thread(target=kill_time_rest, args=[]).start()
+    threading.Thread(target=kill_time_rest, args=[]).start()
 
     command = 'gnome-screensaver-command -d ; xdotool mousemove 100 100 ; xdotool mousemove 200 200'
     subprocess.Popen(
@@ -61,20 +44,17 @@ def kill_time_rest():
         command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
     allow_run('yes')
-    time_rest_t = threading.Thread(target=time_rest.run_time_break, args=[
-                                   t_working, t_long_break, t_short_break])
+    time_rest_t = threading.Thread(target=time_rest.run_time_break, args=[t_working, t_break])
     time_rest_t.start()
 
 
 if __name__ == '__main__':
-    # allow_run('yes')
-    # t_working = 1200
-    # t_short_break = 20
-    # t_long_break = 300
-    # time_rest.logging_config()
+    allow_run('yes')
+    t_working = 1200
+    t_break = 180
+    time_rest.logging_config()
 
-    # time_rest_t = threading.Thread(target=time_rest.run_time_break, args=[
-    #                                t_working, t_long_break, t_short_break])
-    # time_rest_t.start()
+    time_rest_t = threading.Thread(target=time_rest.run_time_break, args=[t_working, t_break])
+    time_rest_t.start()
 
     app.run(host='0.0.0.0', port=6688, debug=True)

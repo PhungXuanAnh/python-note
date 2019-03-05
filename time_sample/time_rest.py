@@ -9,9 +9,6 @@ from os import environ
 import multiprocessing
 from logging.handlers import RotatingFileHandler
 
-pid_file = '/tmp/time_break.pid'
-count_short_break = 1
-
 
 def is_run():
     with open('/tmp/time_rest.is_run', 'r') as f:
@@ -66,7 +63,8 @@ def working_time(times):
     now = datetime.datetime.now()
 
     while is_run() and (now - start).seconds < times:
-        logging.info("working time: {}".format((now - start).seconds))
+        import os
+        logging.info("{}: working time: {}".format(os.getpid(), (now - start).seconds))
 
         if is_screensaver_active():
             start = now
@@ -76,24 +74,14 @@ def working_time(times):
         now = datetime.datetime.now()
 
 
-def break_time(time_long_break, time_short_break):
-    global count_short_break
-
-    if count_short_break == 3:
-        count_short_break = 1
-        times = time_long_break
-        move_mouse()
-    else:
-        count_short_break = count_short_break + 1
-        times = time_short_break
-
+def break_time(time_to_break):
     lock_screen()
     active_screen()
 
     start = datetime.datetime.now()
     now = datetime.datetime.now()
 
-    while is_run() and (now - start).seconds < times:
+    while is_run() and (now - start).seconds < time_to_break:
         logging.info("break time: {}".format((now - start).seconds))
         time.sleep(1)
         now = datetime.datetime.now()
@@ -102,21 +90,6 @@ def break_time(time_long_break, time_short_break):
             lock_screen()
             active_screen()
             now = start
-
-    logging.info(count_short_break)
-
-
-def check_script_running():
-    pid_file = '/tmp/time_break.pid'
-    if os.path.exists(pid_file):
-        old_pid = open(pid_file, 'r').read().strip()
-        if os.path.exists('/proc/' + str(old_pid)) and old_pid != '' and old_pid != None:
-            logging.error('time_break is running with pid {}'.format(old_pid))
-            sys.exit(1)
-        else:
-            open(pid_file, 'w+').write(str(os.getpid()))
-    else:
-        open(pid_file, 'w+').write(str(os.getpid()))
 
 
 def logging_config():
@@ -138,20 +111,16 @@ def logging_config():
     logging.getLogger('').addHandler(my_handler)
 
 
-def run_time_break(time_to_work, time_long_break, time_short_break):
+def run_time_break(time_to_work, time_to_break):
     while is_run():
         working_time(times=time_to_work)
-        break_time(time_long_break, time_short_break)
+        break_time(time_to_break)
 
 
 if __name__ == '__main__':
     # lock_screen()
     # time.sleep(5)
-    # while True:
-    #     time.sleep(1)
-    #     if is_screensaver_active():
-    #         move_mouse(1, 1)
-    # ===========================================================
+    # # ===========================================================
 
     # move_mouse()
 
