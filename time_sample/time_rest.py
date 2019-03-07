@@ -88,6 +88,7 @@ def break_time(time_to_break):
 
         if not is_screensaver_active():
             lock_screen()
+            time.sleep(5)
             active_screen()
             now = start
 
@@ -118,11 +119,13 @@ def run_time_break(time_to_work, time_to_break):
 
 
 if __name__ == '__main__':
+    # while True:
+    #     print(is_screensaver_active())
+    #     time.sleep(1)
+
     # lock_screen()
     # time.sleep(5)
     # # ===========================================================
-
-    # move_mouse()
 
     # t_working = 1200
     # t_short_break = 20
