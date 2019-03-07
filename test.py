@@ -1,10 +1,21 @@
-import random
+def hoc_sinh(arg1, *args, kw1=None, **kwargs):
+    print("arg1: ", arg1)
+    print("kw1: ", kw1)
+    
+    for arg in args:
+        print(arg)
+    
+    for key, value in kwargs.items():
+        print("{}: {}".format(key, value))
+        
+        
+ARGS = ("arg6", "arg7", "arg8")
+KWARGS = {
+    "kw6": 8,
+    "kw7": 9,
+    "kw8": 10
+}
 
-NUMBER_BITS = -1
-
-for i in range(0, 16):
-    a = random.randint(0, 2**NUMBER_BITS - 1)
-    _binary = format(a, 'b')
-    binary = "0" * (NUMBER_BITS - len(_binary))
-    binary = binary + _binary
-    print(a, binary, format(a, 'b'))
+hoc_sinh('arg1', *ARGS, **KWARGS)
+print('-----------------------------------')
+hoc_sinh('arg1', *ARGS, 'KW1', **KWARGS)

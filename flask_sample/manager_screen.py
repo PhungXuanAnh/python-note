@@ -57,4 +57,4 @@ if __name__ == '__main__':
     time_rest_t = threading.Thread(target=time_rest.run_time_break, args=[t_working, t_break])
     time_rest_t.start()
 
-    app.run(host='0.0.0.0', port=6688, debug=True)
+    app.run(host='0.0.0.0', port=6688, debug=False)
