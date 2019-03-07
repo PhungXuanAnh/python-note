@@ -1,3 +1,4 @@
 *.pyc
 .venv
 .ipynb_checkpoints/*
+test.py
