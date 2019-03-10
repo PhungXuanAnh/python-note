@@ -4,3 +4,7 @@ celery
 falcon
 falcon-auth
 gunicorn
+flask
+selenium
+watchdog    # this for autoreload in development celery app
+celery==4.2.1
