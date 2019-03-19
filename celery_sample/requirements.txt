@@ -1,2 +1,0 @@
-watchdog    # this for autoreload in development celery app
-celery==4.2.1
