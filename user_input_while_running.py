@@ -13,9 +13,9 @@ new_name = ''
 # Start a loop that will run until the user enters 'quit'.
 while new_name != 'quit':
     # Ask the user for a name.
-    new_name = raw_input("Please tell me someone I should know, or enter 'quit': ")
+    new_name = input("Please tell me someone I should know, or enter 'quit': ")
 
-    print (new_name)
+    print(new_name)
     # Add the new name to our list.
     if new_name != 'quit':
         names.append(new_name)
