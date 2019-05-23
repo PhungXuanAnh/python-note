@@ -15,10 +15,12 @@ def get(url):
 
 
 def async_get(*urls):
-    t = min(len(urls), cpu_count()*2-1)
-    pool = ThreadPool(t)
+
+    number_thread = min(len(urls), cpu_count() * 2 - 1)
+
+    pool = ThreadPool(number_thread)
     results = pool.map_async(get, urls)
-    results.wait() # blocking
+    results.wait()  # blocking
     return results.get()
 
 
@@ -31,15 +33,15 @@ def sync_get(*urls):
 
 def main(argv):
     print("fetching {}hronously".format(argv))
-    
+
     # urls to fetch
     urls = [
         "https://google.com",
         "https://bing.com",
         "https://duckduckgo.com",
         "https://yahoo.com",
-    ] * 5 # 20 fetches
-    
+    ] * 5  # 20 fetches
+
     # choose the getter func
     getter = (
         async_get if argv == "async" else sync_get

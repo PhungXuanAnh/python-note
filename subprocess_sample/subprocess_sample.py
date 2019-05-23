@@ -25,12 +25,12 @@ def run_command_print_output1(command):
                          )
     while True:
         out = p.stdout.readline()
-        if out == '' and p.poll() != None:
+        if out == b'' and p.poll() != None:
             break
         if out != '':
-            sys.stdout.write(out)
-            sys.stdout.flush()
-#             print output.strip()
+            # sys.stdout.write(out)
+            # sys.stdout.flush()
+            print (out.strip())
     logging.info(
         "return-code = {} after run command '{}'".format(p.poll(), command))
 
@@ -72,15 +72,15 @@ def run_command_background(command):
     process = subprocess.Popen(shlex.split(command), shell=True,
                                stdout=subprocess.PIPE,
                                stderr=subprocess.PIPE)
-    print process.pid
-    print process.poll()
-    print process.returncode
+    print (process.pid)
+    print (process.poll())
+    print (process.returncode)
 
 
 def run_command_with_timeout1(command, timeout):
     start = datetime.datetime.now()
 
-    print start
+    print (start)
     logging.info("Running command '{}' ...".format(command))
     p = subprocess.Popen(shlex.split(command), shell=True,
                          stdout=subprocess.PIPE,
@@ -159,19 +159,20 @@ if __name__ == '__main__':
     cmd = "echo %s | sudo -S %s" % (mypass, cmd1)
 
     cmd = 'gateone'
+    cmd = 'du -csh /home/xuananh/data/Downloads/PythonBook'
 #     cmd = 'ping 8.8.8.8'
 #     run_command_background(cmd)
 
-#     run_command_print_output1(cmd)
+    # run_command_print_output1(cmd)
 
 #     run_command_with_timeout(cmd, 10)
 
-#     result = run_command_return_output(cmd)
-#     result = run_command_with_timeout3(cmd, 5)
-#     print("return-code = {}".format(result['return-code']))
-#     print("logs-message = {}".format(result['logs-message']))
+    # result = run_command_return_output(cmd)
+    # result = run_command_with_timeout3(cmd, 5)
+    # print("return-code = {}".format(result['return-code']))
+    # print("logs-message = {}".format(result['logs-message']))
 
     result = run_command_return_output3(cmd)
     print("return-code = {}".format(result['return-code']))
-    print("stdout = {}".format(result['stdout']))
+    print("stdout = {}".format(result['stdout'].decode('utf-8')))
     print("stderr = {}".format(result['stderr']))
