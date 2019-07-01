@@ -15,4 +15,3 @@ print(uuid.uuid4().hex)
 print(type(uuid.uuid4().hex))
 
 print(uuid.uuid1().hex)
-
