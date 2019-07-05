@@ -17,9 +17,37 @@ kafka_stream = KafkaUtils.createStream(
     topics={'facebook-items': 1}
 )
 
-lines = kafka_stream.map(lambda x: x)
-lines.count()
-lines.pprint()
+
+def parsed_item(items):
+    # fields = line.split(',')
+    print('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
+    print(type(items))
+    print(items)
+    present = 1
+    results = []
+    for item in items:
+        if not item:
+            continue
+        item = json.loads(item)
+        post_like = item['post_like']
+        post_view = item['post_view']
+        post_comment = item['post_comment']
+        post_share = item['post_share']
+        # tags = item['tags']
+        # for tag in tags.split(' '):
+        #     if tag == '':
+        #         continue
+        #     results.append((tag, [post_like, post_view, post_comment, post_share, present]))
+        results.append((post_like, post_view, post_comment, post_share, present))
+    return tuple(results)
+
+
+item = kafka_stream.map(parsed_item)
+item.count()
+item.pprint()
+streaming_context.start()
+streaming_context.awaitTermination()
+
 
 # ==================== Message processing
 # parse the inbound message as json
@@ -29,6 +57,7 @@ parsed.pprint()
 
 streaming_context.start()
 streaming_context.awaitTermination()
+streaming_context.stop()
 
 my_lines = sc.textFile('branlytic1.csv')
 my_lines.take(3)
