@@ -3,6 +3,7 @@ from pyspark import SparkConf, SparkContext
 from pyspark.sql import SQLContext
 from pyspark.streaming.kafka import KafkaUtils
 from pyspark.streaming import StreamingContext
+from pymongo import MongoClient
 
 
 # create spark context
@@ -39,19 +40,29 @@ def parsed_item(items):
 
 
 item = kafka_stream.map(parsed_item)
-# item.countByValue().pprint()
 item.pprint()
 
 
-def saveCoord(rdd):
-    rdd.foreach(lambda rec: open("/home/xuananh/data/Temp/result.txt", "a").write(str(rec) + '\n'))
+def save_mongo(data):
+    client = MongoClient('localhost', 27017)
+    db = client['brandlytic-spark']
+    collectionNm = 'facebook'
+    collection = db[collectionNm]
+    collection.insert_one({"result": data})
+    client.close()
 
-item.foreachRDD(saveCoord)
+
+def save_data(rdd):
+    if not rdd.isEmpty():
+        # rdd.foreach(lambda rec: open("/home/xuananh/data/Temp/result.txt", "a").write(str(rec) + '\n'))
+        rdd.foreach(lambda rec: save_mongo(rec))
+    return rdd
+
+
+item.foreachRDD(save_data)
 
 streaming_context.start()
-streaming_context.awaitTermination()
-
-
+streaming_context.awaitTermination(timeout=60)
 streaming_context.stop()
 
 

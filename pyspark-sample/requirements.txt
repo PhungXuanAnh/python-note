@@ -1,1 +1,2 @@
-pyspark
+pyspark==2.4.3
+pymongo==3.7.1

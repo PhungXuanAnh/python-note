@@ -2,3 +2,5 @@
 .venv
 .ipynb_checkpoints/*
 test.py
+metastore_db
+*.log
