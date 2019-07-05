@@ -19,10 +19,6 @@ kafka_stream = KafkaUtils.createStream(
 
 
 def parsed_item(items):
-    # fields = line.split(',')
-    print('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
-    print(type(items))
-    print(items)
     present = 1
     results = []
     for item in items:
@@ -43,56 +39,27 @@ def parsed_item(items):
 
 
 item = kafka_stream.map(parsed_item)
-item.count()
+# item.countByValue().pprint()
 item.pprint()
+
+
+def saveCoord(rdd):
+    rdd.foreach(lambda rec: open("/home/xuananh/data/Temp/result.txt", "a").write(str(rec) + '\n'))
+
+item.foreachRDD(saveCoord)
+
 streaming_context.start()
 streaming_context.awaitTermination()
+
+
+streaming_context.stop()
 
 
 # ==================== Message processing
-# parse the inbound message as json
-parsed = kafka_stream.map(lambda v: json.loads(v[1]))
-parsed.count()
-parsed.pprint()
-
-streaming_context.start()
-streaming_context.awaitTermination()
-streaming_context.stop()
-
-my_lines = sc.textFile('branlytic1.csv')
-my_lines.take(3)
-
-posts = my_lines.map(lambda x: x.split(','))
-posts.take(2)
-print(json.dumps(posts.take(2), indent=4, sort_keys=True))
-
-
-def parsed_line(line):
-    fields = line.split(',')
-    post_like = int(fields[1])
-    post_view = int(fields[2])
-    post_comment = int(fields[3])
-    post_share = int(fields[4])
-    tags = fields[8]
-    present = 1
-    results = []
-    for tag in tags.split(' '):
-        if tag == '':
-            continue
-        results.append((tag, post_like, post_view, post_comment, post_share, present))
-    return tuple(results)
-
-
-parsed_res = my_lines.map(parsed_line)
-parsed_res.take(3)
-print(json.dumps(parsed_res.take(2), indent=4, sort_keys=True))
-
-
 tags = parsed_res.flatMap(lambda x: x)
 tags.take(3)
 
 post_df = tags.toDF(['tag', 'post_like', 'post_view', 'post_comment', 'post_share', 'present'])
-
 
 post_df.show(10)
 post_df.show(2, truncate=True)
