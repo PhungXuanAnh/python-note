@@ -1,9 +1,9 @@
 import json
 from kafka import KafkaConsumer
 
-topic = 'my-topic'
+topic = 'my-topic1'
 # topic = 'facebook-items'
-group_id = 'my-group'
+group_id = 'my-group1'
 kafka_servers = ['localhost:9092']
 
 # # -----------------------------------------------------
@@ -16,14 +16,16 @@ kafka_servers = ['localhost:9092']
 # # consume earliest available messages, don't commit offsets
 consumer = KafkaConsumer(topic,
                          auto_offset_reset='earliest',
+                         value_deserializer=lambda m: json.loads(m.decode('ascii')),
                          enable_auto_commit=False,
-                         bootstrap_servers=kafka_servers)
+                         bootstrap_servers=kafka_servers,
+                         group_id=group_id)
 
 # -----------------------------------------------------
 # consume json messages
-consumer = KafkaConsumer(topic,
-                         value_deserializer=lambda m: json.loads(m.decode('ascii')),
-                         bootstrap_servers=kafka_servers)
+# consumer = KafkaConsumer(topic,
+#                          value_deserializer=lambda m: json.loads(m.decode('ascii')),
+#                          bootstrap_servers=kafka_servers)
 
 # -----------------------------------------------------
 # consume msgpack

@@ -43,6 +43,7 @@ if __name__ == '__main__':
             }
         ]
     }
+    # NOTE: command to gen google token: gcloud auth print-access-token
     headers = {
         'Authorization': 'Bearer ya29.c.El9KB4UwAdvFIg4nVF5SXHci2INZctcjaTu_XAqWvgVHlZSknZEA0eErJneVAVxHRo6gl-gpvqoWaHQY1vfM_UgRN8pf5BWPlnm81kXAW2Uls6MNzMs_0wpRVNjlgTbs7w',
         'Content-Type': 'application/json'
