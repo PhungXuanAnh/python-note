@@ -170,12 +170,8 @@ Outputs:
   RestAPIID:
     Description: Rest API ID
     Value: !Ref HelloWorldApi
-  HealthcheckApiUrl:
-    Description: URL of your API endpoint
-    Value: !Join
-      - ''
-      - - https://
-        - !Ref HelloWorldApi
-        - '.execute-api.'
-        - !Ref 'AWS::Region'
-        - '.amazonaws.com/prod'
+  HelloWorldApi:
+    Description: "API Gateway endpoint URL for dev stage for Hello World function"
+    Value: !Sub "${HelloWorldApi}.execute-api.${AWS::Region}.amazonaws.com"
+    Export:
+      Name: !Sub MultiRegionHelloWorld-${AWS::Region}
