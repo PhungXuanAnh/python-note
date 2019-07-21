@@ -1,34 +1,13 @@
-# aws cloudformation package \
-#     --template-file helloworld-sam.yaml \
-# 	--output-template-file /tmp/cf-helloworld-sam.yaml \
-# 	--s3-bucket <your bucket in us-east-1> \
-# 	--region us-east-1
-
-# aws cloudformation deploy \
-#     --template-file /tmp/cf-helloworld-sam.yaml \
-# 	--stack-name multiregionhelloworld \
-# 	--capabilities CAPABILITY_IAM \
-# 	--region us-east-1
-
-# aws cloudformation package \
-#     --template-file helloworld-sam.yaml \
-# 	--output-template-file /tmp/cf-helloworld-sam.yaml \
-# 	--s3-bucket <your bucket in us-west-2> \
-# 	--region us-west-2
-
-# aws cloudformation deploy \
-#     --template-file /tmp/cf-helloworld-sam.yaml \
-# 	--stack-name multiregionhelloworld \
-# 	--capabilities CAPABILITY_IAM \
-# 	--region us-west-2
-
 
 StackName=dev-SHM-TestMultiRegion
 Sydney=ap-southeast-2
 Singapo=ap-southeast-1
+Region1TargetDomainName=d-j6ein3i4kd.execute-api.ap-southeast-1.amazonaws.com
+Region2TargetDomainName=d-m7ull8gzaj.execute-api.ap-southeast-2.amazonaws.com
+HostedZoneId=Z3NEZJXMZLM0JX
+MultiregionDomainName=devapi.inslifeguard.com
 
 package-sydney:
-	# find . -regex '^.*\(__pycache__\|\.py[co]\)$' -delete
 	sam package \
 	    --template-file helloworld-sam.yaml \
 	    --output-template-file packaged.yaml \
@@ -37,7 +16,6 @@ package-sydney:
 		--region ${Sydney}
 
 package-singapo:
-	# find . -regex '^.*\(__pycache__\|\.py[co]\)$' -delete
 	sam package \
 	    --template-file helloworld-sam.yaml \
 	    --output-template-file packaged.yaml \
@@ -50,20 +28,29 @@ deploy-sydney:
 	    --template-file packaged.yaml \
 		--stack-name ${StackName} \
 		--capabilities CAPABILITY_IAM \
-		--region ${Sydney} \
-		--debug	
+		--region ${Sydney}
 
 deploy-singapo:
 	sam deploy \
 	    --template-file packaged.yaml \
 		--stack-name ${StackName} \
 		--capabilities CAPABILITY_IAM \
-		--region ${Singapo} \
-		--debug
+		--region ${Singapo}
 
 create-sydney: package-sydney deploy-sydney
+	REGION=${Sydney} python base_path_mapping.py create
+
+undeploy-sydney:
+	aws cloudformation delete-stack --stack-name ${StackName} --region ${Sydney}
 
 create-singapo: package-singapo deploy-singapo
+	REGION=${Singapo} python base_path_mapping.py create
+
+create-base-path-singapo:
+	REGION=${Singapo} python base_path_mapping.py create
+
+undeploy-singapo:
+	aws cloudformation delete-stack --stack-name ${StackName} --region ${Singapo}
 
 test-singapo:
 	curl https://o5o4l439qa.execute-api.ap-southeast-1.amazonaws.com/prod/helloworld
@@ -71,13 +58,6 @@ test-singapo:
 test-sydney:
 	curl https://ncbf3cwdy8.execute-api.ap-southeast-2.amazonaws.com/prod/helloworld
 
-
-Region1HealthEndpoint=o5o4l439qa.execute-api.ap-southeast-1.amazonaws.com
-Region2HealthEndpoint=ncbf3cwdy8.execute-api.ap-southeast-2.amazonaws.com
-Region1Endpoint=d-j6ein3i4kd.execute-api.ap-southeast-1.amazonaws.com
-Region2Endpoint=d-m7ull8gzaj.execute-api.ap-southeast-2.amazonaws.com
-HostedZoneId=Z3NEZJXMZLM0JX
-MultiregionEndpoint=devapi.inslifeguard.com
 
 package-dns:
 	sam package \
@@ -91,15 +71,18 @@ deploy-dns:
 	    --template-file packaged.yaml \
 		--stack-name ${StackName}-dns \
 		--capabilities CAPABILITY_IAM \
-		--debug \
-		--parameter-overrides "Region1HealthEndpoint=${Region1HealthEndpoint}" \
-		                      "Region2HealthEndpoint=${Region2HealthEndpoint}" \
-                              "Region1Endpoint=${Region1Endpoint}" \
-                              "Region2Endpoint=${Region2Endpoint}" \
+		--parameter-overrides "Region1TargetDomainName=${Region1TargetDomainName}" \
+                              "Region2TargetDomainName=${Region2TargetDomainName}" \
                               "HostedZoneId=${HostedZoneId}" \
-                              "MultiregionEndpoint=${MultiregionEndpoint}"
+                              "MultiregionDomainName=${MultiregionDomainName}"
 
 create-dns: package-dns deploy-dns
+undeploy-dns:
+	aws cloudformation delete-stack --stack-name ${StackName}-dns
+
 
 test-dns:
 	curl https://devapi.inslifeguard.com/v1/helloworld/
+
+validate:
+	sam validate -t helloworld-dns.yaml
