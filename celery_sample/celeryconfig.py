@@ -58,8 +58,8 @@ LOGGING = {
             'level': 'DEBUG',
             'class': 'logging.handlers.RotatingFileHandler',
             'formatter': 'verbose',
-            'filename': LOG_DIR + '/celery.log',
-            'maxBytes': 1024 * 1024,  # 1Kb       #100 * 1024 * 1024,  # 100Mb
+            'filename': LOG_DIR + '/celery.DEBUG.log',
+            'maxBytes': 1024 * 1024,  # 100 * 1024 * 1024,  # 100Mb
             'backupCount': 3,
         },
         'celery.ERROR': {
@@ -67,7 +67,7 @@ LOGGING = {
             'class': 'logging.handlers.RotatingFileHandler',
             'formatter': 'verbose',
             'filename': LOG_DIR + '/celery.ERROR.log',
-            'maxBytes': 1024 * 1024,  # 1Kb       #100 * 1024 * 1024,  # 100Mb
+            'maxBytes': 1024 * 1024,  # 100 * 1024 * 1024,  # 100Mb
             'backupCount': 3,
         },
         'slack.ERROR': {
