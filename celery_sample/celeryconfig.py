@@ -83,5 +83,10 @@ LOGGING = {
             'propagate': False,
             'level': 'INFO',
         },
+        'root': {
+            'handlers': ['console', 'celery.DEBUG', 'celery.ERROR', 'slack.ERROR'],
+            'propagate': False,
+            'level': 'INFO',
+        }
     }
 }
