@@ -1,6 +1,7 @@
 from celery import Celery
 from celery.schedules import crontab
 
+
 app = Celery('task_name_1')
 
 app.config_from_object('celeryconfig')
@@ -16,3 +17,4 @@ app.conf.beat_schedule = {
         # 'args': (16, 16),
     },
 }
+

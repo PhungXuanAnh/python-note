@@ -1,20 +1,25 @@
 from celery_app import app
 import time
 from celery.schedules import crontab
+from celery.signals import setup_logging
+from celeryconfig import LOGGING
+import logging
+
+LOG = logging.getLogger('celery')
 
 
 @app.task
 def longtime_add(x, y):
-    print('long time task begins')
+    LOG.info('long time task begins')
     # sleep 5 seconds
     time.sleep(5)
-    print('long time task finished')
+    LOG.info('long time task finished')
     return x + y
 
 
 @app.task
 def print_hello():
-    print('=============================== Hello')
+    LOG.info('=============================== Hello')
 
 
 @app.on_after_configure.connect
@@ -34,4 +39,10 @@ def setup_periodic_tasks(sender, **kwargs):
 
 @app.task
 def test(arg):
-    print(arg)
+    LOG.info(arg)
+
+
+@setup_logging.connect
+def config_loggers(*args, **kwags):
+    from logging.config import dictConfig
+    dictConfig(LOGGING)
