@@ -167,6 +167,9 @@ Resources:
 
 
 Outputs:
+  GetHealthcheckFunctionName:
+    Description: Name of health check lambda function
+    Value: !Ref GetHealthcheck
   RestAPIID:
     Description: Rest API ID
     Value: !Ref HelloWorldApi

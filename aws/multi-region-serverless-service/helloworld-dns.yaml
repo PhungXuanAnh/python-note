@@ -24,7 +24,7 @@ Resources:
         Type: "HTTPS_STR_MATCH"
         SearchString: "ok"
         ResourcePath: "/prod/healthcheck"
-        FullyQualifiedDomainName: !ImportValue MultiRegionHelloWorld-ap-southeast-2
+        FullyQualifiedDomainName: !ImportValue MultiRegionHelloWorld-ap-southeast-1
         RequestInterval: 30
         FailureThreshold: 2
 

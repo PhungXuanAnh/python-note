@@ -11,7 +11,7 @@ logging.info(json.dumps(sys.path, indent=4, sort_keys=True))
 
 apigateway_name = "multiregion-helloworld"
 domain_name = os.environ['MultiregionDomainName']
-base_path = 'v1'
+base_path = os.environ['BasePath']
 region_name = os.environ['REGION']
 stage_name = 'prod'
 
