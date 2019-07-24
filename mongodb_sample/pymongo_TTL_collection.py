@@ -9,7 +9,7 @@ collection = db.my_TTL_collection
 timestamp = datetime.datetime.now()
 utc_timestamp = datetime.datetime.utcnow()
 
-collection.ensure_index("date", expireAfterSeconds=10)
+collection.create_index("date", expireAfterSeconds=5)
 
 collection.insert({'_id': 'session',
                    "date": timestamp,
@@ -20,5 +20,5 @@ collection.insert({'_id': 'utc_session',
                    "session": "test session"})
 
 # NOTE:
-# the utc_session will be deleted after around 10 seconds,
+# the utc_session will be deleted after around 5 seconds,
 # the other depending on your timezone
