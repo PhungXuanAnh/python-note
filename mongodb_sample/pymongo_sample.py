@@ -13,7 +13,8 @@ print("db['my_collection']: {}".format(db['my_collection']))
 # db.my_collection.insert_one({"x": 2}).inserted_id
 # db.my_collection.insert_one({"x": 3}).inserted_id
 
-print("get one document: {}".format(db.my_collection.find_one()))
+item = db.my_collection.find_one()
+print("get one document: {}".format(item['x']))
 
 print('get all document -----------------------------')
 for item in db.my_collection.find():
