@@ -3,8 +3,11 @@ import pymongo
 client = pymongo.MongoClient('localhost', 27017)
 
 db = client.test
-print(db.name)
-print(db.my_collection)
+# db = client['test']
+
+print("db.name: {}".format(db.name))
+print("db.my_collection: {}".format(db.my_collection))
+print("db['my_collection']: {}".format(db['my_collection']))
 
 # db.my_collection.insert_one({"x": 1}).inserted_id
 # db.my_collection.insert_one({"x": 2}).inserted_id
