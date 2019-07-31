@@ -1,4 +1,5 @@
 import socket
+import traceback
 
 
 def internet_is_connected(domain, port=80):
@@ -11,6 +12,7 @@ def internet_is_connected(domain, port=80):
         socket.create_connection((host, port), 2)
         return True
     except:
+        traceback.print_exc()
         return False
 
 
@@ -19,9 +21,10 @@ print(internet_is_connected("www.google.com"))
 
 def check_connection(host, port):
     try:
-        socket.create_connection((host, port), 2)
+        socket.create_connection((host, port), 10)
         return True
     except:
+        traceback.print_exc()
         return False
 
-print(check_connection('localhosta', 2181))
+print(check_connection('localhost', 2181))
