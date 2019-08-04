@@ -6,5 +6,4 @@ falcon-auth
 gunicorn
 flask
 selenium
-watchdog    # this for autoreload in development celery app
 kafka-python
