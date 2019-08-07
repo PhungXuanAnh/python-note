@@ -11,9 +11,9 @@ def sub1(r, name):
     pubsub.subscribe([channel1])
     for item in pubsub.listen():
         print('%s : %s' % (name, item))
-        if item['data'] == b'5':
+        if item['data'] == b'{"value": 5}':
             pubsub.unsubscribe()
-            return item['data']
+            return item['data'].decode()
 
 
 def sub2(r, name):
@@ -22,7 +22,7 @@ def sub2(r, name):
     while True:
         message = pubsub.get_message()
         print('%s : %s' % (name, message))
-        if message and message['data'] == b'5':
+        if message and message['data'] == b'{"value": 5}':
             break
         time.sleep(1)
     return message
@@ -34,3 +34,4 @@ Process(target=sub1, args=(r, 'reader1')).start()
 # result = sub2(r, 'reader2')
 result = sub1(r, 'reader11')
 print('result: {}'.format(result))
+print(type(result))

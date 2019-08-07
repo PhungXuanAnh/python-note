@@ -9,7 +9,7 @@ channel1 = 'test'
 
 def pub(r):
     for n in range(10):
-        r.publish(channel1, n)
+        r.publish(channel1, json.dumps({'value': n}))
         time.sleep(1)
 
     
