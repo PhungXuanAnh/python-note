@@ -13,6 +13,7 @@ import time
 import errno
 import stat
 import sys
+import re
 import argparse
 from termcolor import colored
 
@@ -439,9 +440,71 @@ def callback_color(filename, lines):
             print(line.decode())
         else:
             end_header = line.find(b'] :')
+            if not end_header:
+                end_header = line.find(b':')
             header = coloured(line[0:end_header + 1], color)
             line = line[end_header + 1:]
             print(header + line.decode())
+
+
+def callback_color1(filename, lines):
+
+    while lines:
+        line = lines.pop(0).rstrip()
+        line = line.decode()
+        if not line:
+            print('')
+            continue
+
+        level_len = 0
+        if line[0:7] == 'INFO   ':
+            line = line.replace('INFO', colored('INFO', 'green'))
+            level_len = len(colored('INFO', 'green'))
+        elif line[0:7] == 'WARNING':
+            line = line.replace('WARNING', colored('WARNING', 'yellow'))
+            level_len = len(colored('WARNING', 'green'))
+        elif line[0:7] == 'ERROR  ':
+            line = line.replace('ERROR', colored('ERROR', 'red'))
+            level_len = len(colored('ERROR', 'green'))
+        elif line[0:7] == 'DEBUG  ':
+            line = line.replace('DEBUG', colored('DEBUG', 'green'))
+            level_len = len(colored('DEBUG', 'green'))
+        elif line[0:9] == 'Traceback':
+            line = colored(line, 'red')
+            print(line)
+            continue
+        else:
+            print(line)
+            continue
+
+        log_time_len = 0
+        log_time = re.search(r'([0-9]+\-[0-9]+-[0-9]+ [0-9]+\:[0-9]+\:[0-9]+\,[0-9]+)', line)
+        if log_time:
+            log_time = log_time.group(1)
+            _log_time = colored(log_time, 'cyan')
+            log_time_len = len(_log_time)
+            line = line.replace(log_time, _log_time)
+
+        log_module_len = 0
+        log_module = re.search(r'([a-z]+?\_[a-z]+\.[a-z]+?\_[a-z]+\:[0-9]+)', line)
+        if log_module:
+            log_module = log_module.group(1)
+            _log_module = colored(log_module, 'blue')
+            log_module_len = len(_log_module)
+            line = line.replace(log_module, _log_module)
+
+        start_msg = level_len + log_time_len + log_module_len + 9
+        msg = line[start_msg:]
+        
+        numbers = re.findall(r'[0-9]+', msg)
+        numbers = set(numbers)
+        print(numbers)
+        for n in numbers:
+            msg = msg.replace(n, colored(n, 'red'))
+        
+        header = line[0:start_msg]
+
+        print(header + msg)
 
 
 def parse_cmdline():
@@ -480,7 +543,7 @@ if __name__ == "__main__":
     print(args.color)
 
     if args.color:
-        cb = callback_color
+        cb = callback_color1
     else:
         cb = callback
 

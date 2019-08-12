@@ -26,14 +26,13 @@ import logging, sys
 
 logging.basicConfig(
     level=logging.DEBUG,
-    format="[%(asctime)s] [%(module)s.%(funcName)s:%(lineno)d] %(levelname)s: %(message)s",
-    datefmt="%H:%M:%S", 
+    format="%(levelname)-7s [%(asctime)s] [%(module)s.%(funcName)s:%(lineno)d] : %(message)s",
+    datefmt="%H:%M:%S",
     stream=sys.stdout,
 #     filename="/media/xuananh/data/Temp/example.log",
     )
 
 logging.debug('aaaaaaaaaaaaa 2')
-
-
-
-
+logging.info('aaaaaaaaaaaaa 2')
+logging.error('aaaaaaaaaaaaa 2')
+logging.warning('aaaaaaaaaaaaa 2')

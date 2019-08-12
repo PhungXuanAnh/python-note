@@ -5,7 +5,8 @@ from kafka.errors import KafkaError
 
 topic = 'my-topic1'
 group_id = 'my-group1'
-kafka_servers = ['localhost:9092']
+# kafka_servers = ['localhost:9092']
+kafka_servers = ['167.71.198.165:9092']
 
 
 def on_send_success(record_metadata):
