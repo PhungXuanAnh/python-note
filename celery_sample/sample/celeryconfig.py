@@ -17,8 +17,8 @@ REDIS_URL = "redis://{host}:{port}".format(host=REDIS_HOST, port=REDIS_PORT)
 # result_backend = RABBITMQ_URL
 # result_backend = 'rpc://'
 
+result_backend = REDIS_URL + '/9'
 broker_url = REDIS_URL
-# result_backend = REDIS_URL
 
 imports = ('tasks_sample')
 
@@ -34,7 +34,7 @@ imports = ('tasks_sample')
 # result_expires = 30 * 60
 
 # ==================== LOGGING ===========================================
-LOGGING_SLACK_API_KEY = ""
+LOGGING_SLACK_API_KEY = "xoxp-549451712151-547783459137-548660706069-60fd705d0f10caf34259958f3f10d039"
 LOGGING_SLACK_CHANNEL = "#general"
 LOG_DIR = 'logs'
 LOGGING = {

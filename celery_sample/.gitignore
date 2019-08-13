@@ -1,3 +1,4 @@
 celerybeat-schedule
 celerybeat.pid
 logs/*
+sample/logs/*
