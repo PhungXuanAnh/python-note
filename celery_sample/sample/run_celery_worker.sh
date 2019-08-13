@@ -4,4 +4,6 @@ watchmedo auto-restart --directory . \
                         -- celery worker \
                             -A tasks_sample \
                             --loglevel=info \
-                            --concurrency=6
+                            --concurrency=6 \
+                            -n worker1@%h \
+                            -Q queue1,queue2

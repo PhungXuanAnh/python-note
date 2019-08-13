@@ -1,9 +1,19 @@
 from celery import group, chain, chord
-from tasks_sample import longtime_add, add, print_result, chord_task
+from tasks_sample import longtime_add, add, print_result, chord_task,\
+    print_result_queue1, print_result_queue2
 import time
 
 
 def sample_call_a_task():
+    result = add.apply_async([1, 1], queue='queue1')
+    time.sleep(1)
+    print('Task finished? ', result.ready())
+    print('Task result:   ', result.result)
+    print_result_queue1.delay('task from queue1')
+    print_result_queue2.delay('task from queue2')
+
+
+def sample_call_long_task():
     result = longtime_add.delay(1, 2)
     # at this time, our task is not finished, so it will return False
     print('Task finished? ', result.ready())
@@ -87,6 +97,7 @@ def test_max_concurrency_with_callback():
 
 if __name__ == '__main__':
     # sample_call_a_task()
+    # sample_call_long_task()
     # sample_callback()
     # sample_chains()
     # sample_group()

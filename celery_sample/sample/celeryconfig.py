@@ -34,8 +34,8 @@ imports = ('tasks_sample')
 # result_expires = 30 * 60
 
 # ==================== LOGGING ===========================================
-LOGGING_SLACK_API_KEY = "xoxp-549451712151-547783459137-548660706069-60fd705d0f10caf34259958f3f10d039"
-LOGGING_SLACK_CHANNEL = "#general"
+# LOGGING_SLACK_API_KEY = ""
+# LOGGING_SLACK_CHANNEL = "#general"
 LOG_DIR = 'logs'
 LOGGING = {
     'version': 1,
@@ -70,21 +70,21 @@ LOGGING = {
             'maxBytes': 1024 * 1024,  # 100 * 1024 * 1024,  # 100Mb
             'backupCount': 3,
         },
-        'slack.ERROR': {
-            'level': 'ERROR',
-            'api_key': LOGGING_SLACK_API_KEY,
-            'class': 'slacker_log_handler.SlackerLogHandler',
-            'channel': LOGGING_SLACK_CHANNEL
-        },
+        # 'slack.ERROR': {
+        #     'level': 'ERROR',
+        #     'api_key': LOGGING_SLACK_API_KEY,
+        #     'class': 'slacker_log_handler.SlackerLogHandler',
+        #     'channel': LOGGING_SLACK_CHANNEL
+        # },
     },
     'loggers': {
         'celery': {
-            'handlers': ['console', 'celery.DEBUG', 'celery.ERROR', 'slack.ERROR'],
+            'handlers': ['console', 'celery.DEBUG', 'celery.ERROR'],
             'propagate': False,
             'level': 'INFO',
         },
         'root': {
-            'handlers': ['console', 'celery.DEBUG', 'celery.ERROR', 'slack.ERROR'],
+            'handlers': ['console', 'celery.DEBUG', 'celery.ERROR'],
             'propagate': False,
             'level': 'INFO',
         }
