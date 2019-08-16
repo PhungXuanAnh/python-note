@@ -6,27 +6,28 @@ def parse_cmdline():
         description="Sample parser command line argument in python")
 
     parser.add_argument('-d', '--directory',
-                        metavar='DIRECTORY', 
+                        metavar='DIRECTORY',
                         dest='dir',
                         help='Enter a directory path',
                         required=True)
-    
+
     parser.add_argument('-f', '--file',
-                        metavar='FILE', 
+                        metavar='FILE',
                         dest='file',
                         help='Enter a file path',
                         required=True,
-                        type=file)
-    
+                        type=str)
+
     parser.add_argument('-n', '--number',
-                        metavar='NUMBER', 
+                        metavar='NUMBER',
                         dest='number',
                         help='Enter a number',
                         required=True,
-                        type=int)    
+                        type=int)
 
     args = parser.parse_args()
     return args
+
 
 if __name__ == '__main__':
 
@@ -35,3 +36,5 @@ if __name__ == '__main__':
     print(args.dir)
 
     print(args.file)
+
+    print(args.number)

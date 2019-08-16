@@ -50,8 +50,8 @@ def kill_time_rest():
 
 if __name__ == '__main__':
     allow_run('yes')
-    t_working = 1200
-    t_break = 180
+    t_working = 2700
+    t_break = 300
     time_rest.logging_config()
 
     time_rest_t = threading.Thread(target=time_rest.run_time_break, args=[t_working, t_break])

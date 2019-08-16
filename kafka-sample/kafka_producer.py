@@ -3,10 +3,12 @@ import traceback
 from kafka import KafkaProducer
 from kafka.errors import KafkaError
 
-topic = 'my-topic'
+# topic = 'my-topic'
 # topic = 'facebook-items'
+topic = '135_tommy'
 
-kafka_servers = ['localhost:9092']
+# kafka_servers = ['localhost:9092']
+kafka_servers = ['167.71.198.165:9092']
 
 # # -----------------------------------------------------
 # # # asynchronous by default
@@ -40,7 +42,7 @@ kafka_servers = ['localhost:9092']
 producer = KafkaProducer(
     bootstrap_servers=kafka_servers,
     value_serializer=lambda m: json.dumps(m).encode('ascii'))
-producer.send(topic, {'key': 'value'})
+producer.send(topic, dict({'crawler_status': 'closed'}))
 
 # produce asynchronously
 # producer = KafkaProducer(bootstrap_servers=kafka_servers)

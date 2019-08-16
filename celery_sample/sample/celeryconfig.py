@@ -17,8 +17,8 @@ REDIS_URL = "redis://{host}:{port}".format(host=REDIS_HOST, port=REDIS_PORT)
 # result_backend = RABBITMQ_URL
 # result_backend = 'rpc://'
 
+result_backend = REDIS_URL + '/9'
 broker_url = REDIS_URL
-# result_backend = REDIS_URL
 
 imports = ('tasks_sample')
 
@@ -34,8 +34,8 @@ imports = ('tasks_sample')
 # result_expires = 30 * 60
 
 # ==================== LOGGING ===========================================
-LOGGING_SLACK_API_KEY = ""
-LOGGING_SLACK_CHANNEL = "#general"
+# LOGGING_SLACK_API_KEY = ""
+# LOGGING_SLACK_CHANNEL = "#general"
 LOG_DIR = 'logs'
 LOGGING = {
     'version': 1,
@@ -70,21 +70,21 @@ LOGGING = {
             'maxBytes': 1024 * 1024,  # 100 * 1024 * 1024,  # 100Mb
             'backupCount': 3,
         },
-        'slack.ERROR': {
-            'level': 'ERROR',
-            'api_key': LOGGING_SLACK_API_KEY,
-            'class': 'slacker_log_handler.SlackerLogHandler',
-            'channel': LOGGING_SLACK_CHANNEL
-        },
+        # 'slack.ERROR': {
+        #     'level': 'ERROR',
+        #     'api_key': LOGGING_SLACK_API_KEY,
+        #     'class': 'slacker_log_handler.SlackerLogHandler',
+        #     'channel': LOGGING_SLACK_CHANNEL
+        # },
     },
     'loggers': {
         'celery': {
-            'handlers': ['console', 'celery.DEBUG', 'celery.ERROR', 'slack.ERROR'],
+            'handlers': ['console', 'celery.DEBUG', 'celery.ERROR'],
             'propagate': False,
             'level': 'INFO',
         },
         'root': {
-            'handlers': ['console', 'celery.DEBUG', 'celery.ERROR', 'slack.ERROR'],
+            'handlers': ['console', 'celery.DEBUG', 'celery.ERROR'],
             'propagate': False,
             'level': 'INFO',
         }
