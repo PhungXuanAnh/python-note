@@ -448,63 +448,67 @@ def callback_color(filename, lines):
 
 
 def callback_color1(filename, lines):
+    """
+    import logging
+    logging.basicConfig(level=logging.DEBUG,
+                        format='[%(levelname)1.1s %(asctime)s] %(message)s',)
+    012345678901234567890123456789012345678901234567890123456789
+    WARNING [2019-07-23 02:36:45,411] [connection.start:24] : Connected to redis://redis:6379//
+    ERROR   [2019-07-23 02:36:45,421] [mingle.sync:43] : mingle: searching for neighbors
+    INFO    [2019-07-23 02:35:51,892] [tasks.run_project:73] : {'node_name': 'scrapy', 'status': 'ok', 'jobid': '96752526acf211e997a70242c0a87003', 'spider': 'facebook'}
+    WARNING [2019-07-23 02:36:45,411] [connection.start:24] : Connected to redis://redis:6379//
 
+    """
+    INFO = 'INFO   '
+    ERROR = 'ERROR  '
+    WARNING = 'WARNING'
+    DEBUG = 'DEBUG  '
+    lv_len = 7
+    time_len = 33
     while lines:
         line = lines.pop(0).rstrip()
         line = line.decode()
         if not line:
             print('')
             continue
-
-        level_len = 0
-        if line[0:7] == 'INFO   ':
-            line = line.replace('INFO', colored('INFO', 'green'))
-            level_len = len(colored('INFO', 'green'))
-        elif line[0:7] == 'WARNING':
-            line = line.replace('WARNING', colored('WARNING', 'yellow'))
-            level_len = len(colored('WARNING', 'green'))
-        elif line[0:7] == 'ERROR  ':
-            line = line.replace('ERROR', colored('ERROR', 'red'))
-            level_len = len(colored('ERROR', 'green'))
-        elif line[0:7] == 'DEBUG  ':
-            line = line.replace('DEBUG', colored('DEBUG', 'green'))
-            level_len = len(colored('DEBUG', 'green'))
-        elif line[0:9] == 'Traceback':
-            line = colored(line, 'red')
-            print(line)
+        if line[0:lv_len] == INFO:
+            level = colored(INFO, 'green')
+        elif line[0:lv_len] == WARNING:
+            level = colored(WARNING, 'yellow')
+        elif line[0:lv_len] == ERROR:
+            level = colored(ERROR, 'red')
+        elif line[0:lv_len] == DEBUG:
+            level = colored(DEBUG, 'green')
+        elif line[0:lv_len] == 'Traceback':
+            level = colored(line, 'red')
             continue
         else:
             print(line)
             continue
 
-        log_time_len = 0
-        log_time = re.search(r'([0-9]+\-[0-9]+-[0-9]+ [0-9]+\:[0-9]+\:[0-9]+\,[0-9]+)', line)
-        if log_time:
-            log_time = log_time.group(1)
-            _log_time = colored(log_time, 'cyan')
-            log_time_len = len(_log_time)
-            line = line.replace(log_time, _log_time)
+        time = colored(line[lv_len + 1: time_len], 'cyan')
+        print(level + time)
 
-        log_module_len = 0
-        log_module = re.search(r'([a-z]+?\_[a-z]+\.[a-z]+?\_[a-z]+\:[0-9]+)', line)
-        if log_module:
-            log_module = log_module.group(1)
-            _log_module = colored(log_module, 'blue')
-            log_module_len = len(_log_module)
-            line = line.replace(log_module, _log_module)
+        # log_module_len = 0
+        # log_module = re.search(r'([a-z]+?\_[a-z]+\.[a-z]+?\_[a-z]+\:[0-9]+)', line)
+        # if log_module:
+        #     log_module = log_module.group(1)
+        #     _log_module = colored(log_module, 'blue')
+        #     log_module_len = len(_log_module)
+        #     line = line.replace(log_module, _log_module)
 
-        start_msg = level_len + log_time_len + log_module_len + 9
-        msg = line[start_msg:]
-        
-        numbers = re.findall(r'[0-9]+', msg)
-        numbers = set(numbers)
-        print(numbers)
-        for n in numbers:
-            msg = msg.replace(n, colored(n, 'red'))
-        
-        header = line[0:start_msg]
+        # start_msg = level_len + log_time_len + log_module_len + 9
+        # msg = line[start_msg:]
 
-        print(header + msg)
+        # numbers = re.findall(r'[0-9]+', msg)
+        # numbers = set(numbers)
+        # print(numbers)
+        # for n in numbers:
+        #     msg = msg.replace(n, colored(n, 'red'))
+
+        # header = line[0:start_msg]
+
+        # print(header + msg)
 
 
 def parse_cmdline():
