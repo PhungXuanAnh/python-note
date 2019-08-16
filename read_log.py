@@ -463,8 +463,10 @@ def callback_color1(filename, lines):
     ERROR = 'ERROR  '
     WARNING = 'WARNING'
     DEBUG = 'DEBUG  '
+
     lv_len = 7
     time_len = 33
+    
     while lines:
         line = lines.pop(0).rstrip()
         line = line.decode()
@@ -486,16 +488,15 @@ def callback_color1(filename, lines):
             print(line)
             continue
 
-        time = colored(line[lv_len + 1: time_len], 'cyan')
-        print(level + time)
+        time = colored(line[lv_len + 1: time_len + 1], 'cyan')
 
-        # log_module_len = 0
-        # log_module = re.search(r'([a-z]+?\_[a-z]+\.[a-z]+?\_[a-z]+\:[0-9]+)', line)
-        # if log_module:
-        #     log_module = log_module.group(1)
-        #     _log_module = colored(log_module, 'blue')
-        #     log_module_len = len(_log_module)
-        #     line = line.replace(log_module, _log_module)
+        log_module = re.search(r'(\[[a-z0-9_]+\.[a-z0-9_]+:[0-9]+\] \:)', line[time_len + 1:])
+        if log_module:
+            log_module = log_module.group(1)
+            log_module_len = len(log_module)
+            log_module = colored(log_module, 'blue')
+
+        print(level + time + log_module)
 
         # start_msg = level_len + log_time_len + log_module_len + 9
         # msg = line[start_msg:]
