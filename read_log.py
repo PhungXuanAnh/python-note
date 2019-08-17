@@ -354,100 +354,7 @@ def test():
     unittest.TextTestRunner(verbosity=2).run(test_suite)
 
 
-def callback(filename, lines):
-    for line in lines:
-        print(line)
-
-
-"""
-Text colors:
-    grey
-    red
-    green
-    yellow
-    blue
-    magenta
-    cyan
-    white
-Text highlights:
-    on_grey
-    on_red
-    on_green
-    on_yellow
-    on_blue
-    on_magenta
-    on_cyan
-    on_white
-Attributes:
-    bold
-    dark
-    underline
-    blink
-    reverse
-    concealed
-"""
-
-
-def get_level_color(level):
-    if level == 'WARNING':
-        return 'yellow'
-    elif level == 'ERROR ':
-        return 'red'
-    elif level == 'INFO   ' or level == 'DEBUG  ':
-        return 'green'
-    else:
-        return 'magenta'
-
-
-def coloured(s, color):
-    return '\033[1;%s%s\033[1;m' % (color, s.decode())
-
-
 def callback_color(filename, lines):
-    """
-    import logging
-    logging.basicConfig(level=logging.DEBUG,
-                        format='[%(levelname)1.1s %(asctime)s] %(message)s',)
-
-    WARNING [2019-07-23 02:36:45,411] [connection.start:24] : Connected to redis://redis:6379//
-    ERROR   [2019-07-23 02:36:45,421] [mingle.sync:43] : mingle: searching for neighbors
-    INFO    [2019-07-23 02:35:51,892] [tasks.run_project:73] : {'node_name': 'scrapy', 'status': 'ok', 'jobid': '96752526acf211e997a70242c0a87003', 'spider': 'facebook'}
-    WARNING [2019-07-23 02:36:45,411] [connection.start:24] : Connected to redis://redis:6379//
-
-    """
-    RED = "31m"
-    BLUE = "34m"
-    GREEN = "32m"
-    YELLOW = "33m"
-    MAGENTA = "35m"
-
-    while lines:
-        line = lines.pop(0).rstrip()
-        noheader = False
-        if line.startswith(b"E") or line.startswith(b"Traceback"):
-            color = RED
-        elif line.startswith(b"D"):
-            color = BLUE
-        elif line.startswith(b"I"):
-            color = GREEN
-        elif line.startswith(b"W"):
-            color = YELLOW
-        else:
-            noheader = True
-            color = MAGENTA
-
-        if noheader:
-            print(line.decode())
-        else:
-            end_header = line.find(b'] :')
-            if not end_header:
-                end_header = line.find(b':')
-            header = coloured(line[0:end_header + 1], color)
-            line = line[end_header + 1:]
-            print(header + line.decode())
-
-
-def callback_color1(filename, lines):
     """
     import logging
     logging.basicConfig(level=logging.DEBUG,
@@ -459,14 +366,14 @@ def callback_color1(filename, lines):
     WARNING [2019-07-23 02:36:45,411] [connection.start:24] : Connected to redis://redis:6379//
 
     """
-    INFO = 'INFO   '
-    ERROR = 'ERROR  '
-    WARNING = 'WARNING'
-    DEBUG = 'DEBUG  '
+    INFO = 'INFO    '
+    ERROR = 'ERROR   '
+    WARNING = 'WARNING '
+    DEBUG = 'DEBUG   '
 
-    lv_len = 7
+    lv_len = 8
     time_len = 33
-    
+
     while lines:
         line = lines.pop(0).rstrip()
         line = line.decode()
@@ -476,19 +383,19 @@ def callback_color1(filename, lines):
         if line[0:lv_len] == INFO:
             level = colored(INFO, 'green')
         elif line[0:lv_len] == WARNING:
-            level = colored(WARNING, 'yellow')
+            level = colored(WARNING, 'yellow', attrs=['bold'])
         elif line[0:lv_len] == ERROR:
-            level = colored(ERROR, 'red')
+            level = colored(ERROR, 'red', attrs=['bold'])
         elif line[0:lv_len] == DEBUG:
             level = colored(DEBUG, 'green')
         elif line[0:lv_len] == 'Traceback':
-            level = colored(line, 'red')
+            level = colored('Traceback', 'red', attrs=['bold'])
             continue
         else:
             print(line)
             continue
 
-        time = colored(line[lv_len + 1: time_len + 1], 'cyan')
+        time = colored(line[lv_len: time_len + 1], 'cyan')
 
         log_module = re.search(r'(\[[a-z0-9_]+\.[a-z0-9_]+:[0-9]+\] \:)', line[time_len + 1:])
         if log_module:
@@ -496,20 +403,13 @@ def callback_color1(filename, lines):
             log_module_len = len(log_module)
             log_module = colored(log_module, 'blue')
 
-        print(level + time + log_module)
+        msg = line[lv_len + time_len + log_module_len - 7:]
 
-        # start_msg = level_len + log_time_len + log_module_len + 9
-        # msg = line[start_msg:]
+        def repl(m):
+            return colored(m.group(1), 'yellow')
+        new_msg = re.sub(r'([ \n-.,_]([0-9]+)[ \n-.,_])', repl, msg)
 
-        # numbers = re.findall(r'[0-9]+', msg)
-        # numbers = set(numbers)
-        # print(numbers)
-        # for n in numbers:
-        #     msg = msg.replace(n, colored(n, 'red'))
-
-        # header = line[0:start_msg]
-
-        # print(header + msg)
+        print(level + time + log_module + new_msg)
 
 
 def parse_cmdline():
@@ -529,32 +429,19 @@ def parse_cmdline():
                         help='Enter a number of line to read',
                         type=int)
 
-    parser.add_argument('-c', '--color',
-                        metavar='Bool',
-                        dest='color',
-                        help='Highligh color or not',
-                        type=bool)
-
     args = parser.parse_args()
     return args
 
 
 if __name__ == "__main__":
-    # LogWatcher.tail('foo.log', 10)
 
     args = parse_cmdline()
     print(args.input)
     print(args.lines)
-    print(args.color)
-
-    if args.color:
-        cb = callback_color1
-    else:
-        cb = callback
 
     if args.lines:
-        watcher = LogWatcher(args.input, cb, tail_lines=args.lines)
+        watcher = LogWatcher(args.input, callback_color, tail_lines=args.lines)
     else:
-        watcher = LogWatcher(args.input, cb)
+        watcher = LogWatcher(args.input, callback_color)
 
     watcher.loop()
