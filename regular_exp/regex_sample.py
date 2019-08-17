@@ -12,7 +12,7 @@ if matchObj:
 else:
     print("No match!!")
 
-print('--------------------------------------------------------')    
+print('--------------------------------------------------------')
 
 # https://www.facebook.com/officialdoda/posts/320666585359581
 # https://www.facebook.com/officialdoda/posts/2038010436244229
@@ -33,6 +33,18 @@ print("findall: ", re.findall(r'story_fbid=([0-9]+)&id|/(\d+)[/?]?', str1))
 str1 = '/pages_reaction_units/more/?page_id=390567570966109&cursor=%7B%22card_id%22%3A%22page_photos%22%2C%22has_next_page%22%3Atrue%7D&surface=www_pages_home&unit_count=8&referrer'
 print("sub: ", re.sub(r'&unit_count=[0-9]+&', '&unit_count=100&', str1))
 
+a = 'foo'
+b = 'bar'
+text = 'find a replacement for me [[:a:]] and [[:b:]]'
+desired_output = 'find a replacement for me foo and bar'
 
 
+def repl(m):
+    contents = m.group(1)
+    if contents == 'a':
+        return a
+    if contents == 'b':
+        return b
 
+
+print(re.sub('\[\[:(.+?):\]\]', repl, text))
