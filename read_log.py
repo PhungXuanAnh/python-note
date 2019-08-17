@@ -381,15 +381,15 @@ def callback_color(filename, lines):
             print('')
             continue
         if line[0:lv_len] == INFO:
-            level = colored(INFO, 'green')
+            level = colored(INFO, 'green', attrs=['bold', 'reverse'])
         elif line[0:lv_len] == WARNING:
-            level = colored(WARNING, 'yellow', attrs=['bold'])
+            level = colored(WARNING, 'yellow', attrs=['bold', 'reverse'])
         elif line[0:lv_len] == ERROR:
-            level = colored(ERROR, 'red', attrs=['bold'])
+            level = colored(ERROR, 'red', attrs=['bold', 'blink', 'reverse'])
         elif line[0:lv_len] == DEBUG:
-            level = colored(DEBUG, 'green')
+            level = colored(DEBUG, 'blue', attrs=['bold', 'reverse'])
         elif line[0:lv_len] == 'Traceback':
-            level = colored('Traceback', 'red', attrs=['bold'])
+            level = colored('Traceback', 'red', attrs=['bold', 'blink', 'reverse'])
             continue
         else:
             print(line)
@@ -406,8 +406,8 @@ def callback_color(filename, lines):
         msg = line[lv_len + time_len + log_module_len - 7:]
 
         def repl(m):
-            return colored(m.group(1), 'yellow')
-        new_msg = re.sub(r'([ \n-.,_]([0-9]+)[ \n-.,_])', repl, msg)
+            return colored(m.group(1), 'magenta')
+        new_msg = re.sub(r'([ \n-.,_]([0-9]+)[ \n-.,_]|\[(.*)\])', repl, msg)
 
         print(level + time + log_module + new_msg)
 
