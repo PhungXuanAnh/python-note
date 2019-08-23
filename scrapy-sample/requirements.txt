@@ -1,0 +1,9 @@
+lxml
+parsel
+w3lib
+twisted
+cryptography
+pyOpenSSL
+Scrapy
+scrapy_splash
+selenium
