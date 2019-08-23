@@ -37,6 +37,6 @@ docker run -d --name mysql-sqlalchemy-tutorial \
 
 
 # Cách test
-- Chạy hàm [main.py](main.py)
+- Chạy hàm [sqlalchemy_sample.py](sqlalchemy_sample.py)
 - Chạy create db trước
 - Bỏ comment các hàm muốn test rồi chạy
