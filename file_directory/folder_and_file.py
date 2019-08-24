@@ -49,5 +49,6 @@ except Exception as e:
 print(os.getcwd())
 print(os.path.exists("../abc_module"))
 print(os.path.join("a", "b", "c"))
-print(os.path.basename('/users/system1/student1/homework-1.py'))
-print(os.path.dirname('/users/system1/student1/homework-1.py'))
+
+print("get file name: ", os.path.basename('/users/system1/student1/homework-1.py'))
+print("get file path: ", os.path.dirname('/users/system1/student1/homework-1.py'))
