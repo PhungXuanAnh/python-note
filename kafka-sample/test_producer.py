@@ -3,10 +3,9 @@ import traceback
 from kafka import KafkaProducer
 from kafka.errors import KafkaError
 
-topic = 'my-topic1'
-group_id = 'my-group1'
-# kafka_servers = ['localhost:9092']
-kafka_servers = ['167.71.198.165:9092']
+topic = 'my-topic'
+kafka_servers = ['localhost:9092']
+# kafka_servers = ['167.71.198.165:9092']
 
 
 def on_send_success(record_metadata):
@@ -17,6 +16,7 @@ def on_send_success(record_metadata):
 producer = KafkaProducer(
     bootstrap_servers=kafka_servers,
     value_serializer=lambda m: json.dumps(m).encode('ascii'))
+
 producer.send(topic, {'key': 'value'})\
     .add_callback(on_send_success)
 
