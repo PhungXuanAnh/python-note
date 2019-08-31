@@ -6,7 +6,7 @@ Created on Jun 26, 2017
 import datetime
 import calendar
 import time
-import dateutil.parser  # pip install python-dateutil
+import dateutil.parser
 from dateutil.tz import tzutc
 
 print('----------------------------------------------------------- timezone')
@@ -36,6 +36,9 @@ print('                                  ', datetime.datetime(2008, 9, 3, 0, 0))
 
 print('----------------------------------------------------------- format datetime')
 my_time = dateutil.parser.parse("2018-06-06T08:01:53.420Z")
+print('my_time:          ', my_time)
+print("my_time formated: ", my_time.strftime("[%Y-%m-%d]-[%H:%M:%S]"))
+my_time = datetime.datetime.now()
 print('my_time:          ', my_time)
 print("my_time formated: ", my_time.strftime("[%Y-%m-%d]-[%H:%M:%S]"))
 
