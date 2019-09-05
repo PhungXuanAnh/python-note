@@ -64,7 +64,7 @@ date_7_day_ago = today - datetime.timedelta(days=7)
 print('today           ', today)
 print('date_7_day_ago: ', date_7_day_ago)
 
-print('----------------------------------------------------------- datetime future')
+print('----------------------------------------------------------- datetime future or past')
 now = datetime.datetime.now()
 datetime_7_day_ago = now + datetime.timedelta(days=7)
 print("now :                 ", now)
@@ -76,3 +76,9 @@ date_7_day_ago = today + datetime.timedelta(days=7)
 print('today                 ', today)
 print('date_7_day_in_future: ', date_7_day_ago)
 print("timestamp: ", datetime_7_day_ago.timestamp())
+
+d = datetime.datetime.utcnow()
+for i in range(-2, 3):
+    d1 = d + datetime.timedelta(minutes=i)
+    print(d1.strftime("%Y-%m-%dT%H:%M"))
+
