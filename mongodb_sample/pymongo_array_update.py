@@ -43,6 +43,7 @@ class RemoveItem(object):
 class AddItem(object):
     """
         https://docs.mongodb.com/manual/reference/operator/update/addToSet/
+        $addToSet operator will check exist before append element into array
     """
 
     def add_v4_array1_v0_array2(self):
