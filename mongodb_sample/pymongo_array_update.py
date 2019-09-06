@@ -54,6 +54,27 @@ class AddItem(object):
         for item in collection.find():
             print("After data : ", item)
 
+    def add_other_item(self):
+        """
+            Hàm này sẽ update một item, nếu item này không có thì sẽ insert 1 cái
+            Item này không chỉ có array như sample data phía trên mà có thêm key
+            khác mà ta muốn thêm vào item này 
+        """
+        collection.update_one(
+            {'_id': 2},
+            {'$addToSet': {'array1': "v0", 'array2': 'v0'}, "$set": {"key1": "value1"}},
+            True
+        )
+        for item in collection.find():
+            print("After data : ", item)
+        collection.update_one(
+            {'_id': 2},
+            {'$addToSet': {'array1': "v1", 'array2': 'v1'}, "$set": {"key2": "value2"}},
+            True
+        )
+        for item in collection.find():
+            print("After data : ", item)
+
 
 if __name__ == "__main__":
     insert_sample_data()
@@ -61,5 +82,6 @@ if __name__ == "__main__":
     rm = RemoveItem()
     # rm.remove_v1_v2_array1_v3_array2()
 
-    add = AddItem()
-    add.add_v4_array1_v0_array2()
+    update = AddItem()
+    # update.add_v4_array1_v0_array2()
+    update.add_other_item()
