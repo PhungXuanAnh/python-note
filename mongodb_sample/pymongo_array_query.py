@@ -35,28 +35,32 @@ def insert_sample_data():
             "array": [
                 {"key1": "A", "key2": 10},
                 {"key1": "B", "key2": 13}
-            ]
+            ],
+            "array1": [1, 2, 3]
         },
         {
             "item": "item2",
             "array": [
                 {"key1": "D", "key2": 11},
                 {"key1": "C", "key2": 11}
-            ]
+            ],
+            "array1": [1, 4, 3]
         },
         {
             "item": "item3",
             "array": [
                 {"key1": "C", "key2": 12},
                 {"key1": "B", "key2": 11}
-            ]
+            ],
+            "array1": [4, 5, 2]
         },
         {
             "item": "item4",
             "array": [
                 {"key1": "C", "key2": 12},
                 {"key1": "B", "key2": 13}
-            ]
+            ],
+            "array1": [2, 6, 3]
         }
     ])
     for item in collection.find():
@@ -71,8 +75,23 @@ class Query_Array_Embeded_Document(object):
         https://docs.mongodb.com/manual/tutorial/query-array-of-documents/
     """
 
-    def extract_match_key1_A_key2_10(self):
+    def match_key1_A_key2_10(self):
         for item in collection.find({"array": {"key1": "A", "key2": 10}}):
+            item.pop('_id')
+            print("Queried data :", item)
+
+    def match_array1_contain_3(self):
+        for item in collection.find({"array1": {"$all": [3]}}):
+            item.pop('_id')
+            print("Queried data :", item)
+
+    def match_array1_contain_2_and_3(self):
+        for item in collection.find({"array1": {"$all": [2, 3]}}):
+            item.pop('_id')
+            print("Queried data :", item)
+
+    def match_array1_contain_value_greate_or_equal_3(self):
+        for item in collection.find({"array1": {"$gte": 3}}):
             item.pop('_id')
             print("Queried data :", item)
 
@@ -146,11 +165,14 @@ class Find_And_Do_Something(object):
 if __name__ == "__main__":
     insert_sample_data()
 
-    # query = Query_Array_Embeded_Document()
-    # query.extract_match_key1_A_key2_10()
+    query = Query_Array_Embeded_Document()
+    # query.match_key1_A_key2_10()
+    # query.match_array1_contain_3()
+    # query.match_array1_contain_2_and_3()
+    query.match_array1_contain_value_greate_or_equal_3()
 
     find = Find_And_Do_Something()
     # find.find_item1_change_name()
     # find.find_item2_add_set()
     # find.find_item4_remove_array()
-    find.find_item5_or_add_new_with_array()
+    # find.find_item5_or_add_new_with_array()
