@@ -72,7 +72,12 @@ class AddFields(object):
         print('------------------------------------------')
         collection.update_one(
             {'_id': 2},
-            {'$addToSet': {'array1': {"$each": ["v1", "v2", "v3"]}, 'array2': 'v1'}, "$set": {"key2": "value2"}},
+            {
+                '$addToSet': {
+                    'array1': {"$each": ["v0", "v1", "v2", "v3"]},
+                    'array2': "v0"
+                },
+                "$set": {"key2": "value2"}},
             True
         )
         for item in collection.find():
