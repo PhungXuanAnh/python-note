@@ -79,8 +79,78 @@ class Query_Array_Embeded_Document(object):
     # ----------------- other condition see above link
 
 
+class Find_And_Do_Something(object):
+    """
+        https://docs.mongodb.com/manual/reference/method/db.collection.find/
+        https://docs.mongodb.com/manual/reference/method/db.collection.findAndModify/
+        https://docs.mongodb.com/manual/reference/method/db.collection.findOne/
+        https://docs.mongodb.com/manual/reference/method/db.collection.findOneAndDelete/
+        https://docs.mongodb.com/manual/reference/method/db.collection.findOneAndReplace/
+        https://docs.mongodb.com/manual/reference/method/db.collection.findOneAndUpdate/
+    """
+
+    def find_item1_change_name(self):
+        item = collection.find_one_and_update(
+            {"item": "item1"},
+            {"$set": {"item": "item 11"}}
+        )
+        item.pop('_id')
+        print(item)
+        print('--------------------------------')
+        for item in collection.find():
+            item.pop('_id')
+            print("Queried data :", item)
+
+    def find_item2_add_set(self):
+        item = collection.find_one_and_update(
+            {"item": "item2"},
+            {"$set": {"key1": "value1", "key2": "value2"}}
+        )
+        item.pop('_id')
+        print(item)
+        print('--------------------------------')
+        for item in collection.find():
+            item.pop('_id')
+            print("Queried data :", item)
+
+    def find_item4_remove_array(self):
+        item = collection.find_one_and_update(
+            {"item": "item4"},
+            {"$unset": {"array": ""}}
+        )
+        item.pop('_id')
+        print(item)
+        print('--------------------------------')
+        for item in collection.find():
+            item.pop('_id')
+            print("Queried data :", item)
+
+    def find_item5_or_add_new_with_array(self):
+        item = collection.find_one_and_update(
+            {"item": "item5"},
+            {
+                '$addToSet': {'array': {"$each": [
+                    {"key1": "C", "key2": 55},
+                    {"key1": "B", "key2": 55}
+                ]}}
+            },
+            upsert=True
+        )
+        print(item)
+        print('--------------------------------')
+        for item in collection.find():
+            item.pop('_id')
+            print("Queried data :", item)
+
+
 if __name__ == "__main__":
     insert_sample_data()
 
-    query = Query_Array_Embeded_Document()
-    query.extract_match_key1_A_key2_10()
+    # query = Query_Array_Embeded_Document()
+    # query.extract_match_key1_A_key2_10()
+
+    find = Find_And_Do_Something()
+    # find.find_item1_change_name()
+    # find.find_item2_add_set()
+    # find.find_item4_remove_array()
+    find.find_item5_or_add_new_with_array()

@@ -19,9 +19,10 @@ def insert_sample_data():
     for item in collection.find():
         # print(json.dumps(item, indent=4, sort_keys=True))
         print("Before data: ", item)
+    print('------------------------------------------')
 
 
-class RemoveItem(object):
+class RemoveFields(object):
     """"
         https://docs.mongodb.com/manual/reference/operator/update/pull/
     """
@@ -40,7 +41,7 @@ class RemoveItem(object):
     # --------------- other remove ( remove item that match condition...), see above link
 
 
-class AddItem(object):
+class AddFields(object):
     """
         https://docs.mongodb.com/manual/reference/operator/update/addToSet/
         $addToSet operator will check exist before append element into array
@@ -53,6 +54,7 @@ class AddItem(object):
         )
         for item in collection.find():
             print("After data : ", item)
+        print('------------------------------------------')
 
     def add_other_item(self):
         """
@@ -67,9 +69,10 @@ class AddItem(object):
         )
         for item in collection.find():
             print("After data : ", item)
+        print('------------------------------------------')
         collection.update_one(
             {'_id': 2},
-            {'$addToSet': {'array1': "v1", 'array2': 'v1'}, "$set": {"key2": "value2"}},
+            {'$addToSet': {'array1': {"$each": ["v1", "v2", "v3"]}, 'array2': 'v1'}, "$set": {"key2": "value2"}},
             True
         )
         for item in collection.find():
@@ -79,9 +82,9 @@ class AddItem(object):
 if __name__ == "__main__":
     insert_sample_data()
 
-    rm = RemoveItem()
+    rm = RemoveFields()
     # rm.remove_v1_v2_array1_v3_array2()
 
-    update = AddItem()
+    update = AddFields()
     # update.add_v4_array1_v0_array2()
     update.add_other_item()
