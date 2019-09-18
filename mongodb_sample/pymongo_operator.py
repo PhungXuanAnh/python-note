@@ -11,9 +11,6 @@ client = pymongo.MongoClient('localhost', 27017)
 db = client.test
 collection = db.test_operator
 
-DESCENDING = -1
-ASCENDING = 1
-
 
 def insert_sample_data(data):
     collection.drop()
@@ -53,7 +50,7 @@ class Aggregation_Divide(object):
         for item in collection.aggregate(
             [
                 {'$project': {'name': 1, 'average_performance': {'$divide': ["$hours", "$resources"]}}},
-                {"$sort": {"average_performance": DESCENDING}}
+                {"$sort": {"average_performance": pymongo.DESCENDING}}
             ]
         ):
             print("Output data  :", item)
