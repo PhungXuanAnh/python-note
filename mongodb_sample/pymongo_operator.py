@@ -11,6 +11,9 @@ client = pymongo.MongoClient('localhost', 27017)
 db = client.test
 collection = db.test_operator
 
+DESCENDING = -1
+ASCENDING = 1
+
 
 def insert_sample_data(data):
     collection.drop()
@@ -43,10 +46,14 @@ class Aggregation_Divide(object):
             print("Output data  :", item)
 
     def divide_between_fields(self):
-        " Chia hours cho resource để tính số giờ trung bình cần làm ra 1 resource "
+        """
+            Chia hours cho resource để tính số giờ trung bình cần làm ra 1 resource
+            và sắp xếp trường này theo thứ tự giảm dần  
+        """
         for item in collection.aggregate(
             [
-                {'$project': {'name': 1, 'average_performance': {'$divide': ["$hours", "$resources"]}}}
+                {'$project': {'name': 1, 'average_performance': {'$divide': ["$hours", "$resources"]}}},
+                {"$sort": {"average_performance": DESCENDING}}
             ]
         ):
             print("Output data  :", item)
