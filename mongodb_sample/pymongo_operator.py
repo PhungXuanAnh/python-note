@@ -29,18 +29,19 @@ class Aggregation_Divide(object):
 
     def __init__(self):
         insert_sample_data([
-            {"_id": 1, "name": "A", "hours": 80, "resources": 10},
-            {"_id": 2, "name": "B", "hours": 40, "resources": 4}
+            {"_id": 1, "name": "A", "hours": 80, "resources": 10, 'OT': 3},
+            {"_id": 2, "name": "B", "hours": 40, "resources": 4, 'OT': 1}
         ])
 
     def divide_8(self):
-        " Chia cho 8 để tính toán số giờ làm việc "
+        " Chia cho 8 để tính toán số ngày làm việc"
         for item in collection.aggregate(
             [
                 {'$project': {'name': 1, 'workdays': {'$divide': ["$hours", 8]}}}
             ]
         ):
-            print("Output data  :", item)
+            print("Số ngày làm việc  :", item)
+        print('------------------------------------------------------------')
 
     def divide_between_fields(self):
         """
@@ -53,10 +54,40 @@ class Aggregation_Divide(object):
                 {"$sort": {"average_performance": pymongo.DESCENDING}}
             ]
         ):
-            print("Output data  :", item)
+            print("average  :", item)
+        print('------------------------------------------------------------')
+
+    def sum_hour_OT(self):
+        """
+            Tính tổng số giờ làm việc bao gồm cả OT
+        """
+        for item in collection.aggregate(
+            [
+                {'$project': {'name': 1, 'sum_working_hour': {'$sum': ["$hours", "$OT"]}}},
+                {"$sort": {"sum_working_hour": pymongo.DESCENDING}}
+            ]
+        ):
+            print("Tổng số giờ làm việc  :", item)
+        print('------------------------------------------------------------')
+
+    def sum_hour_then_div_resource(self):
+        """
+            Tính tổng số giờ làm việc, sau đó chia cho số tài nguyên để tính số giờ trung bình
+            làm ra 1 tài nguyên
+        """
+        for item in collection.aggregate(
+            [
+                {'$project': {'name': 1, 'average': {'$divide': [{'$sum': ["$hours", "$OT"]}, "$resources"]}}},
+                {"$sort": {"average": pymongo.DESCENDING}}
+            ]
+        ):
+            print("AVERAGE  :", item)
+        print('------------------------------------------------------------')
 
 
 if __name__ == "__main__":
     operator = Aggregation_Divide()
-    # operator.divide_8()
+    operator.divide_8()
     operator.divide_between_fields()
+    operator.sum_hour_OT()
+    operator.sum_hour_then_div_resource()
