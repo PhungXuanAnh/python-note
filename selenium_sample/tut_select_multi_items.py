@@ -6,7 +6,7 @@ from selenium.webdriver.common.action_chains import ActionChains
 
 
 url = "https://demos.devexpress.com/aspxeditorsdemos/ListEditors/MultiSelect.aspx"
-chrome_path = '/home/xuananh/data/Downloads/chromedriver_linux64/chromedriver'
+chrome_path = '/home/xuananh/Downloads/chromedriver_linux64/chromedriver'
 # chrome driver download from link: https://chromedriver.storage.googleapis.com/index.html?path=2.44/
 
 chrome_option = ChromeOptions()

@@ -5,7 +5,7 @@ from selenium.webdriver.common.keys import Keys
 
 
 url = "https://www.calculator.net/mortgage-calculator.html"
-chrome_path = '/home/xuananh/data/Downloads/chromedriver_linux64/chromedriver'
+chrome_path = '/home/xuananh/Downloads/chromedriver_linux64/chromedriver'
 # chrome driver download from link: https://chromedriver.storage.googleapis.com/index.html?path=2.44/
 
 chrome_option = ChromeOptions()
