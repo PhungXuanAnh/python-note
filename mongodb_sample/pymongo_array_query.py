@@ -75,7 +75,12 @@ class Query_Array_Embeded_Document(object):
         https://docs.mongodb.com/manual/tutorial/query-array-of-documents/
     """
 
-    def match_key1_A_key2_10(self):
+    def match_array_contain_document_have_key1_B(self):
+        for item in collection.find({"array": {"$elemMatch": {"key1": "B"}}}):
+            item.pop('_id')
+            print("Queried data :", item)
+
+    def match_array_have_key1_A_key2_10(self):
         for item in collection.find({"array": {"key1": "A", "key2": 10}}):
             item.pop('_id')
             print("Queried data :", item)
@@ -166,10 +171,11 @@ if __name__ == "__main__":
     insert_sample_data()
 
     query = Query_Array_Embeded_Document()
-    # query.match_key1_A_key2_10()
+    query.match_array_contain_document_have_key1_B()
+    # query.match_array_have_key1_A_key2_10()
     # query.match_array1_contain_3()
     # query.match_array1_contain_2_and_3()
-    query.match_array1_contain_value_greate_or_equal_3()
+    # query.match_array1_contain_value_greate_or_equal_3()
 
     find = Find_And_Do_Something()
     # find.find_item1_change_name()
