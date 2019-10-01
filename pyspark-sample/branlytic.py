@@ -95,6 +95,10 @@ _rdd = empty_rdd.union(rdd1)
 rdd = _rdd.union(rdd2)
 rdd.collect()
 
+rdd1 = sc.parallelize([('a', 1), ('b', 2), ('c', 3)])
+rdd2 = sc.parallelize([('a', 1), ('b', 2), ('c', 3)])
+rdd1.union(rdd2).collect()
+
 rdd1 = sc.parallelize([1, 2, 3])
 rdd2 = sc.parallelize([4, 5, 6])
 rdd = sc.union([rdd1, rdd2])
