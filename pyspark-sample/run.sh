@@ -35,7 +35,7 @@ git clone https://github.com/databricks/spark-csv.git
 
 pyspark --packages com.databricks:spark-csv_2.11:1.5.0
 
-export PYSPARK_PYTHON=/home/xuananh/data/repo/python-note/.venv/python3/bin/python
+export PYSPARK_PYTHON=/home/xuananh/data/repo/python-note/.venv/bin/python
 pyspark --packages org.apache.spark:spark-streaming-kafka-0-8_2.11:2.2.0
 
 # A solution is to remove related dir in .ivy2/cache, ivy2/jars and .m2/repository/

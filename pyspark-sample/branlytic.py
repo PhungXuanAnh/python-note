@@ -91,3 +91,8 @@ rdd1 = sc.parallelize([1, 2, 3])
 rdd2 = sc.parallelize([4, 5, 6])
 rdd = sc.union([rdd1, rdd2])
 rdd.collect()
+
+sorted(sc.parallelize([1, 1, 2, 3]).distinct().collect())
+sorted(sc.parallelize([(1, 1), (1, 1), (2, 2), (3, 3)]).distinct().collect())
+sorted(sc.parallelize([('a', 1), ('a', 1), ('b', 2), ('c', 3)]).distinct().collect())
+sorted(sc.parallelize([(1, 'a'), (1, 'a'), (2, 'b'), (3, 'c')]).distinct().collect())
