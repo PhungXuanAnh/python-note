@@ -73,13 +73,21 @@ totals_tag.sortBy(lambda x: x[1][lc['present']]).collect()
 # x.mapValues(f).collect()
 # x.mapValues(lambda x: len(x)).collect()
 # x.mapValues(lambda x: x[0]).collect()
-# #-------------------------------------------------------------
-# from operator import add
-# rdd = sc.parallelize([("a", 1), ("b", 1), ("a", 1)])
-# rdd.reduceByKey(add).collect()
-# rdd.reduceByKey(add).collect()
-# sorted(rdd.reduceByKey(add).collect())
 
+# reduceByKey: merge element which have same key using
+from operator import add
+rdd = sc.parallelize([("a", 1), ("b", 1), ("a", 1)])
+rdd.reduceByKey(add).collect()
+rdd.reduceByKey(add).collect()
+sorted(rdd.reduceByKey(add).collect())
+
+lst1 = [('a', 1), ('b', 2), ('c', 3)]
+lst2 = [('a', 1), ('b', 2)]
+rdd = sc.parallelize(lst1 + lst2)
+sorted(rdd.reduceByKey(lambda x, y: [x, y]).collect())
+
+
+# UNION: nối 2 rdd với nhau
 empty_rdd = sc.emptyRDD()
 rdd1 = sc.parallelize([1, 2, 3])
 rdd2 = sc.parallelize([4, 5, 6])
@@ -92,6 +100,22 @@ rdd2 = sc.parallelize([4, 5, 6])
 rdd = sc.union([rdd1, rdd2])
 rdd.collect()
 
+rdd1 = sc.parallelize([('a', 1), ('b', 2), ('c', 3)])
+rdd2 = sc.parallelize([('a', 1), ('b', 2), ('c', 3)])
+rdd = sc.union([rdd1, rdd2])
+rdd.collect()
+
+
+# join 2 RDD with element have same key
+rdd1 = sc.parallelize([('a', 1), ('b', 2), ('c', 3)])
+rdd2 = sc.parallelize([('a', 1), ('b', 2), ('c', 3)])
+rdd1.join(rdd2).collect()
+
+rdd1 = sc.parallelize([('a', 1), ('b', 2), ('c', 3)])
+rdd2 = sc.parallelize([('b', 5)])
+rdd1.join(rdd2).collect()
+
+# remove duplicated element in rdd
 sorted(sc.parallelize([1, 1, 2, 3]).distinct().collect())
 sorted(sc.parallelize([(1, 1), (1, 1), (2, 2), (3, 3)]).distinct().collect())
 sorted(sc.parallelize([('a', 1), ('a', 1), ('b', 2), ('c', 3)]).distinct().collect())
