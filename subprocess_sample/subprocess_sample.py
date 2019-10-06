@@ -34,9 +34,12 @@ def run_command_print_output1(command):
         if out == b'' and p.poll() is not None:
             break
         if out != b'':
-            # print(out.strip().decode())  # NOTE: dùng print trong một số trường hợp không in được màu của text trên terminal
-            sys.stdout.write(out)
-            sys.stdout.flush()
+            print(out.strip().decode())
+            # NOTE: trong một số trường hợp không in được màu của text trên terminal
+            # lúc này phải enable color output của command, nếu có
+            # tham khảo:
+            # https://stackoverflow.com/questions/42589584/ansi-color-lost-when-using-python-subprocess
+            # https://stackoverflow.com/questions/32486974/how-to-print-original-color-output-using-subprocess-check-output
     print("return-code = {} after run command '{}'".format(p.poll(), command))
 
 
