@@ -19,6 +19,11 @@ background processes.
 
 
 def run_command_print_output1(command):
+    """[Reference: https://stackoverflow.com/a/803396]
+
+    Arguments:
+        command {[string]} -- [command to run]
+    """
     print("Running command '{}' ...".format(command))
     p = subprocess.Popen(command, shell=True,
                          stdout=subprocess.PIPE,
@@ -29,7 +34,9 @@ def run_command_print_output1(command):
         if out == b'' and p.poll() is not None:
             break
         if out != b'':
-            print(out.strip().decode())
+            # print(out.strip().decode())  # NOTE: dùng print trong một số trường hợp không in được màu của text trên terminal
+            sys.stdout.write(out)
+            sys.stdout.flush()
     print("return-code = {} after run command '{}'".format(p.poll(), command))
 
 
