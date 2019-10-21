@@ -19,6 +19,11 @@ background processes.
 
 
 def run_command_print_output1(command):
+    """[Reference: https://stackoverflow.com/a/803396]
+
+    Arguments:
+        command {[string]} -- [command to run]
+    """
     print("Running command '{}' ...".format(command))
     p = subprocess.Popen(command, shell=True,
                          stdout=subprocess.PIPE,
@@ -30,6 +35,11 @@ def run_command_print_output1(command):
             break
         if out != b'':
             print(out.strip().decode())
+            # NOTE: trong một số trường hợp không in được màu của text trên terminal
+            # lúc này phải enable color output của command, nếu có
+            # tham khảo:
+            # https://stackoverflow.com/questions/42589584/ansi-color-lost-when-using-python-subprocess
+            # https://stackoverflow.com/questions/32486974/how-to-print-original-color-output-using-subprocess-check-output
     print("return-code = {} after run command '{}'".format(p.poll(), command))
 
 
