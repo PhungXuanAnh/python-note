@@ -1,6 +1,7 @@
 import pymongo
 
-client = pymongo.MongoClient('localhost', 27017)
+client = pymongo.MongoClient('localhosta', 27017)
+print(client.server_info())    # NOTE: this statement can be used to check connection to mongodb server
 
 db = client.test
 # db = client['test']
@@ -9,9 +10,10 @@ print("db.name: {}".format(db.name))
 print("db.my_collection: {}".format(db.my_collection))
 print("db['my_collection']: {}".format(db['my_collection']))
 
-# db.my_collection.insert_one({"x": 1}).inserted_id
-# db.my_collection.insert_one({"x": 2}).inserted_id
-# db.my_collection.insert_one({"x": 3}).inserted_id
+db.my_collection.drop()
+db.my_collection.insert_one({"x": 1}).inserted_id
+db.my_collection.insert_one({"x": 2}).inserted_id
+db.my_collection.insert_one({"x": 3}).inserted_id
 
 item = db.my_collection.find_one()
 print("get one document: {}".format(item['x']))
