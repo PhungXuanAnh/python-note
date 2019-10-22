@@ -50,7 +50,7 @@ def kill_time_rest():
 
 if __name__ == '__main__':
     allow_run('yes')
-    t_working = 2700
+    t_working = 1800
     t_break = 300
     time_rest.logging_config()
 
