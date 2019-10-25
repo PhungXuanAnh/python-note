@@ -20,7 +20,7 @@ def sub_listen(r, name):
         print('%s : %s' % (name, item))
 
 
-def sub_get_message(r, name):
+def sub_get_message(r, name, timeout=None):
     p = r.pubsub()
     p.subscribe(['channel'])
     start = time.time()
@@ -29,9 +29,9 @@ def sub_get_message(r, name):
         if message:
             print('%s : %s' % (name, message))
         time.sleep(0.01)
-        if time.time() - start > timeout:
-            print('timeout happened, stop!')
-            return
+        if timeout and time.time() - start > timeout:
+            print('Cannot get publish message from redis. Timeout happened: {}s'.format(timeout))
+            return None
 
 
 if __name__ == '__main__':
