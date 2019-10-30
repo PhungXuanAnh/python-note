@@ -47,7 +47,7 @@ def setup_periodic_tasks(sender, **kwargs):
 
 @app.task(queue='queue1')
 def print_result(arg):
-    LOG.info(' ======= result: {}'.format(arg))
+    LOG.info(' ========================== RESULTS: {}'.format(arg))
 
 
 @app.task(queue='queue1')
@@ -62,10 +62,10 @@ def print_result_queue2(arg):
 
 @app.task(queue='queue2')
 def chord_task(arg):
-    for _ in range(0, 10):
+    for i in range(0, 15):
         # time.sleep(1)
         gevent.sleep(1)
-        LOG.info(' ======= chord task {}'.format(arg))
+        LOG.info(' ---------------------- chord task {}-{}'.format(arg, i))
     return arg
 
 

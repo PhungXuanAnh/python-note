@@ -1,3 +1,4 @@
+import redis
 from celery import group, chain, chord
 from tasks_sample import longtime_add, add, print_result, chord_task,\
     print_result_queue1, print_result_queue2
@@ -76,23 +77,56 @@ def sample_group():
 
 
 def test_max_concurrency_with_callback():
-    jobs = [
-        chord_task.s('111111111'),
-        chord_task.s('222222222'),
-        chord_task.s('333333333'),
-        chord_task.s('444444444'),
-        chord_task.s('555555555'),
-        chord_task.s('666666666'),
+    callback = print_result
+    jobs1 = [
+        chord_task.s('111'),
+        chord_task.s('222'),
+        chord_task.s('333'),
+        chord_task.s('444'),
+        chord_task.s('555'),
+        chord_task.s('666'),
     ]
 
-    jobs1 = [
-        chord_task.s('777777777'),
-        chord_task.s('888888888'),
-        chord_task.s('999999999'),
+    jobs2 = [
+        chord_task.s('777'),
+        chord_task.s('888'),
+        chord_task.s('999'),
     ]
-    result = chord(jobs1, print_result.s()).delay()
-    result = chord(jobs, print_result.s()).delay()
-    # result = chord(jobs, print_result.s()).delay()
+    result1 = chord(jobs1, callback.s()).delay()
+    result2 = chord(jobs2, callback.s()).apply_async(retry=True, retry_policy={
+        'max_retries': 30,
+        'interval_start': 0,
+        'interval_step': 0.2,
+        'interval_max': 0.2,
+    })
+    print('result1: {}'.format(result1))
+    print('result2: {}'.format(result2))
+
+
+def test_connection_to_broker_error(num_retry=0):
+    max_retries = 10
+    if num_retry > max_retries:
+        print('Excceed Max number of retry {} times'.format(num_retry))
+        return
+    callback = print_result
+    jobs = [
+        chord_task.s('111'),
+    ]
+    try:
+        result2 = chord(jobs, callback.s()).apply_async(retry=True, retry_policy={
+            'max_retries': 30,
+            'interval_start': 0,
+            'interval_step': 0.2,
+            'interval_max': 0.2,
+        })
+        print('result2: {}'.format(result2))
+    except redis.exceptions.ConnectionError:
+        time.sleep(1)
+        print('Connection to broker failed. Try sending task again.')
+        num_retry = num_retry + 1
+        test_connection_to_broker_error(num_retry)
+    except Exception as e:
+        print(e.args)
 
 
 if __name__ == '__main__':
@@ -102,4 +136,5 @@ if __name__ == '__main__':
     # sample_chains()
     # sample_group()
 
-    test_max_concurrency_with_callback()
+    # test_max_concurrency_with_callback()
+    test_connection_to_broker_error()

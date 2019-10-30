@@ -2,3 +2,4 @@ celery
 redis
 pika
 watchdog
+gevent
