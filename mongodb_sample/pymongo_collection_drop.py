@@ -1,10 +1,12 @@
 import pymongo
+from mongo_url import AUTHEN_URL
 
-client = pymongo.MongoClient('localhost', 27017)
+# client = pymongo.MongoClient('localhost', 27018)
+client = pymongo.MongoClient(AUTHEN_URL)
 
-db = client['brandlytic-spark']
+db = client['test_database']
 
-collection = db['69051_mytam.info_color']
+collection = db['test_collection']
 
 collection.drop()
 
