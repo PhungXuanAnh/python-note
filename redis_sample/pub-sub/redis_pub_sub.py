@@ -62,6 +62,9 @@ class RedisPubSub(object):
             time.sleep(1)
 
     def pub(self, current_number=0):
+        # NOTE: if message is published to a channel before client subcribe to that channel
+        # client will not recieve that message, so we add sleep 3 for wait client do subcribe
+        time.sleep(3)
         try:
             for n in range(current_number, 100):
                 self._redis.publish(self.channel, 'blah %d' % n)
