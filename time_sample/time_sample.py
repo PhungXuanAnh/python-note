@@ -85,3 +85,10 @@ for i in range(-2, 3):
     d1 = d + datetime.timedelta(minutes=i)
     print(d1.strftime("%Y-%m-%dT%H:%M"))
 
+print('----------------------------------------------- extract year, month, hour, minute')
+print(datetime.datetime.now().year)
+print(datetime.datetime.now().month)
+print(datetime.datetime.now().day)
+print(datetime.datetime.now().hour)
+print(datetime.datetime.now().minute)
+print(datetime.datetime.now().second)
