@@ -2,28 +2,31 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 
-USER = 'root'
-PASSWORD = '12345'
+PASSWORD = '123456'
 HOST = 'localhost'
 
-MYSQL_PORT = 4321
-POSTGRES_PORT = 1234
+MYSQL_USER = 'root'
+MYSQL_PORT = 3308
 
-DB = 'my_test_db'
+POSTGRES_USER = 'postgres'
+POSTGRES_PORT = 5433
+
+DB = 'test_database'
 
 CHARSET = 'utf8'  # NOTE: it import to automatically convert(encode/decode) data to unicode using utf8
 MYSQL_URL = 'mysql+pymysql://{user}:{password}@{host}:{port}/{database}?charset={charset}'\
-    .format(user=USER,
+    .format(user=MYSQL_USER,
             password=PASSWORD,
             host=HOST,
             port=MYSQL_PORT,
             database=DB,
             charset=CHARSET)
 
-POSTGRES_URL = "postgresql+psycopg2://{user}:{password}@{host}/{database}".format(
-    user=USER,
+POSTGRES_URL = "postgresql+psycopg2://{user}:{password}@{host}:{port}/{database}".format(
+    user=POSTGRES_USER,
     password=PASSWORD,
     host=HOST,
+    port=POSTGRES_PORT,
     database=DB
 )
 

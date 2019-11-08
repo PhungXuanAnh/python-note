@@ -1,42 +1,23 @@
-Các bước code được thực hiện theo link: [https://docs.sqlalchemy.org/en/latest/orm/tutorial.html](https://docs.sqlalchemy.org/en/latest/orm/tutorial.html)
+Các bước code được thực hiện theo [link](https://docs.sqlalchemy.org/en/latest/orm/tutorial.html)
 
-# Tạo database server
+- [1. Tạo database server](#1-tạo-database-server)
+- [2. Cấu trúc thư mục](#2-cấu-trúc-thư-mục)
+- [3. Cách test](#3-cách-test)
 
-Có thể test với postgreSQL hoặc Mysql bằng lệnh bên dưới
+# 1. Tạo database server
 
-## PostgreSQL
+[PostgreSQL](https://github.com/PhungXuanAnh/tech-note/blob/master/devops/docker/docker-command.md#43-postgresql)
 
-```shell
-docker run -d --name postgres-sqlalchemy-tutorial \
-		 -e POSTGRES_PASSWORD=12345 \
-		 -e POSTGRES_USER=root \
-		 -e POSTGRES_DB=my_test_db \
-		 -p 1234:5432 \
-		 postgres
-```         
+[MySQL](https://github.com/PhungXuanAnh/tech-note/blob/master/devops/docker/docker-command.md#44-mysql)
 
-## MySQL
-
-```shell
-docker run -d --name mysql-sqlalchemy-tutorial \
-         -e MYSQL_ROOT_PASSWORD=12345 \
-         -e MYSQL_USER=other_user \
-         -e MYSQL_PASSWORD=password_for_other_user \
-         -e MYSQL_DATABASE=my_test_db \
-         -p 4321:3306 \
-         mysql:5.7 \
-         --character-set-server=utf8 \
-         --collation-server=utf8_unicode_ci
-```
-
-# Cấu trúc thư mục
+# 2. Cấu trúc thư mục
 
 - [config.py](config.py): chứa các config để kết nối đến db server
 - [models.py](models.py): chứa các định nghĩa về model
-- [main.py](main.py): chứa các hàm thao tác với db, gồm tạo data, clean data...
+- [sqlalchemy_sample.py](sqlalchemy_sample.py): chứa các hàm thao tác với db, gồm tạo data, clean data...
 
 
-# Cách test
+# 3. Cách test
 - Chạy hàm [sqlalchemy_sample.py](sqlalchemy_sample.py)
 - Chạy create db trước
 - Bỏ comment các hàm muốn test rồi chạy

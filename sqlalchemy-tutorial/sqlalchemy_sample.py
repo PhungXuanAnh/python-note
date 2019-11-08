@@ -1,9 +1,11 @@
+import string
+import random
 import sqlalchemy
 from models import User, Base
 from config import init_session
 
 
-Session, engine = init_session(server_type='mysql', server_echo=False)
+Session, engine = init_session(server_type='postgres', server_echo=False)
 # TODO: check again with postgres, it encountered error with password
 # Session = init_session(server_type='postgres', server_echo=False)
 session = Session()
@@ -16,11 +18,17 @@ def clean_database():
 
 
 def create_data():
-    u1 = User('Anh', 'Ha Noi')
-    u2 = User('Binh', 'Thai Binh')
-    u3 = User('Cuong', 'Nam Dinh')
-    # session.add(u1)
-    session.add_all([u1, u2, u3])
+    # u1 = User('Anh', 10, 'Ha Noi')
+    # u2 = User('Binh', 21, 'Thai Binh')
+    # u3 = User('Cuong', 100, 'Nam Dinh')
+    # session.add_all([u1, u2, u3])
+
+    for _ in range(0, 100):
+        name = random.choice(['Anh', 'Binh', 'Cuong', 'Thang', 'Nghia', 'Hieu', 'Trang'])
+        age = random.choice(range(0, 100))
+        address = random.choice(["Ha Noi", "HCM", "Hue", "Da Nang", "Hai Phong", "Nam Dinh"])
+        session.add(User(name, age, address))
+
     session.commit()
 
 
@@ -121,7 +129,10 @@ def query_filter():
 
 
 def query_order_offset_limit():
-    for user in session.query(User).order_by(User.id).offset(0).limit(2):
+    for user in session.query(User).order_by(User.age).offset(15).limit(20):
+        print(user)
+    print('-----------------------------------------------------------------------')
+    for user in session.query(User).filter(User.age.between(20, 50)).order_by(User.age).offset(15).limit(20):
         print(user)
 
 
@@ -159,5 +170,5 @@ if __name__ == "__main__":
     # query_data_by_class_and_column()
     # query_filter_by()
     # query_filter()
-    # query_order_offset_limit()
+    query_order_offset_limit()
     # query_1_or_many_result()
