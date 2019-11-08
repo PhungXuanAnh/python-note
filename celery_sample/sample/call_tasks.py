@@ -1,7 +1,7 @@
 import redis
 from celery import group, chain, chord
 from tasks_sample import longtime_add, add, print_result, chord_task,\
-    print_result_queue1, print_result_queue2
+    print_result_queue1, print_result_queue2, test_base_class
 import time
 
 
@@ -136,5 +136,9 @@ if __name__ == '__main__':
     # sample_chains()
     # sample_group()
 
+    # result = test_base_class.delay()
+    # print('Task finished? ', result.ready())
+    # print('Task result:   ', result.result)
     # test_max_concurrency_with_callback()
     test_connection_to_broker_error()
+    

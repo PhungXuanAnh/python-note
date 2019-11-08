@@ -2,25 +2,30 @@ import os
 
 # ==================== RABBITMQ ===========================================
 RABBITMQ_HOST = os.getenv('RABBITMQ_HOST', '127.0.0.1')
-RABBITMQ_PORT = os.getenv('RABBITMQ_PORT', 5672)
+RABBITMQ_PORT = os.getenv('RABBITMQ_PORT', 5673)
 PUBLIC_EVENT_QUEUE = os.getenv('PUBLIC_EVENT_QUEUE', 'public_event')
 WORKER_QUEUE = os.getenv('WORKER_QUEUE', 'worker')
 RABBITMQ_URL = 'amqp://guest@' + RABBITMQ_HOST + ':' + str(RABBITMQ_PORT) + '//'
 
 # ==================== REDIS ===========================================
 REDIS_HOST = os.getenv('REDIS_URL', '127.0.0.1')
-REDIS_PORT = os.getenv('REDIS_URL', 6379)
+REDIS_PORT = os.getenv('REDIS_URL', 7379)
 REDIS_URL = "redis://{host}:{port}".format(host=REDIS_HOST, port=REDIS_PORT)
 
 # ==================== CELERY ===========================================
-# broker_url = RABBITMQ_URL
-# result_backend = RABBITMQ_URL
+broker_url = RABBITMQ_URL
+result_backend = RABBITMQ_URL
 # result_backend = 'rpc://'
-
-result_backend = REDIS_URL + '/9'
-broker_url = REDIS_URL
+# result_backend = REDIS_URL + '/9'
+# broker_url = REDIS_URL
 
 imports = ('tasks_sample')
+# task_publish_retry = True
+task_publish_retry_policy = {
+    'max_retries': 30,
+}
+# broker_connection_retry = True          # retry connect to broker if lost connection
+# broker_connection_max_retries = None    # retry forever
 
 # task_serializer = 'json'
 

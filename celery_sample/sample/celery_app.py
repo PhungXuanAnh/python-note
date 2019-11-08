@@ -1,5 +1,6 @@
 from celery import Celery
 from celery.schedules import crontab
+from celery.backends import redis
 
 
 app = Celery('task_name_1')
@@ -18,3 +19,13 @@ app.conf.beat_schedule = {
     },
 }
 
+app.conf.task_publish_retry_policy = {
+    'max_retries': 3,
+    'interval_start': 0,
+    'interval_step': 0.2,
+    'interval_max': 0.2,
+}
+
+app.conf.update(
+    BROKER_CONNECTION_MAX_RETRIES=None
+)

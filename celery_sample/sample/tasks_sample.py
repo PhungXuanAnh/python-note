@@ -2,7 +2,7 @@ from celery_app import app
 import time
 import gevent
 from celery.schedules import crontab
-from celery import group, chain, chord
+from celery import group, chain, chord, Task
 from celery.signals import setup_logging
 from celeryconfig import LOGGING
 import logging
@@ -10,7 +10,7 @@ import logging
 LOG = logging.getLogger('celery')
 
 
-@app.task
+@app.task(name='ADD-FUNCTION')
 def add(x, y):
     LOG.info('xxxxxxxxxxxxxxxxxxxxxx: {}'.format(x))
     LOG.info('yyyyyyyyyyyyyyyyyyyyyy: {}'.format(y))
@@ -81,3 +81,20 @@ def chord_callback(arg):
 def config_loggers(*args, **kwags):
     from logging.config import dictConfig
     dictConfig(LOGGING)
+
+
+# Task inheritance¶
+# http://docs.celeryproject.org/en/stable/userguide/tasks.html#task-inheritance
+class MyTask(Task):
+
+    def on_failure(self, exc, task_id, args, kwargs, einfo):
+        # print('{0!r} failed: {1!r}'.format(task_id, exc))
+        print('ffffffffffffffffffffffffff')
+
+# app.tasks.register(MyTask())
+
+
+@app.task(base=MyTask)
+def test_base_class():
+    print('bbbbbbbbbbbbbbbbbbbbbbbase task')
+    raise KeyError()
