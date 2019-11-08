@@ -4,9 +4,11 @@ https://docs.mongodb.com/manual/tutorial/query-arrays/
 import json
 import pymongo
 from utils import ObjectIdEncoder
+from url import AUTHEN_URL
 
 
-client = pymongo.MongoClient('localhost', 27017)
+# client = pymongo.MongoClient('localhost', 27017)
+client = pymongo.MongoClient(AUTHEN_URL)
 
 db = client.test
 collection = db.test_query_array
@@ -63,9 +65,7 @@ def insert_sample_data():
             "array1": [2, 6, 3]
         }
     ])
-    for item in collection.find():
-        # print("Before data: ", json.dumps(item, indent=4, sort_keys=True, cls=ObjectIdEncoder))
-        item.pop('_id')
+    for item in collection.find({'_id': False}):
         print("Sample data  :", item)
     print('------------------------------------------------------------')
 
@@ -76,28 +76,23 @@ class Query_Array_Embeded_Document(object):
     """
 
     def match_array_contain_document_have_key1_B(self):
-        for item in collection.find({"array": {"$elemMatch": {"key1": "B"}}}):
-            item.pop('_id')
+        for item in collection.find({"array": {"$elemMatch": {"key1": "B"}}}, {'_id': False}):
             print("Queried data :", item)
 
     def match_array_have_key1_A_key2_10(self):
-        for item in collection.find({"array": {"key1": "A", "key2": 10}}):
-            item.pop('_id')
+        for item in collection.find({"array": {"key1": "A", "key2": 10}}, {'_id': False}):
             print("Queried data :", item)
 
     def match_array1_contain_3(self):
-        for item in collection.find({"array1": {"$all": [3]}}):
-            item.pop('_id')
+        for item in collection.find({"array1": {"$all": [3]}}, {'_id': False}):
             print("Queried data :", item)
 
     def match_array1_contain_2_and_3(self):
-        for item in collection.find({"array1": {"$all": [2, 3]}}):
-            item.pop('_id')
+        for item in collection.find({"array1": {"$all": [2, 3]}}, {'_id': False}):
             print("Queried data :", item)
 
     def match_array1_contain_value_greate_or_equal_3(self):
-        for item in collection.find({"array1": {"$gte": 3}}):
-            item.pop('_id')
+        for item in collection.find({"array1": {"$gte": 3}}, {'_id': False}):
             print("Queried data :", item)
 
     # ----------------- other condition see above link
@@ -116,37 +111,34 @@ class Find_And_Do_Something(object):
     def find_item1_change_name(self):
         item = collection.find_one_and_update(
             {"item": "item1"},
-            {"$set": {"item": "item 11"}}
+            {"$set": {"item": "item 11"}},
+            {'_id': False}
         )
-        item.pop('_id')
         print(item)
         print('--------------------------------')
-        for item in collection.find():
-            item.pop('_id')
+        for item in collection.find({}, {'_id': False}):
             print("Queried data :", item)
 
     def find_item2_add_set(self):
         item = collection.find_one_and_update(
             {"item": "item2"},
-            {"$set": {"key1": "value1", "key2": "value2"}}
+            {"$set": {"key1": "value1", "key2": "value2"}},
+            {'_id': False}
         )
-        item.pop('_id')
         print(item)
         print('--------------------------------')
-        for item in collection.find():
-            item.pop('_id')
+        for item in collection.find({}, {'_id': False}):
             print("Queried data :", item)
 
     def find_item4_remove_array(self):
         item = collection.find_one_and_update(
             {"item": "item4"},
-            {"$unset": {"array": ""}}
+            {"$unset": {"array": ""}},
+            {'_id': False}
         )
-        item.pop('_id')
         print(item)
         print('--------------------------------')
-        for item in collection.find():
-            item.pop('_id')
+        for item in collection.find({}, {'_id': False}):
             print("Queried data :", item)
 
     def find_item5_or_add_new_with_array(self):
@@ -162,8 +154,7 @@ class Find_And_Do_Something(object):
         )
         print(item)
         print('--------------------------------')
-        for item in collection.find():
-            item.pop('_id')
+        for item in collection.find({}, {'_id': False}):
             print("Queried data :", item)
 
 
@@ -171,7 +162,7 @@ if __name__ == "__main__":
     insert_sample_data()
 
     query = Query_Array_Embeded_Document()
-    query.match_array_contain_document_have_key1_B()
+    # query.match_array_contain_document_have_key1_B()
     # query.match_array_have_key1_A_key2_10()
     # query.match_array1_contain_3()
     # query.match_array1_contain_2_and_3()
@@ -181,4 +172,4 @@ if __name__ == "__main__":
     # find.find_item1_change_name()
     # find.find_item2_add_set()
     # find.find_item4_remove_array()
-    # find.find_item5_or_add_new_with_array()
+    find.find_item5_or_add_new_with_array()
