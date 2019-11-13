@@ -1,3 +1,4 @@
+from celery.exceptions import SoftTimeLimitExceeded
 from celery_app import app
 import time
 import gevent
@@ -83,7 +84,7 @@ def config_loggers(*args, **kwags):
     dictConfig(LOGGING)
 
 
-# Task inheritance¶
+# Task inheritance
 # http://docs.celeryproject.org/en/stable/userguide/tasks.html#task-inheritance
 class MyTask(Task):
 
@@ -98,3 +99,13 @@ class MyTask(Task):
 def test_base_class():
     print('bbbbbbbbbbbbbbbbbbbbbbbase task')
     raise KeyError()
+
+
+@app.task
+def time_limited(arg):
+    try:
+        for i in range(0, arg):
+            time.sleep(1)
+            LOG.info('---------------------------------- {}'.format(i))
+    except SoftTimeLimitExceeded as e:
+        LOG.exception(e)
