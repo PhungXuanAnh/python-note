@@ -4,6 +4,7 @@ from tasks_sample import longtime_add, add, print_result, chord_task,\
     print_result_queue1, print_result_queue2, test_base_class, \
     time_limited, MyTask, my_task
 import time
+from celery_app import app
 
 
 def sample_call_a_task():
@@ -136,6 +137,12 @@ def test_time_limited():
 
 def test_call_class_based_Task():
     my_task.apply_async([10], queue='queue1')
+
+    my_task1 = app.register_task(MyTask())
+    my_task1.apply_async([11], queue='queue1')
+    my_task2 = app.register_task(MyTask())
+    my_task2.apply_async([12], queue='queue2')
+
 
 
 if __name__ == '__main__':
