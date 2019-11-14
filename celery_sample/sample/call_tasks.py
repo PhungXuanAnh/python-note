@@ -135,7 +135,7 @@ def test_time_limited():
 
 
 def test_call_class_based_Task():
-    my_task.apply_async([], queue='queue1')
+    my_task.apply_async([10], queue='queue1')
 
 
 if __name__ == '__main__':
