@@ -97,6 +97,7 @@ class MyTask(Task):
         for i in range(0, arg):
             time.sleep(1)
             print('------------------------- {}: This is class based Task {}'.format(i, arg))
+        return arg
 
 
 my_task = app.register_task(MyTask())

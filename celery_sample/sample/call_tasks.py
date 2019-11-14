@@ -138,10 +138,21 @@ def test_time_limited():
 def test_call_class_based_Task():
     my_task.apply_async([10], queue='queue1')
 
-    my_task1 = app.register_task(MyTask())
-    my_task1.apply_async([11], queue='queue1')
-    my_task2 = app.register_task(MyTask())
-    my_task2.apply_async([12], queue='queue2')
+    app.register_task(MyTask()).apply_async([11], queue='queue1')
+    app.register_task(MyTask()).apply_async([12], queue='queue2')
+
+
+def test_call_class_based_Task_in_chord():
+    callback = print_result
+
+    jobs = [
+        app.register_task(MyTask()).s(10).set(queue="queue2"),
+        app.register_task(MyTask()).s(11).set(queue="queue2"),
+        app.register_task(MyTask()).s(12).set(queue="queue2"),
+    ]
+
+    result = chord(jobs, callback.s()).apply_async([], queue='queue1')
+    print('result: {}'.format(result))
 
 
 
@@ -158,5 +169,6 @@ if __name__ == '__main__':
     # test_max_concurrency_with_callback()
     # test_connection_to_broker_error()
     # test_time_limited()
-    test_call_class_based_Task()
+    # test_call_class_based_Task()
+    test_call_class_based_Task_in_chord()
    
