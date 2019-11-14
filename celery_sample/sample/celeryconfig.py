@@ -19,8 +19,8 @@ result_backend = RABBITMQ_URL
 # result_backend = REDIS_URL + '/9'
 # broker_url = REDIS_URL
 
-task_time_limit = 30
-task_soft_time_limit = 25
+task_time_limit = 15
+task_soft_time_limit = 14
 
 imports = ('tasks_sample')
 # task_publish_retry = True

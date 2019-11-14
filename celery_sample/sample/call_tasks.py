@@ -2,7 +2,7 @@ import redis
 from celery import group, chain, chord
 from tasks_sample import longtime_add, add, print_result, chord_task,\
     print_result_queue1, print_result_queue2, test_base_class, \
-    time_limited
+    time_limited, MyTask, my_task
 import time
 
 
@@ -134,6 +134,10 @@ def test_time_limited():
     time_limited.apply_async([31], queue='queue1')
 
 
+def test_call_class_based_Task():
+    my_task.apply_async([], queue='queue1')
+
+
 if __name__ == '__main__':
     # sample_call_a_task()
     # sample_call_long_task()
@@ -146,4 +150,6 @@ if __name__ == '__main__':
     # print('Task result:   ', result.result)
     # test_max_concurrency_with_callback()
     # test_connection_to_broker_error()
-    test_time_limited()
+    # test_time_limited()
+    test_call_class_based_Task()
+   

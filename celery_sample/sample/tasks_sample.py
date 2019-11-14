@@ -92,7 +92,13 @@ class MyTask(Task):
         # print('{0!r} failed: {1!r}'.format(task_id, exc))
         print('ffffffffffffffffffffffffff')
 
-# app.tasks.register(MyTask())
+    def run(self):
+        for i in range(0, 10):
+            time.sleep(1)
+            print('------------------------- {}: This is class based Task'.format(i))
+
+
+my_task = app.register_task(MyTask())
 
 
 @app.task(base=MyTask)
@@ -108,4 +114,5 @@ def time_limited(arg):
             time.sleep(1)
             LOG.info('---------------------------------- {}'.format(i))
     except SoftTimeLimitExceeded as e:
+        LOG.info('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
         LOG.exception(e)
