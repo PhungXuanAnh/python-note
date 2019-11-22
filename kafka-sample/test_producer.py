@@ -4,7 +4,8 @@ from kafka import KafkaProducer
 from kafka.errors import KafkaError
 
 topic = 'my-topic'
-kafka_servers = ['localhost:9092']
+# kafka_servers = ['localhost:9092']
+kafka_servers = ['192.168.1.199:9092']
 # kafka_servers = ['167.71.198.165:9092']
 
 

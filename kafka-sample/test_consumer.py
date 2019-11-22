@@ -2,7 +2,8 @@ import json
 from kafka import KafkaConsumer
 
 topic = 'my-topic'
-kafka_servers = ['localhost:9092']
+# kafka_servers = ['localhost:9092']
+kafka_servers = ['192.168.1.199:9092']
 # kafka_servers = ['167.71.198.165:9092']
 
 consumer = KafkaConsumer(topic,

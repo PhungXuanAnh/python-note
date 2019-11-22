@@ -14,8 +14,15 @@ download:
 start_splash:
 	docker run -p 8050:8050 scrapinghub/splash
 
-json_stack:
+stackoverflow:
 	scrapy crawl stack -o stackoverflow.json -t json
 
-json_face1:
+facebook-selenium:
 	scrapy crawl face1 -o facebook-selenium.json -t json
+
+loza:
+	scrapy crawl loza -o loza.json -t json
+
+
+test:
+	scrapy crawl test

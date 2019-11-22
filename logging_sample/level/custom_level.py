@@ -22,15 +22,14 @@ import sys
 #     
 # setattr(sys.modules[logging.__name__], "debugv", logging_func)
 
-def add_logging_level(LOGGING_FUNC_NAME="debugv", LEVEL_NAME='DEBUGV', LEVEL_NUM=21):
+def add_logging_level(LOGGING_FUNC_NAME="debugv", LEVEL_NAME='DEBUGV', LEVEL_NUM=25):
     '''
     @LOGGING_FUNC_NAME: string: same as info, debug, error, warning
     @LEVEL_NAME: string : same as INFO, DEBUG, ERROR, WARNING
     @LEVEL_NUM: int: same as CRITICAL = 50
                             FATAL = CRITICAL
                             ERROR = 40
-                            WARNING = 30
-                            WARN = WARNING
+                            WARNING = WARN = 30
                             INFO = 20
                             DEBUG = 10
                             NOTSET = 0
@@ -57,8 +56,12 @@ def add_logging_level(LOGGING_FUNC_NAME="debugv", LEVEL_NAME='DEBUGV', LEVEL_NUM
 add_logging_level()
 
 logging.basicConfig(level=logging.INFO)
-logger1 = logging.getLogger("")
-logger1.debugv("aaaaaaaa")
+logger_root = logging.getLogger("")
+logger_root.debugv("aaaaaaaa")
 
 logging.info("bbbbbbbbbbb")
 logging.debugv("ccccccccc")
+
+logger1 = logging.getLogger('logger1')
+logger1.debugv('111111111111111')
+

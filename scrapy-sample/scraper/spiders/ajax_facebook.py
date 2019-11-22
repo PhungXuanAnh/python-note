@@ -89,13 +89,13 @@ class FacebookSpider(scrapy.Spider):
         if response.xpath('//div[contains(@class, "fb_content")]/div/div/div/div/i/u'):  # this line return text: Notice
             self.logger.error('EEEEEEEEEEEEEEEEEEEEEEEEEEEEE')
             self.logger.error('Page: {} require login'.format(response.url))
-            return None
+            return
 
         # check if link is personal page, not fan page
         if response.xpath('//h2/a[contains(@href, "/about")]'):
             self.logger.error('EEEEEEEEEEEEEEEEEEEEEEEEEEEEE')
             self.logger.error('Page: {} is not a fan page'.format(response.url))
-            return None
+            return
 
         # get posts controller, it include information about like, share, comment, view, and post id
         scripts = response.xpath('//script').extract()

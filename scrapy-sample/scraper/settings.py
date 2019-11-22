@@ -16,7 +16,7 @@ NEWSPIDER_MODULE = 'scraper.spiders'
 
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
-#USER_AGENT = 'scraper (+http://www.yourdomain.com)'
+USER_AGENT = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.87 Safari/537.36'
 
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = False
@@ -31,9 +31,6 @@ ROBOTSTXT_OBEY = False
 # The download delay setting will honor only one of:
 #CONCURRENT_REQUESTS_PER_DOMAIN = 16
 #CONCURRENT_REQUESTS_PER_IP = 16
-
-# Disable cookies (enabled by default)
-COOKIES_ENABLED = False
 
 # Disable Telnet Console (enabled by default)
 #TELNETCONSOLE_ENABLED = False
@@ -96,7 +93,8 @@ DUPEFILTER_CLASS = 'scrapy_splash.SplashAwareDupeFilter'
 HTTPCACHE_STORAGE = 'scrapy_splash.SplashAwareFSCacheStorage'
 
 COOKIES_ENABLED = True  # Nếu cần dùng Cookie
-COOKIE_DEBUG = True
+COOKIES_DEBUG = True
+
 SPLASH_COOKIES_DEBUG = True
 
 

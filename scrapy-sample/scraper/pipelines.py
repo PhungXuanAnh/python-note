@@ -9,8 +9,8 @@ from sqlalchemy import create_engine, Table, Column, MetaData, Integer, Text, se
 import pymongo
 import logging
 from scrapy.exceptions import DropItem
-from scrapy.conf import settings
 from scrapy.settings import Settings
+from scraper import settings
 
 from scraper.spiders.stackoverflow import StackOverFlowCom, StackOverFlowExtend
 
@@ -101,9 +101,9 @@ class StackPipelineExtend(object):
 class StackMongoPipeline(object):
 
     def __init__(self):
-        connection = pymongo.MongoClient(settings['MONGODB_SERVER'], settings['MONGODB_PORT'])
-        db = connection[settings['MONGODB_DB']]
-        self.collection = db[settings['MONGODB_COLLECTION']]
+        connection = pymongo.MongoClient(settings.MONGODB_SERVER, settings.MONGODB_PORT)
+        db = connection[settings.MONGODB_DB]
+        self.collection = db[settings.MONGODB_COLLECTION]
 
     def process_item(self, item, spider):
         valid = True
