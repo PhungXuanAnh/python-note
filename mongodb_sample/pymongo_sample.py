@@ -1,5 +1,5 @@
 import pymongo
-from mongo_url import AUTHEN_URL
+from url import AUTHEN_URL
 
 client = pymongo.MongoClient('localhost', 27018)
 client = pymongo.MongoClient(AUTHEN_URL)
