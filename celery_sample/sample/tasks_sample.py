@@ -1,3 +1,4 @@
+from celery import maybe_signature
 from celery.exceptions import SoftTimeLimitExceeded
 from celery_app import app
 import time
@@ -89,10 +90,13 @@ def config_loggers(*args, **kwags):
 class MyTask(Task):
 
     def on_failure(self, exc, task_id, args, kwargs, einfo):
-        # print('{0!r} failed: {1!r}'.format(task_id, exc))
-        print('ffffffffffffffffffffffffff')
+        print('oooooooooooooooooooooooooooooooooooooooooooooo on_failure {0!r} failed: {1!r}'.format(task_id, exc))
+        return None
 
     def run(self, arg):
+        if arg == 6:
+            raise Exception('------------------------------------------raise exception')
+
         print('------------------------------- arg = {}'.format(arg))
         for i in range(0, arg):
             time.sleep(1)
@@ -101,6 +105,15 @@ class MyTask(Task):
 
 
 my_task = app.register_task(MyTask())
+
+
+@app.task(name='super_task.error_callback')
+def error_callback(*args, **kwargs):
+    print('eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee')
+    print('error_callback')
+    print(args)
+    print(kwargs)
+    return 'error'
 
 
 @app.task(base=MyTask)
@@ -118,3 +131,10 @@ def time_limited(arg):
     except SoftTimeLimitExceeded as e:
         LOG.info('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
         LOG.exception(e)
+
+
+@app.task(bind=True)
+def unlock_chord(self, group, callback, interval=1, max_retries=None):
+    if group.ready():
+        return maybe_signature(callback).delay(group.join())
+    raise self.retry(countdown=interval, max_retries=max_retries)

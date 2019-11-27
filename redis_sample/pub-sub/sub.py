@@ -30,8 +30,8 @@ def sub2(r, name):
 
 r = redis.StrictRedis(host='localhost', port=6379, db=10)
 
-Process(target=sub1, args=(r, 'reader1')).start()
-# result = sub2(r, 'reader2')
-result = sub1(r, 'reader11')
+Process(target=sub1, args=(r, 'reader01')).start()
+result = sub2(r, 'reader02')
+result = sub1(r, 'reader10')
 print('result: {}'.format(result))
 print(type(result))
