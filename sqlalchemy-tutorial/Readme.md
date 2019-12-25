@@ -6,7 +6,14 @@ Các bước code được thực hiện theo [link](https://docs.sqlalchemy.org
 
 # 1. Tạo database server
 
-[PostgreSQL](https://github.com/PhungXuanAnh/tech-note/blob/master/devops/docker/docker-command.md#43-postgresql)
+```shell
+docker run -d --name test-postgresql \
+				-p 5433:5432 \
+				-v /tmp/test-postgresql-data:/var/lib/postgresql/data \
+				-e POSTGRES_PASSWORD=123456 \
+		 		-e POSTGRES_DB=test_database \
+				postgres:9.6
+```
 
 [MySQL](https://github.com/PhungXuanAnh/tech-note/blob/master/devops/docker/docker-command.md#44-mysql)
 
