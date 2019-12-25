@@ -30,7 +30,14 @@ class Aggregation_Divide(object):
     def __init__(self):
         insert_sample_data([
             {"_id": 1, "name": "A", "hours": 80, "resources": 10, 'OT': 3},
-            {"_id": 2, "name": "B", "hours": 40, "resources": 4, 'OT': 1}
+            {"_id": 2, "name": "B", "hours": 40, "resources": 40, 'OT': 1},
+            {"_id": 3, "name": "C", "hours": 30, "resources": 41, 'OT': 2},
+            {"_id": 4, "name": "D", "hours": 20, "resources": 24, 'OT': 1},
+            {"_id": 5, "name": "E", "hours": 40, "resources": 67, 'OT': 4},
+            {"_id": 6, "name": "F", "hours": 45, "resources": 89, 'OT': 5},
+            {"_id": 7, "name": "G", "hours": 60, "resources": 90, 'OT': 2},
+            {"_id": 8, "name": "H", "hours": 40, "resources": 51, 'OT': 1},
+            {"_id": 9, "name": "I", "hours": 40, "resources": 42, 'OT': 1},
         ])
 
     def divide_8(self):
