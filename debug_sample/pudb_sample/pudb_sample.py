@@ -19,9 +19,9 @@ def worker():
 
     from pudb import remote
     remote.set_trace(term_size=(150, 50),
-                     #  host='0.0.0.0',    # listen on external ip of remote server
+                     #  host='0.0.0.0',    # external ip listen on remote server
                      host='localhost',
-                     port=12345)        # listen on port 12345 of remote server
+                     port=12345)        # port listen is 12345 on remote server
 
     i = 0
     while i < 10:

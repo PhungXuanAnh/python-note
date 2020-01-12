@@ -1,3 +1,12 @@
+"""
+HOW TO GET SLACK TOKEN API
+
+1. Login to your workspacke: https://slack.com/signin
+2. Acess url: https://api.slack.com/custom-integrations/legacy-tokens
+3. Đi đến phần Legacy token generator để lấy token
+
+"""
+
 import json
 import logging
 from slacker_log_handler import SlackerLogHandler, NoStacktraceFormatter

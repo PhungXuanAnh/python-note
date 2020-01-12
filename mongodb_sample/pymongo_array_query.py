@@ -162,7 +162,7 @@ if __name__ == "__main__":
     insert_sample_data()
 
     query = Query_Array_Embeded_Document()
-    # query.match_array_contain_document_have_key1_B()
+    query.match_array_contain_document_have_key1_B()
     # query.match_array_have_key1_A_key2_10()
     # query.match_array1_contain_3()
     # query.match_array1_contain_2_and_3()
@@ -172,4 +172,4 @@ if __name__ == "__main__":
     # find.find_item1_change_name()
     # find.find_item2_add_set()
     # find.find_item4_remove_array()
-    find.find_item5_or_add_new_with_array()
+    # find.find_item5_or_add_new_with_array()

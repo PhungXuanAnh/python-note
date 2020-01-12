@@ -6,8 +6,7 @@ from config import init_session
 
 
 Session, engine = init_session(server_type='postgres', server_echo=False)
-# TODO: check again with postgres, it encountered error with password
-# Session = init_session(server_type='postgres', server_echo=False)
+# Session = init_session(server_type='mysql', server_echo=False)
 session = Session()
 
 
@@ -169,6 +168,6 @@ if __name__ == "__main__":
     # query_data_by_2_column()
     # query_data_by_class_and_column()
     # query_filter_by()
-    # query_filter()
+    query_filter()
     query_order_offset_limit()
     # query_1_or_many_result()

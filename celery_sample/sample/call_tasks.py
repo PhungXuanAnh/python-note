@@ -35,7 +35,7 @@ def sample_callback():
 def sample_chains():
     """[
         chains cac task voi nhau (nối với nhau)
-        http://docs.celeryproject.org/en/master/userguide/canvas.html#chains    
+        http://docs.celeryproject.org/en/master/userguide/canvas.html#chains
     ]
     """
     c = chain(add.s(1, 1), add.s(1), add.s(1))
@@ -146,14 +146,15 @@ def test_call_class_based_Task_in_chord():
     callback = print_result
 
     jobs = [
-        app.register_task(MyTask()).s(10).set(queue="queue2"),
-        app.register_task(MyTask()).s(11).set(queue="queue2"),
-        app.register_task(MyTask()).s(12).set(queue="queue2"),
+        app.register_task(MyTask()).s(7).set(queue="queue2"),
+        app.register_task(MyTask()).s(6).set(queue="queue2"),
+        app.register_task(MyTask()).s(5).set(queue="queue1"),
+        app.register_task(MyTask()).s(4).set(queue="queue1"),
+        app.register_task(MyTask()).s(3).set(queue="queue1"),
     ]
 
-    result = chord(jobs, callback.s()).apply_async([], queue='queue1')
+    result = chord(jobs, callback.s().set(link_error=['super_task.error_callback'])).apply_async([], queue='queue1', interval=3)
     print('result: {}'.format(result))
-
 
 
 if __name__ == '__main__':
@@ -162,7 +163,6 @@ if __name__ == '__main__':
     # sample_callback()
     # sample_chains()
     # sample_group()
-
     # result = test_base_class.delay()
     # print('Task finished? ', result.ready())
     # print('Task result:   ', result.result)
@@ -170,5 +170,4 @@ if __name__ == '__main__':
     # test_connection_to_broker_error()
     # test_time_limited()
     # test_call_class_based_Task()
-    test_call_class_based_Task_in_chord()
-   
+    # test_call_class_based_Task_in_chord()

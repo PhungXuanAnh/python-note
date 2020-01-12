@@ -1,6 +1,14 @@
 import os
 
 # ==================== RABBITMQ ===========================================
+"""
+Create rabbitmq server with command:
+docker rm -f test-rabbitmq
+docker run -d --name test-rabbitmq \
+               -p 15673:15672  \
+               -p 5673:5672  \
+               rabbitmq:3.8.0-management
+"""
 RABBITMQ_HOST = os.getenv('RABBITMQ_HOST', '127.0.0.1')
 RABBITMQ_PORT = os.getenv('RABBITMQ_PORT', 5673)
 PUBLIC_EVENT_QUEUE = os.getenv('PUBLIC_EVENT_QUEUE', 'public_event')
@@ -23,8 +31,8 @@ broker_url = REDIS_URL
 broker_url = 'memory://localhost/'
 # result_backend = 'memory://localhost/'
 
-task_time_limit = 15
-task_soft_time_limit = 14
+task_time_limit = 150
+task_soft_time_limit = 140
 
 imports = ('tasks_sample')
 # task_publish_retry = True
