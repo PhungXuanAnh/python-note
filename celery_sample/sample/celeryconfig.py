@@ -13,11 +13,15 @@ REDIS_PORT = os.getenv('REDIS_URL', 7379)
 REDIS_URL = "redis://{host}:{port}".format(host=REDIS_HOST, port=REDIS_PORT)
 
 # ==================== CELERY ===========================================
-broker_url = RABBITMQ_URL
-result_backend = RABBITMQ_URL
+# broker_url = RABBITMQ_URL
+# result_backend = RABBITMQ_URL
+
 # result_backend = 'rpc://'
 # result_backend = REDIS_URL + '/9'
-# broker_url = REDIS_URL
+broker_url = REDIS_URL
+
+broker_url = 'memory://localhost/'
+# result_backend = 'memory://localhost/'
 
 task_time_limit = 15
 task_soft_time_limit = 14
