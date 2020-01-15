@@ -3,10 +3,10 @@ import traceback
 from kafka import KafkaProducer
 from kafka.errors import KafkaError
 
-topic = 'my-topic'
-# kafka_servers = ['localhost:9092']
-kafka_servers = ['192.168.1.199:9092']
-# kafka_servers = ['167.71.198.165:9092']
+topic = 'my-topic2'
+kafka_servers = ['localhost:9092']
+# kafka_servers = ['192.168.1.199:9092']
+# kafka_servers = ['134.209.97.142:9092']
 
 
 def on_send_success(record_metadata):
