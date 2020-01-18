@@ -11,7 +11,8 @@ def sample_call_a_task():
     result = add.apply_async([1, 1], queue='queue1')
     time.sleep(1)
     print('Task finished? ', result.ready())
-    print('Task result:   ', result.result)
+    print('Task result 1:   ', result.result)
+    print('Task result 2:   ', result.get())        # this line will block util get result
     print_result_queue1.delay('task from queue1')
     print_result_queue2.delay('task from queue2')
 
