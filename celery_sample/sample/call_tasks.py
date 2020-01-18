@@ -158,7 +158,7 @@ def test_call_class_based_Task_in_chord():
 
 
 if __name__ == '__main__':
-    # sample_call_a_task()
+    sample_call_a_task()
     # sample_call_long_task()
     # sample_callback()
     # sample_chains()
