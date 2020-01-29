@@ -27,7 +27,7 @@ import logging, sys
 logging.basicConfig(
     level=logging.DEBUG,
     format="%(levelname)-7s [%(asctime)s] [%(module)s.%(funcName)s:%(lineno)d] : %(message)s",
-    datefmt="%H:%M:%S",
+    datefmt="%Y-%m-%d %H:%M:%S",
     stream=sys.stdout,
 #     filename="/media/xuananh/data/Temp/example.log",
     )

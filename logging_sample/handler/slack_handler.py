@@ -33,8 +33,9 @@ logger.addHandler(slack_handler)
 # OPTIONAL: Define a log message formatter.
 # If you have set stack_trace=True, any exception stack traces will be included as Slack message attachments.
 # You therefore need to use NoStacktraceFormatter as a base to exclude the trace from the main message text.
-formatter = NoStacktraceFormatter(
-    '%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+log_formatter = '`[%(asctime)s]` - %(name)s - %(levelname)s - %(message)s'
+datetime_formatter = "%Y-%m-%d %H:%M:%S"
+formatter = NoStacktraceFormatter(log_formatter, datetime_formatter)
 slack_handler.setFormatter(formatter)
 
 # Define the minimum level of log messages you want to send to Slack
