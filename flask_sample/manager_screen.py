@@ -1,13 +1,16 @@
 import sys
 import time
 from os.path import abspath, join, dirname
-
-sys.path.append(abspath(join(dirname(__file__), '..')))
-
-from time_sample import time_rest
+from flask import Flask, jsonify, abort, make_response, request, url_for
 import subprocess
 import threading
-from flask import Flask, jsonify, abort, make_response, request, url_for
+import socket
+import requests
+
+sys.path.append(abspath(join(dirname(__file__), '..')))
+from network_sample.get_ip import get_ip_which_can_connect_to_internet1
+from time_sample import time_rest
+
 
 app = Flask(__name__)
 
@@ -48,7 +51,27 @@ def kill_time_rest():
     time_rest_t.start()
 
 
+def send_computer_info():
+    data = {
+        'name': socket.gethostname(),
+        'ip': get_ip_which_can_connect_to_internet1()
+    }
+
+    headers = {
+        "accept": "application/json",
+        "Content-Type": "application/json"
+    }
+
+    url = 'https://ubuntu-screen-manager-1.herokuapp.com/api/v1/computer/'
+    # url = 'http://localhost:5000/api/v1/computer/'
+    resp = requests.post(url, json=data, headers=headers)
+    print(resp.status_code)
+    print(resp.text)
+
+
 if __name__ == '__main__':
+    send_computer_info()
+
     allow_run('yes')
     t_working = 1800
     t_break = 300

@@ -5,7 +5,6 @@ import time
 import logging
 import sys
 import os
-from os import environ
 import multiprocessing
 from logging.handlers import RotatingFileHandler
 
