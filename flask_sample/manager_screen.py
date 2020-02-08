@@ -17,10 +17,10 @@ def allow_run(data):
         f.write(data)
 
 
-def send_computer_info():
+def send_computer_info(ip):
     data = {
         'name': socket.gethostname(),
-        'ip': get_ip_which_can_connect_to_internet1()
+        'ip': ip
     }
 
     headers = {
@@ -35,9 +35,23 @@ def send_computer_info():
     print(resp.text)
 
 
-app = Flask(__name__)
+def check_and_update_ip():
+    global current_ip
+    while True:
+        print('------------------------------- current ip: ' + current_ip)
 
-send_computer_info()
+        time.sleep(1)
+        try:
+            ip = get_ip_which_can_connect_to_internet1()
+            if ip != current_ip:
+                send_computer_info(ip)
+                current_ip = ip
+        except Exception:
+            pass
+
+
+current_ip = get_ip_which_can_connect_to_internet1()
+app = Flask(__name__)
 
 allow_run('yes')
 t_working = 1800
@@ -79,4 +93,6 @@ def kill_time_rest():
 
 
 if __name__ == '__main__':
+    send_computer_info(current_ip)
+    threading.Thread(target=check_and_update_ip, args=[]).start()
     app.run(host='0.0.0.0', port=6688, debug=False)
