@@ -40,7 +40,7 @@ def check_and_update_ip():
     while True:
         print('------------------------------- current ip: ' + current_ip)
 
-        time.sleep(3)
+        time.sleep(1.5)
         try:
             ip = get_ip_which_can_connect_to_internet1()
             if ip != current_ip:
