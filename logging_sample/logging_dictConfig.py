@@ -8,7 +8,7 @@ with open('/home/xuananh/Dropbox/Work/Other/slack-token-api-key.json', "r") as i
     SLACK_API_KEY = json.load(in_file)['phungxuananh']
 
 
-LOGGING_SLACK_API_KEY = ""
+LOGGING_SLACK_API_KEY = SLACK_API_KEY
 LOGGING_SLACK_CHANNEL = "#general"
 LOG_DIR = 'logs'
 LOGGING = {
