@@ -1,17 +1,18 @@
 #!/usr/bin/env python
-import paramiko, time
+import paramiko
+import time
 
 ssh = paramiko.SSHClient()
 ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 
-# ssh.connect(hostname='10.64.0.169', 
-#             port=22, 
-#             username='ubuntu', 
+# ssh.connect(hostname='10.64.0.169',
+#             port=22,
+#             username='ubuntu',
 #             key_filename='/home/xuananh/.ssh/keypair1.pem'
 #             )
-ssh.connect(hostname='localhost', 
-            port=22, 
-            username='xuananh', 
+ssh.connect(hostname='localhost',
+            port=22,
+            username='xuananh',
             password='1'
             )
 
@@ -28,9 +29,9 @@ time.sleep(2)
 
 while remote_conn.recv_ready():
     time.sleep(1)
-    print (remote_conn.recv(1024))
+    print(remote_conn.recv(1024))
 
-print (remote_conn.recv_ready())
+print(remote_conn.recv_ready())
 remote_conn.send('exit\n')
 if remote_conn.exit_status_ready():
-    print (remote_conn.recv_exit_status())
+    print(remote_conn.recv_exit_status())

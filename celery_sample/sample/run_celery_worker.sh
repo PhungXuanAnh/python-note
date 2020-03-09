@@ -1,4 +1,5 @@
 watchmedo auto-restart --directory . \
+                        --ignore-pattern='*/call_tasks.py' \
                         --pattern '*.py' \
                         --recursive \
                         -- celery worker \
