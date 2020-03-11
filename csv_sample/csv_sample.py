@@ -37,19 +37,19 @@ def read_in_dict():
         print(f'Processed {line_count} lines.')
 
 
-def write_csv_line_by_line():
-    with open('employee_file1.csv', mode='w') as employee_file:
-        employee_writer = csv.writer(employee_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+def write_csv_line_by_line(delimiter):
+    with open('employee_file1.csv', mode='w+') as employee_file:
+        employee_writer = csv.writer(employee_file, delimiter=delimiter, quotechar='"', quoting=csv.QUOTE_MINIMAL)
 
         employee_writer.writerow(['emp_name', 'dept', 'birth_month'])
         employee_writer.writerow(['John Smith', 'Accounting', 'November'])
         employee_writer.writerow(['Erica Meyers', 'IT', 'March'])
 
 
-def write_csv_from_dict():
-    with open('employee_file2.csv', mode='w') as csv_file:
+def write_csv_from_dict(delimiter):
+    with open('employee_file2.csv', mode='w+') as csv_file:
         fieldnames = ['emp_name', 'dept', 'birth_month']
-        writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
+        writer = csv.DictWriter(csv_file, fieldnames=fieldnames, delimiter=delimiter)
 
         writer.writeheader()
         writer.writerow({'emp_name': 'John Smith', 'dept': 'Accounting', 'birth_month': 'November'})
@@ -59,5 +59,5 @@ def write_csv_from_dict():
 if __name__ == "__main__":
     # read_in_dict()
     # read_line_by_line()
-    # write_csv_line_by_line()
-    write_csv_from_dict()
+    write_csv_line_by_line(delimiter='|')
+    # write_csv_from_dict(delimiter=',')
