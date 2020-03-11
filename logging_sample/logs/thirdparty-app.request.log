@@ -1,6 +1,0 @@
-[2018-05-23 10:41:50,073] [logging_sample.<module>:104] ERROR: bbbbbbbbbbbbbbbbb
-[2018-05-23 10:41:51,040] [logging_sample.<module>:108] INFO: bbbbbbbbbbbbbbbbb
-[2018-05-23 10:42:04,829] [logging_sample.<module>:104] ERROR: bbbbbbbbbbbbbbbbb
-[2018-05-23 10:42:05,808] [logging_sample.<module>:108] INFO: bbbbbbbbbbbbbbbbb
-[2018-05-23 10:53:07,567] [logging_sample.<module>:108] ERROR: bbbbbbbbbbbbbbbbb
-[2018-05-23 10:53:08,608] [logging_sample.<module>:112] INFO: bbbbbbbbbbbbbbbbb

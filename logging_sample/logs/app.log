@@ -1,8 +1,0 @@
-[2018-05-23 10:41:49,235] [logging_sample.<module>:103] ERROR: aaaaaaaaaaaaaaaaaaa
-[2018-05-23 10:41:51,039] [logging_sample.<module>:107] INFO: aaaaaaaaaaaaaaaaaaa
-[2018-05-23 10:42:04,340] [logging_sample.<module>:103] ERROR: aaaaaaaaaaaaaaaaaaa
-[2018-05-23 10:42:05,808] [logging_sample.<module>:107] INFO: aaaaaaaaaaaaaaaaaaa
-[2018-05-23 10:46:18,553] [logging_sample.<module>:105] ERROR: aaaaaaaaaaaaaaaaaaa
-[2018-05-23 10:46:46,216] [logging_sample.<module>:107] ERROR: aaaaaaaaaaaaaaaaaaa
-[2018-05-23 10:53:06,992] [logging_sample.<module>:107] ERROR: aaaaaaaaaaaaaaaaaaa
-[2018-05-23 10:53:08,608] [logging_sample.<module>:111] INFO: aaaaaaaaaaaaaaaaaaa
