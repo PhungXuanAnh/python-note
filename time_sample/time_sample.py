@@ -93,3 +93,5 @@ print(datetime.datetime.now().day)
 print(datetime.datetime.now().hour)
 print(datetime.datetime.now().minute)
 print(datetime.datetime.now().second)
+
+print(datetime.date(1991, 1, 1))

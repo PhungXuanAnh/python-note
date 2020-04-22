@@ -112,6 +112,8 @@ def logging_config():
 
 
 def run_time_break(time_to_work, time_to_break):
+    time.sleep(10)
+    lock_screen()
     while is_run():
         working_time(times=time_to_work)
         break_time(time_to_break)
