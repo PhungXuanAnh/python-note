@@ -5,6 +5,14 @@ from unittest import mock, TestCase
 from unittest_sample.app import services
 
 
+USERNAME, PROPERTIES = "NGUYEN VAN C", "1000 billion USD"
+def user_context(arg):
+    if arg == "properties":
+        return PROPERTIES
+
+    if arg == "another_base_user":
+        return mock.Mock(username=USERNAME)
+
 class TestSampleMock(TestCase):
     @mock.patch("unittest_sample.app.services.User")
     def test_get_a_user(self, mock_User):
@@ -26,4 +34,12 @@ class TestSampleMock(TestCase):
         mock_User.return_value.get_name.return_value = data
         result = services.get_user_name()
         self.assertEqual(result, data, result)
+
+    @mock.patch("unittest_sample.app.services.User.context")
+    def test_get_another_base_user_name_and_his_properties(self, mock_User_context):
+        data = 'nguyen van a'
+        mock_User_context.get = mock.Mock(side_effect=user_context)
+        name, properties = services.get_another_base_user_name_and_his_properties()
+        self.assertEqual(name, USERNAME)
+        self.assertEqual(properties, PROPERTIES)
 
