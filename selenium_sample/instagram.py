@@ -1,6 +1,7 @@
 import json
 import time
 import traceback
+from selenium import webdriver
 from selenium.webdriver import Chrome
 from selenium.webdriver import ChromeOptions
 from selenium.webdriver.common.keys import Keys
@@ -13,6 +14,9 @@ driver = Chrome(executable_path='webdriver/chromedriver',
 
 # get website
 driver.get("https://www.instagram.com/tamlyhoctinhyeu/")
+
+# mazimize the browser
+# driver.maximize_window()
 
 # click on Login with Facebook
 login_facebook_button = None
@@ -40,25 +44,53 @@ while not followers:
     try:
         followers = driver.find_element_by_xpath(".//a[@href='/tamlyhoctinhyeu/followers/']")
         time.sleep(1)
-    except:
-        traceback.print_exc()
+    except Exception as e:
+        print(e.args)
         
 followers.click()
 
 # move mouse to follower and scroll
-followers_menu = None
-while not followers_menu:
+accounts = None
+while not accounts:
     try:
-        followers_menu = driver.find_element_by_xpath(".//div[@role='presentation']/div[@role='dialog']/div/div[2]")
+        accounts = driver.find_elements_by_xpath(".//div[@role='presentation']/div/div/div[2]/ul/div/li")
         time.sleep(1)
-    except:
-        traceback.print_exc()
+    except Exception as e:
+        print(e.args)
 
-action = ActionChains(driver)
-action.move_to_element(followers_menu)
-action.perform()
+print(driver.command_executor._url)
+print(driver.session_id)
 
-# followers_menu.send_keys(Keys.PAGE_DOWN)
+for account in accounts:
+    print(account.find_element_by_xpath("/div/div/div/div/a").text)
 
-# mazimize the browser
-# driver.maximize_window()
+exit(0)
+
+last_accounts = accounts[-1]
+driver.execute_script("arguments[0].scrollIntoView(true);", last_accounts)
+time.sleep(1) 
+
+while True:
+    try:
+        new_accounts = driver.find_elements_by_xpath(".//div[@role='presentation']/div/div/div[2]/ul/div/li")
+        last_accounts = new_accounts[-1]
+        driver.execute_script("arguments[0].scrollIntoView(true);", last_accounts)
+        time.sleep(1)   
+        print(len(new_accounts))
+        if len(new_accounts) > 3600:
+            break
+    except Exception as e:
+        print(e.args)
+        new_accounts = driver.find_elements_by_xpath(".//div[@role='presentation']/div/div/div[2]/ul/div/li")
+        last_accounts = new_accounts[-1]
+        driver.execute_script("arguments[0].scrollIntoView(true);", last_accounts)
+        print(driver.command_executor._url)
+        print(driver.session_id)
+
+
+
+
+
+        
+
+
