@@ -6,15 +6,13 @@ from selenium.webdriver.support.ui import Select
 from selenium.webdriver.common.action_chains import ActionChains
 
 
-url = "http://viettuts.vn"
-chrome_path = '/home/xuananh/Downloads/chromedriver_linux64/chromedriver'
 # chrome driver download from link: https://chromedriver.storage.googleapis.com/index.html?path=2.44/
 
 chrome_option = ChromeOptions()
-driver = Chrome(executable_path=chrome_path,
+driver = Chrome(executable_path='webdriver/chromedriver',
                 chrome_options=chrome_option)
 driver.maximize_window()
-driver.get(url)
+driver.get("http://viettuts.vn")
 
 web_menu = driver.find_element_by_xpath(".//a[@href='/web']")
 
