@@ -58,27 +58,46 @@ while not accounts:
     except Exception as e:
         print(e.args)
 
-print(driver.command_executor._url)
-print(driver.session_id)
 
-for account in accounts:
-    print(account.find_element_by_xpath("/div/div/div/div/a").text)
+# print(driver.command_executor._url)
+# print(driver.session_id)
+# exit(0)
 
-exit(0)
 
+# scroll until end
 last_accounts = accounts[-1]
 driver.execute_script("arguments[0].scrollIntoView(true);", last_accounts)
 time.sleep(1) 
 
+input_value = None
+last_length = 0
 while True:
     try:
         new_accounts = driver.find_elements_by_xpath(".//div[@role='presentation']/div/div/div[2]/ul/div/li")
+        
+        if last_length == len(new_accounts):
+            
+            input_value = input("The data length is not changed, do you want to stop [1/0]: ")
+            if input_value == "1":
+                print(driver.command_executor._url)
+                print(driver.session_id)
+                break
+
+            middle_account = new_accounts[int(len(new_accounts)/2)]
+            driver.execute_script("arguments[0].scrollIntoView(true);", middle_account)
+        else:
+            last_length = len(new_accounts)
+
         last_accounts = new_accounts[-1]
         driver.execute_script("arguments[0].scrollIntoView(true);", last_accounts)
-        time.sleep(1)   
+        time.sleep(2)   
         print(len(new_accounts))
         if len(new_accounts) > 3600:
-            break
+            input_value = input("The data length > 3600, do you want to stop [1/0]: ")
+            if input_value == "1":
+                print(driver.command_executor._url)
+                print(driver.session_id)
+                break
     except Exception as e:
         print(e.args)
         new_accounts = driver.find_elements_by_xpath(".//div[@role='presentation']/div/div/div[2]/ul/div/li")
@@ -86,6 +105,7 @@ while True:
         driver.execute_script("arguments[0].scrollIntoView(true);", last_accounts)
         print(driver.command_executor._url)
         print(driver.session_id)
+
 
 
 
