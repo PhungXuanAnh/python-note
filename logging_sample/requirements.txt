@@ -1,2 +1,2 @@
-slacker_log_handler==1.6.1
+slacker_log_handler
 pika==0.11.2
