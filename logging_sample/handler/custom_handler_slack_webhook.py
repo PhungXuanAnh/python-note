@@ -17,32 +17,35 @@ class SlackWebhookHandler(logging.Handler):
         except:
             traceback.print_exc()
         
-logging.basicConfig(level=logging.INFO,
+
+if __name__ == "__main__":
+
+    logging.basicConfig(level=logging.INFO,
                     format='%(name)-12s %(asctime)s  %(levelname)-8s %(message)s',
                     datefmt='%m-%d %H:%M',
                     stream=sys.stdout)
 
-logger1 = logging.getLogger('logger1')
-logger2 = logging.getLogger('logger2')
+    logger1 = logging.getLogger('logger1')
+    logger2 = logging.getLogger('logger2')
 
-#======================================== add handler
-"""
-    1. How to get webhook, go to: https://api.slack.com/apps
-    2. Choose your app in below of website
-    3. Choose `Incomming Webhooks`
-    4. Choose `Activate Incoming Webhooks`
-    5. Choose `Add New Webhook to Workspace`
-"""
-WEBHOOK_URL = open("/Users/xuananh/Dropbox/cantec/advesa_slack_webhook_for_app_cantec-alert.txt", "r").read()
-rabbit_handler = SlackWebhookHandler(webhook_url=WEBHOOK_URL)
-rabbit_handler.setLevel(logging.INFO)
-rabbit_handler.setFormatter(logging.Formatter(
-                         '%(name)-20s: %(levelname)-20s %(message)s'))
-logging.getLogger("logger1").addHandler(rabbit_handler)
-#========================================
+    #======================================== add handler
+    """
+        1. How to get webhook, go to: https://api.slack.com/apps
+        2. Choose your app in below of website
+        3. Choose `Incomming Webhooks`
+        4. Choose `Activate Incoming Webhooks`
+        5. Choose `Add New Webhook to Workspace`
+    """
+    WEBHOOK_URL = open("/Users/xuananh/Dropbox/cantec/advesa_slack_webhook_for_app_cantec-alert.txt", "r").read()
+    slack_webhook_handler = SlackWebhookHandler(webhook_url=WEBHOOK_URL)
+    slack_webhook_handler.setLevel(logging.INFO)
+    slack_webhook_handler.setFormatter(logging.Formatter(
+                            '`%(name)-12s` - [%(asctime)s] - `%(levelname)-3s`: %(message)s'))
+    logging.getLogger("logger1").addHandler(slack_webhook_handler)
+    #========================================
 
-logger1.error('11111111111111111111')
-logger2.error('22222222222222222222')
-logging.error('00000000000000000000')
+    logger1.error('11111111111111111111')
+    logger2.error('22222222222222222222')
+    logging.error('00000000000000000000')
 
 
