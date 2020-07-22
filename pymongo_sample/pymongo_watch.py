@@ -39,8 +39,10 @@ db = client.cantec_delivery
 collection = db.tasks
 
 # --------------------------------- blocking listener ----------------------------------------
+
+full_document_type = "updateLookup"
 try:
-    with collection.watch(pipeline) as stream:
+    with collection.watch(pipeline, full_document_type) as stream:
         for change in stream:
             # Do something
             print(change)
