@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 '''
 Hướng dẫn:
+    0. them debugpy vao requirements.txt của remote server và máy local
     1. thay địa chỉ remote server của dòng comment bên dưới
     2. thay đổi [host, port, localRoot, remoteRoot] trong file .vscode/launch.json
     3. chọn breakpoint, có 2 cách:
