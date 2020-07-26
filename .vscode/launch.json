@@ -8,6 +8,7 @@
             "name": "Python: Remote Attach",
             "type": "python",
             "request": "attach",
+            "justMyCode": false, // set bang false de co the jump den system lib khi debug
             "port": 5678,
             "host": "localhost",
             "pathMappings": [
