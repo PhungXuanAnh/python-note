@@ -3,6 +3,8 @@
 Hướng dẫn:
     0. them debugpy vao requirements.txt của remote server và máy local
     1. thay địa chỉ remote server của dòng comment bên dưới
+        đảm bảo vscode có thể kết nối đến remote server,
+        ví dụ trong docker phải expose cổng, hoặc mở firewall
     2. thay đổi [host, port, localRoot, remoteRoot] trong file .vscode/launch.json
     3. chọn breakpoint, có 2 cách:
         3.1. Cách 1: chọn breakpoint trực tiếp bằng cái chấm màu đỏ,
