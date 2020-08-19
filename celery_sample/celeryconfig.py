@@ -21,18 +21,18 @@ REDIS_PORT = os.getenv('REDIS_URL', 7379)
 REDIS_URL = "redis://{host}:{port}".format(host=REDIS_HOST, port=REDIS_PORT)
 
 # ==================== CELERY ===========================================
-# broker_url = RABBITMQ_URL
-# result_backend = RABBITMQ_URL
+broker_url = RABBITMQ_URL
+result_backend = RABBITMQ_URL
 
-broker_url = REDIS_URL
-result_backend = REDIS_URL + '/9'
+# broker_url = REDIS_URL
+# result_backend = REDIS_URL + '/9'
 
 # this broker memory cannot call task
 # broker_url = 'memory://localhost//'
 # result_backend = 'db+sqlite:///celery-task-results.sqlite'
 
-task_time_limit = 150
-task_soft_time_limit = 140
+# task_time_limit = 150
+# task_soft_time_limit = 140
 
 imports = ('tasks_sample')
 # task_publish_retry = True

@@ -27,6 +27,28 @@ def longtime_add(x, y):
     return x + y
 
 
+@app.task(max_retries=500)
+def fail_task(task_id, number=0):
+    try:
+        LOG.info('=============================== {}, task id: {}'.format(number, task_id))
+        raise Exception("")
+    except:
+        print("###############")
+        fail_task.retry(args=[task_id, number], countdown=3)
+
+@app.task
+def forever_task(arg):
+    while True:
+        time.sleep(1)
+        LOG.info('=============================== {}'.format(arg))
+
+
+@app.task
+def countdown_task(number):
+    for i in range(0, number):
+        LOG.info('=============================== {}'.format(i))
+
+
 @app.task
 def print_hello():
     LOG.info('=============================== Hello')
