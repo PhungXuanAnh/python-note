@@ -160,3 +160,20 @@ def unlock_chord(self, group, callback, interval=1, max_retries=None):
     if group.ready():
         return maybe_signature(callback).delay(group.join())
     raise self.retry(countdown=interval, max_retries=max_retries)
+
+@app.task(bind=True, max_retries=None)
+def wait_for(self, task_id_or_ids):
+    """
+        Reference here: https://stackoverflow.com/a/47226259
+    """
+    try:
+        ready = app.AsyncResult(task_id_or_ids).ready()
+    except AttributeError:
+        ready = all(app.AsyncResult(task_id).ready()
+                    for task_id in task_id_or_ids)
+
+    if not ready:
+        self.retry(countdown=2**self.request.retries)
+
+    print("=========================== previous task done: {}".format(task_id_or_ids))
+    return "wait_for task is finished"

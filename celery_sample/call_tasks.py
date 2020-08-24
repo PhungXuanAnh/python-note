@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import redis
 import uuid
 from celery import group, chain, chord
@@ -14,7 +15,8 @@ from tasks_sample import (
     my_task,
     fail_task,
     forever_task,
-    countdown_task
+    countdown_task,
+    wait_for
 )
 import time
 from celery_app import app
@@ -50,7 +52,7 @@ def sample_callback():
 
 def sample_chains():
     """[
-        chains cac task voi nhau (nối với nhau)
+        chains cac task voi nhau (noi voi nhau)
         http://docs.celeryproject.org/en/master/userguide/canvas.html#chains
     ]
     """
@@ -206,6 +208,37 @@ def test_call_fail_task():
     result = fail_task.apply_async([task_id, 2], queue="queue1", task_id=task_id)
     print("Task finished? 3 ", result.ready())
     print("Task result:   4 ", result.result)
+
+
+def test_wait_a_task_by_id():
+    """
+        Reference here: https://stackoverflow.com/a/47226259
+    """
+    # Test wait single task
+    task_id = uuid.uuid4().hex
+    longtime_add.apply_async([1, 1], queue="queue1", task_id=task_id)
+
+    result = wait_for.apply_async([task_id], queue="queue1")
+    print("Task finished? ", result.ready())
+    print("Task result:   ", result.result)
+    print("Task result:   ", result.get())
+
+    # Test wait multiple tasks
+    task_ids = []
+    for _ in range(3):
+        task_id = longtime_add.apply_async([1, 1], queue="queue1").task_id
+        task_ids.append(task_id)
+
+    result = wait_for.apply_async([task_ids], queue="queue1")
+    print("Task finished? ", result.ready())
+    print("Task result:   ", result.result)
+    print("Task result:   ", result.get())
+    
+    # NOTE: with unknow task_id state is alway == Pending
+    # task_id_or_ids = "unknow_task_id"
+    # print(app.AsyncResult(task_id_or_ids).state)
+    # print(app.AsyncResult(task_id_or_ids).get())        # block forever
+    # print(app.AsyncResult(task_id_or_ids).ready())    # block forever
   
 
 if __name__ == "__main__":
@@ -222,4 +255,5 @@ if __name__ == "__main__":
     # test_time_limited()
     # test_call_class_based_Task()
     # test_call_class_based_Task_in_chord()
-    test_call_fail_task()
+    # test_call_fail_task()
+    test_wait_a_task_by_id()

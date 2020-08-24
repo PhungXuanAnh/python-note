@@ -5,7 +5,7 @@ import random
 def my_decorator(func):
     @wraps(func)
     def wrapped(*args, **kwargs):
-        print 'called decorator'
+        print('called decorator')
         return func(*args, **kwargs)
     return wrapped
 
