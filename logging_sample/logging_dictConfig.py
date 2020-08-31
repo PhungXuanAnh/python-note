@@ -3,20 +3,24 @@ import logging
 import os
 import json
 
+# with open('/home/xuananh/Dropbox/Work/Other/slack-token-api-key.json', "r") as in_file:
+#     SLACK_API_KEY = json.load(in_file)['phungxuananh']
 
-with open('/home/xuananh/Dropbox/Work/Other/slack-token-api-key.json', "r") as in_file:
-    SLACK_API_KEY = json.load(in_file)['phungxuananh']
+# LOGGING_SLACK_API_KEY = SLACK_API_KEY
+# LOGGING_SLACK_CHANNEL = "#general"
 
-
-LOGGING_SLACK_API_KEY = SLACK_API_KEY
-LOGGING_SLACK_CHANNEL = "#general"
 LOG_DIR = 'logs'
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
+    'filters': {
+        'add_my_custom_attribute': {
+            '()': 'formatter.custom_format.MyCustomFormatAttributes',
+        }
+    },
     'formatters': {
         'verbose': {
-            'format': "[%(asctime)s] [%(module)s.%(funcName)s:%(lineno)d] %(levelname)s: %(message)s"
+            'format': "[%(asctime)s] [%(custom_format)s] [%(module)s.%(funcName)s:%(lineno)d] %(levelname)s: %(message)s"
         },
         'simple': {
             'format': '%(levelname)s %(message)s'
@@ -26,7 +30,8 @@ LOGGING = {
         'console': {
             'level': 'DEBUG',
             'class': 'logging.StreamHandler',
-            'formatter': 'verbose'
+            'formatter': 'verbose',
+            'filters': ['add_my_custom_attribute']
         },
         'app.DEBUG': {
             'level': 'DEBUG',
@@ -35,6 +40,7 @@ LOGGING = {
             'filename': LOG_DIR + '/app.log',
             'maxBytes': 1 * 1024,  # 1Kb       #100 * 1024 * 1024,  # 100Mb
             'backupCount': 3,
+            'filters': ['add_my_custom_attribute']
         },
         'app.ERROR': {
             'level': 'ERROR',
@@ -43,17 +49,18 @@ LOGGING = {
             'filename': LOG_DIR + '/app.ERROR.log',
             'maxBytes': 1 * 1024,  # 1Kb       #100 * 1024 * 1024,  # 100Mb
             'backupCount': 3,
+            'filters': ['add_my_custom_attribute']
         },
-        'slack.ERROR': {
-            'level': 'ERROR',
-            'api_key': LOGGING_SLACK_API_KEY,
-            'class': 'slacker_log_handler.SlackerLogHandler',
-            'channel': LOGGING_SLACK_CHANNEL
-        },
+        # 'slack.ERROR': {
+        #     'level': 'ERROR',
+        #     'api_key': LOGGING_SLACK_API_KEY,
+        #     'class': 'slacker_log_handler.SlackerLogHandler',
+        #     'channel': LOGGING_SLACK_CHANNEL
+        # },
     },
     'loggers': {
         'app': {
-            'handlers': ['console', 'app.DEBUG', 'app.ERROR', 'slack.ERROR'],
+            'handlers': ['console', 'app.DEBUG', 'app.ERROR'],
             'propagate': False,
             'level': 'INFO',
         },
