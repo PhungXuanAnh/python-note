@@ -9,6 +9,21 @@ import json
 # LOGGING_SLACK_API_KEY = SLACK_API_KEY
 # LOGGING_SLACK_CHANNEL = "#general"
 
+class MyFilter(logging.Filter):
+    def __init__(self, param=None):
+        self.param = param
+
+    def filter(self, record):
+        if self.param is None:
+            allow = True
+        else:
+            allow = self.param not in record.msg
+        
+        if allow:
+            record.msg = 'changed: ' + record.msg
+        
+        return allow
+
 LOG_DIR = 'logs'
 LOGGING = {
     'version': 1,
@@ -16,6 +31,10 @@ LOGGING = {
     'filters': {
         'add_my_custom_attribute': {
             '()': 'formatter.custom_format.MyCustomFormatAttributes',
+        },
+        'myfilter': {
+            '()': MyFilter,
+            'param': 'noshow',
         }
     },
     'formatters': {
@@ -31,7 +50,7 @@ LOGGING = {
             'level': 'DEBUG',
             'class': 'logging.StreamHandler',
             'formatter': 'verbose',
-            'filters': ['add_my_custom_attribute']
+            'filters': ['add_my_custom_attribute', 'myfilter']
         },
         'app.DEBUG': {
             'level': 'DEBUG',
@@ -77,14 +96,10 @@ print('--------------------------------------------------------')
 print(logging.Logger.manager.loggerDict)
 print('--------------------------------------------------------')
 
-logger_app = logging.getLogger('app')
-logger_thirdparty_app_request = logging.getLogger('app')
-logger_thirdparty_app_statistic = logging.getLogger('app')
+logger = logging.getLogger('app')
 
-logger_app.error('aaaaaaaaaaaaaaaaaaa')
-logger_thirdparty_app_request.error('bbbbbbbbbbbbbbbbb')
-logger_thirdparty_app_statistic.error('cccccccccccccccccccccccc')
+logger.error('aaaaaaaaaaaaaaaaaaa')
+logger.info('aaaaaaaaaaaaaaaaaaa')
 
-logger_app.info('aaaaaaaaaaaaaaaaaaa')
-logger_thirdparty_app_request.info('bbbbbbbbbbbbbbbbb')
-logger_thirdparty_app_statistic.info('cccccccccccccccccccccccc')
+logger.error('hello')
+logger.error('hello - noshow')
