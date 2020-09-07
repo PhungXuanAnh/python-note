@@ -3,8 +3,8 @@ import os
 import shutil
 
 # Find out current working directory #
-script_dir = os.path.dirname(__file__)
-print(script_dir)
+current_dir = os.path.dirname(__file__)
+print(current_dir)
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
 print(dir_path)

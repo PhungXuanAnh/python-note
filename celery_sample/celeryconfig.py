@@ -1,5 +1,7 @@
 import os
 
+current_dir = os.path.dirname(__file__)
+
 # ==================== RABBITMQ ===========================================
 """
 Create rabbitmq server with command:
@@ -21,15 +23,24 @@ REDIS_PORT = os.getenv('REDIS_URL', 7379)
 REDIS_URL = "redis://{host}:{port}".format(host=REDIS_HOST, port=REDIS_PORT)
 
 # ==================== CELERY ===========================================
-broker_url = RABBITMQ_URL
-result_backend = RABBITMQ_URL
+# -------------------- using RABBITMQ as broker and backend result
+# broker_url = RABBITMQ_URL
+# result_backend = RABBITMQ_URL
 
+# -------------------- using REDIS as broker and backend result
 # broker_url = REDIS_URL
 # result_backend = REDIS_URL + '/9'
 
-# this broker memory cannot call task
-# broker_url = 'memory://localhost//'
-# result_backend = 'db+sqlite:///celery-task-results.sqlite'
+# -------------------- using FILESYSTEM as broker and SQLITE as backend result
+# reference: https://www.distributedpython.com/2018/07/03/simple-celery-setup/
+broker_url = 'filesystem://'
+broker_transport_options = {
+        'data_folder_in': current_dir + '/broker/out',
+        'data_folder_out': current_dir + '/broker/out',
+        'data_folder_processed': current_dir + '/broker/processed'
+}
+result_backend = 'db+sqlite:///celery-task-results.sqlite'
+
 
 # task_time_limit = 150
 # task_soft_time_limit = 140
