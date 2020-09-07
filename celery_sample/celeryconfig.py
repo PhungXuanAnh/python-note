@@ -33,14 +33,23 @@ REDIS_URL = "redis://{host}:{port}".format(host=REDIS_HOST, port=REDIS_PORT)
 
 # -------------------- using FILESYSTEM as broker and SQLITE as backend result
 # reference: https://www.distributedpython.com/2018/07/03/simple-celery-setup/
+OUT_DIR = os.path.join(os.getcwd(), ".celery/out")
+RESULT_DIR = os.path.join(os.getcwd(), ".celery/result")
+PROCESESSED_DIR = os.path.join(os.getcwd(), ".celery/processed")
+
+# Create folders if they don't exist
+for dir in [OUT_DIR, RESULT_DIR, PROCESESSED_DIR]:
+    if not os.path.exists(dir):
+        os.makedirs(dir)
+
 broker_url = 'filesystem://'
 broker_transport_options = {
-        'data_folder_in': current_dir + '/broker/out',
-        'data_folder_out': current_dir + '/broker/out',
-        'data_folder_processed': current_dir + '/broker/processed'
+        'data_folder_in': OUT_DIR,
+        'data_folder_out': OUT_DIR,
+        'data_folder_processed': PROCESESSED_DIR
 }
-result_backend = 'db+sqlite:///celery-task-results.sqlite'
-
+result_backend = "file://" + RESULT_DIR
+# result_backend = 'db+sqlite:///celery-task-results.sqlite'
 
 # task_time_limit = 150
 # task_soft_time_limit = 140
@@ -68,9 +77,9 @@ task_publish_retry_policy = {
 # LOGGING_SLACK_API_KEY = ""
 # LOGGING_SLACK_CHANNEL = "#general"
 
-LOG_DIR = 'logs'
-if not os.path.exists(current_dir + '/' + LOG_DIR):
-    os.makedirs(current_dir + '/' + LOG_DIR)
+LOG_DIR = os.path.join(os.getcwd(), "logs")
+if not os.path.exists(LOG_DIR):
+    os.makedirs(LOG_DIR)
 
 LOGGING = {
     'version': 1,

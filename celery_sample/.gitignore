@@ -3,3 +3,4 @@ celerybeat.pid
 logs/*
 sample/logs/*
 celery-task-results.sqlite
+.celery/*
