@@ -33,6 +33,7 @@ REDIS_URL = "redis://{host}:{port}".format(host=REDIS_HOST, port=REDIS_PORT)
 
 # -------------------- using FILESYSTEM as broker and SQLITE as backend result
 # reference: https://www.distributedpython.com/2018/07/03/simple-celery-setup/
+# or: https://ncrocfer.github.io/posts/celery-utiliser-filesystem/
 OUT_DIR = os.path.join(os.getcwd(), ".celery/out")
 RESULT_DIR = os.path.join(os.getcwd(), ".celery/result")
 PROCESESSED_DIR = os.path.join(os.getcwd(), ".celery/processed")
@@ -81,6 +82,20 @@ LOG_DIR = os.path.join(os.getcwd(), "logs")
 if not os.path.exists(LOG_DIR):
     os.makedirs(LOG_DIR)
 
+
+# StackDriver setup
+def setup_google_logging():
+    ENVIRONMENT = "dev"
+    import os
+    os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "/home/xuananh/Dropbox/cantec/dev-cantec-driver-google-credentials.json"
+
+    from google.cloud import logging as google_logging
+    client = google_logging.Client()
+    # Connects the logger to the root logging handler; by default
+    # this captures all logs at INFO level and higher
+    client.setup_logging()
+    return client
+    
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -120,15 +135,32 @@ LOGGING = {
         #     'class': 'slacker_log_handler.SlackerLogHandler',
         #     'channel': LOGGING_SLACK_CHANNEL
         # },
+        'gcp_log': {
+            'level': 'DEBUG',
+            'class': 'google.cloud.logging.handlers.CloudLoggingHandler',
+            'client': setup_google_logging(),
+            'name': "test_celery_live",
+            'formatter': 'verbose',
+        },
     },
     'loggers': {
         'celery': {
-            'handlers': ['console', 'rotating_file.DEBUG', 'rotating_file.ERROR'],
+            'handlers': [
+                'console', 
+                'rotating_file.DEBUG', 
+                'rotating_file.ERROR', 
+                'gcp_log'
+                ],
             'propagate': False,
             'level': 'INFO',
         },
         'root': {
-            'handlers': ['console', 'rotating_file.DEBUG', 'rotating_file.ERROR'],
+            'handlers': [
+                'console', 
+                'rotating_file.DEBUG', 
+                'rotating_file.ERROR',
+                'gcp_log'
+                ],
             'propagate': False,
             'level': 'INFO',
         }

@@ -12,6 +12,21 @@ import logging
 
 LOG = logging.getLogger('celery')
 
+from celery.signals import (
+    task_failure,
+    task_postrun,
+    task_prerun,
+    task_success,
+    task_received
+)
+
+@task_prerun.connect
+def task_prerun_handler(task_id, task, *args, **kwargs):
+    LOG.error('=============== {}'.format(task.name))
+
+@task_received.connect
+def task_received_handler(request, *args, **kwargs):
+    LOG.error('=============== {}'.format(request))
 
 @setup_logging.connect
 def config_loggers(*args, **kwags):

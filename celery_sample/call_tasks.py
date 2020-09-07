@@ -242,7 +242,7 @@ def test_wait_a_task_by_id():
   
 
 if __name__ == "__main__":
-    # sample_call_a_task()
+    sample_call_a_task()
     # sample_call_long_task()
     # sample_callback()
     # sample_chains()
@@ -256,4 +256,4 @@ if __name__ == "__main__":
     # test_call_class_based_Task()
     # test_call_class_based_Task_in_chord()
     # test_call_fail_task()
-    test_wait_a_task_by_id()
+    # test_wait_a_task_by_id()
