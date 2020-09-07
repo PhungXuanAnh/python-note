@@ -23,8 +23,9 @@ print(os.path.isfile("path"))
 print(not os.path.isfile("path"))
 
 # Check folder exist? If not creat it #
-if not os.path.exists('/home/xuananh/data/Temp/test1/test2'):
-    os.makedirs('/home/xuananh/data/Temp/test1/test2')
+if not os.path.exists(current_dir + '/test1/test2'):
+    print("============ making directory")
+    os.makedirs(current_dir + '/test1/test2')
 
 time.sleep(1)
 try:

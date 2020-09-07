@@ -5,11 +5,18 @@ import time
 import gevent
 from celery.schedules import crontab
 from celery import group, chain, chord, Task
+
 from celery.signals import setup_logging
 from celeryconfig import LOGGING
 import logging
 
 LOG = logging.getLogger('celery')
+
+
+@setup_logging.connect
+def config_loggers(*args, **kwags):
+    from logging.config import dictConfig
+    dictConfig(LOGGING)
 
 
 @app.task(name='ADD-FUNCTION')
@@ -99,12 +106,6 @@ def chord_callback(arg):
     chord_result.append(arg)
     LOG.info(' ======= chord task : {}'.format(arg))
     return chord_result
-
-
-@setup_logging.connect
-def config_loggers(*args, **kwags):
-    from logging.config import dictConfig
-    dictConfig(LOGGING)
 
 
 # Task inheritance

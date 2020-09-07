@@ -67,7 +67,11 @@ task_publish_retry_policy = {
 # ==================== LOGGING ===========================================
 # LOGGING_SLACK_API_KEY = ""
 # LOGGING_SLACK_CHANNEL = "#general"
+
 LOG_DIR = 'logs'
+if not os.path.exists(current_dir + '/' + LOG_DIR):
+    os.makedirs(current_dir + '/' + LOG_DIR)
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -85,7 +89,7 @@ LOGGING = {
             'class': 'logging.StreamHandler',
             'formatter': 'verbose'
         },
-        'celery.DEBUG': {
+        'rotating_file.DEBUG': {
             'level': 'DEBUG',
             'class': 'logging.handlers.RotatingFileHandler',
             'formatter': 'verbose',
@@ -93,7 +97,7 @@ LOGGING = {
             'maxBytes': 1024 * 1024,  # 100 * 1024 * 1024,  # 100Mb
             'backupCount': 3,
         },
-        'celery.ERROR': {
+        'rotating_file.ERROR': {
             'level': 'ERROR',
             'class': 'logging.handlers.RotatingFileHandler',
             'formatter': 'verbose',
@@ -110,12 +114,12 @@ LOGGING = {
     },
     'loggers': {
         'celery': {
-            'handlers': ['console', 'celery.DEBUG', 'celery.ERROR'],
+            'handlers': ['console', 'rotating_file.DEBUG', 'rotating_file.ERROR'],
             'propagate': False,
             'level': 'INFO',
         },
         'root': {
-            'handlers': ['console', 'celery.DEBUG', 'celery.ERROR'],
+            'handlers': ['console', 'rotating_file.DEBUG', 'rotating_file.ERROR'],
             'propagate': False,
             'level': 'INFO',
         }
