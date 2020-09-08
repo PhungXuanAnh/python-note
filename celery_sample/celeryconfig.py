@@ -55,7 +55,10 @@ result_backend = "file://" + RESULT_DIR
 # task_time_limit = 150
 # task_soft_time_limit = 140
 
-imports = ('tasks_sample')
+imports = (
+    'celery_tasks',
+    'celery_signals'
+)
 # task_publish_retry = True
 task_publish_retry_policy = {
     'max_retries': 30,
@@ -87,7 +90,7 @@ if not os.path.exists(LOG_DIR):
 def setup_google_logging():
     ENVIRONMENT = "dev"
     import os
-    os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "/home/xuananh/Dropbox/cantec/dev-cantec-driver-google-credentials.json"
+    os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = os.path.expanduser("~/Dropbox/cantec/dev-cantec-driver-google-credentials.json")
 
     from google.cloud import logging as google_logging
     client = google_logging.Client()

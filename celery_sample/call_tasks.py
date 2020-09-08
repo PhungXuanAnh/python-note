@@ -2,7 +2,7 @@
 import redis
 import uuid
 from celery import group, chain, chord
-from tasks_sample import (
+from celery_tasks import (
     longtime_add,
     add,
     print_result,

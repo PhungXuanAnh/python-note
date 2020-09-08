@@ -3,7 +3,7 @@
 
 run-worker:
 	../.venv/bin/celery worker \
-		-A tasks_sample \
+		-A celery_tasks \
 		--loglevel=info \
 		--concurrency=3 \
 		-n worker1@%h \
@@ -15,20 +15,20 @@ run-worker-watchdog:
 		--pattern '*.py' \
 		--recursive \
 		-- ../.venv/bin/celery worker \
-			-A tasks_sample \
+			-A celery_tasks \
 			--loglevel=info \
 			--concurrency=3 \
 			-n worker1@%h \
 			-Q queue1,queue2
 
 run-beat:
-	celery beat -A tasks_sample --loglevel=info
+	celery beat -A celery_tasks --loglevel=info
 
 run-beat-watchdog:
 	watchmedo auto-restart --directory . \
 		--pattern '*.py' \
 		--recursive \
-		-- ../.venv/bin/celery beat -A tasks_sample --loglevel=info
+		-- ../.venv/bin/celery beat -A celery_tasks --loglevel=info
 
-call-task:
+test:
 	../.venv/bin/python call_tasks.py

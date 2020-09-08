@@ -12,21 +12,6 @@ import logging
 
 LOG = logging.getLogger('celery')
 
-from celery.signals import (
-    task_failure,
-    task_postrun,
-    task_prerun,
-    task_success,
-    task_received
-)
-
-@task_prerun.connect
-def task_prerun_handler(task_id, task, *args, **kwargs):
-    LOG.error('=============== {}'.format(task.name))
-
-@task_received.connect
-def task_received_handler(request, *args, **kwargs):
-    LOG.error('=============== {}'.format(request))
 
 @setup_logging.connect
 def config_loggers(*args, **kwags):
@@ -36,8 +21,8 @@ def config_loggers(*args, **kwags):
 
 @app.task(name='ADD-FUNCTION')
 def add(x, y):
-    LOG.info('xxxxxxxxxxxxxxxxxxxxxx: {}'.format(x))
-    LOG.info('yyyyyyyyyyyyyyyyyyyyyy: {}'.format(y))
+    LOG.info('tttttttttttttttttttttt 1 : {}'.format(x))
+    LOG.info('tttttttttttttttttttttt 2 : {}'.format(y))
     return x + y
 
 
@@ -52,37 +37,37 @@ def longtime_add(x, y):
 @app.task(max_retries=500)
 def fail_task(task_id, number=0):
     try:
-        LOG.info('=============================== {}, task id: {}'.format(number, task_id))
+        LOG.info('tttttttttttttttttttttt {}, task id: {}'.format(number, task_id))
         raise Exception("")
     except:
-        print("###############")
+        print("tttttttttttttttttttttt E")
         fail_task.retry(args=[task_id, number], countdown=3)
 
 @app.task
 def forever_task(arg):
     while True:
         time.sleep(1)
-        LOG.info('=============================== {}'.format(arg))
+        LOG.info(' tttttttttttttttttttttt {}'.format(arg))
 
 
 @app.task
 def countdown_task(number):
     for i in range(0, number):
-        LOG.info('=============================== {}'.format(i))
+        LOG.info(' tttttttttttttttttttttt {}'.format(i))
 
 
 @app.task
 def print_hello():
-    LOG.info('=============================== Hello')
+    LOG.info(' tttttttttttttttttttttt Hello')
 
 
 @app.on_after_configure.connect
 def setup_periodic_tasks(sender, **kwargs):
     # Calls print_result('hello') every 2 seconds.
-    sender.add_periodic_task(2.0, print_result.s(' ------- hello'), name='add every 10')
+    sender.add_periodic_task(2.0, print_result.s(' tttttttttttttttttttttt hello'), name='add every 10')
 
     # Calls print_result('world') every 3 seconds
-    sender.add_periodic_task(3.0, print_result.s(' ------- world'), expires=10)
+    sender.add_periodic_task(3.0, print_result.s(' tttttttttttttttttttttt world'), expires=10)
 
     # Executes every Monday morning at 7:30 a.m.
     sender.add_periodic_task(
@@ -93,17 +78,17 @@ def setup_periodic_tasks(sender, **kwargs):
 
 @app.task(queue='queue1')
 def print_result(arg):
-    LOG.info(' ========================== RESULTS: {}'.format(arg))
+    LOG.info(' tttttttttttttttttttttt RESULTS: {}'.format(arg))
 
 
 @app.task(queue='queue1')
 def print_result_queue1(arg):
-    LOG.info(' ======= : {}'.format(arg))
+    LOG.info(' tttttttttttttttttttttt : {}'.format(arg))
 
 
 @app.task(queue='queue2')
 def print_result_queue2(arg):
-    LOG.info(' ======= : {}'.format(arg))
+    LOG.info(' tttttttttttttttttttttt : {}'.format(arg))
 
 
 @app.task(queue='queue2')
@@ -111,7 +96,7 @@ def chord_task(arg):
     for i in range(0, 15):
         # time.sleep(1)
         gevent.sleep(1)
-        LOG.info(' ---------------------- chord task {}-{}'.format(arg, i))
+        LOG.info(' tttttttttttttttttttttt chord task {}-{}'.format(arg, i))
     return arg
 
 
@@ -128,17 +113,17 @@ def chord_callback(arg):
 class MyTask(Task):
 
     def on_failure(self, exc, task_id, args, kwargs, einfo):
-        print('oooooooooooooooooooooooooooooooooooooooooooooo on_failure {0!r} failed: {1!r}'.format(task_id, exc))
+        print('tttttttttttttttttttttt on_failure {0!r} failed: {1!r}'.format(task_id, exc))
         return None
 
     def run(self, arg):
         if arg == 6:
-            raise Exception('------------------------------------------raise exception')
+            raise Exception(' tttttttttttttttttttttt raise exception')
 
-        print('------------------------------- arg = {}'.format(arg))
+        print(' tttttttttttttttttttttt arg = {}'.format(arg))
         for i in range(0, arg):
             time.sleep(1)
-            print('------------------------- {}: This is class based Task {}'.format(i, arg))
+            print(' tttttttttttttttttttttt {}: This is class based Task {}'.format(i, arg))
         return arg
 
 
@@ -147,8 +132,7 @@ my_task = app.register_task(MyTask())
 
 @app.task(name='super_task.error_callback')
 def error_callback(*args, **kwargs):
-    print('eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee')
-    print('error_callback')
+    print(' tttttttttttttttttttttt error_callback ')
     print(args)
     print(kwargs)
     return 'error'
@@ -156,7 +140,7 @@ def error_callback(*args, **kwargs):
 
 @app.task(base=MyTask)
 def test_base_class():
-    print('bbbbbbbbbbbbbbbbbbbbbbbase task')
+    print(' tttttttttttttttttttttt task')
     raise KeyError()
 
 
@@ -165,9 +149,9 @@ def time_limited(arg):
     try:
         for i in range(0, arg):
             time.sleep(1)
-            LOG.info('---------------------------------- {}'.format(i))
+            LOG.info(' tttttttttttttttttttttt {}'.format(i))
     except SoftTimeLimitExceeded as e:
-        LOG.info('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
+        LOG.info(' tttttttttttttttttttttt ')
         LOG.exception(e)
 
 
@@ -191,5 +175,5 @@ def wait_for(self, task_id_or_ids):
     if not ready:
         self.retry(countdown=2**self.request.retries)
 
-    print("=========================== previous task done: {}".format(task_id_or_ids))
+    print(" tttttttttttttttttttttt previous task done: {}".format(task_id_or_ids))
     return "wait_for task is finished"
