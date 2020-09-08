@@ -53,3 +53,7 @@ print(os.path.join("a", "b", "c"))
 
 print("get file name: ", os.path.basename('/users/system1/student1/homework-1.py'))
 print("get file path: ", os.path.dirname('/users/system1/student1/homework-1.py'))
+
+# expand the tilde manually
+my_dir = '~/some_dir'
+print("{} -----------> {}".format(my_dir, os.path.expanduser(my_dir)))
