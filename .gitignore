@@ -5,3 +5,4 @@ test.py
 metastore_db
 *.log
 .DS_Store
+test
