@@ -6,24 +6,17 @@ import gevent
 from celery.schedules import crontab
 from celery import group, chain, chord, Task
 
-from celery.signals import setup_logging
-from celeryconfig import LOGGING
 import logging
 
 LOG = logging.getLogger('celery')
 
 
-@setup_logging.connect
-def config_loggers(*args, **kwags):
-    from logging.config import dictConfig
-    dictConfig(LOGGING)
-
-
-@app.task(name='ADD-FUNCTION')
-def add(x, y):
+@app.task(name='ADD-FUNCTION', bind=True)
+def add(self, x, y):
     LOG.info('tttttttttttttttttttttt 1 : {}'.format(x))
     LOG.info('tttttttttttttttttttttt 2 : {}'.format(y))
-    return x + y
+    result = x + y
+    return result
 
 
 @app.task
@@ -34,14 +27,15 @@ def longtime_add(x, y):
     return x + y
 
 
-@app.task(max_retries=500)
+@app.task(max_retries=5)
 def fail_task(task_id, number=0):
     try:
         LOG.info('tttttttttttttttttttttt {}, task id: {}'.format(number, task_id))
         raise Exception("")
     except:
-        print("tttttttttttttttttttttt E")
-        fail_task.retry(args=[task_id, number], countdown=3)
+        print("tttttttttttttttttttttt EEEEEEEEEEEEEEEEEEEEEEEEException")
+        number += 1
+        fail_task.retry(args=[task_id, number], countdown=5)
 
 @app.task
 def forever_task(arg):
