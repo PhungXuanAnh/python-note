@@ -138,13 +138,13 @@ LOGGING = {
         #     'class': 'slacker_log_handler.SlackerLogHandler',
         #     'channel': LOGGING_SLACK_CHANNEL
         # },
-        'gcp_log': {
-            'level': 'DEBUG',
-            'class': 'google.cloud.logging.handlers.CloudLoggingHandler',
-            'client': setup_google_logging(),
-            'name': "test_celery_live",
-            'formatter': 'verbose',
-        },
+        # 'gcp_log': {
+        #     'level': 'DEBUG',
+        #     'class': 'google.cloud.logging.handlers.CloudLoggingHandler',
+        #     'client': setup_google_logging(),
+        #     'name': "test_celery_live",
+        #     'formatter': 'verbose',
+        # },
     },
     'loggers': {
         'celery': {
@@ -152,7 +152,7 @@ LOGGING = {
                 'console', 
                 'rotating_file.DEBUG', 
                 'rotating_file.ERROR', 
-                'gcp_log'
+                # 'gcp_log'
                 ],
             'propagate': False,
             'level': 'INFO',
@@ -162,7 +162,7 @@ LOGGING = {
                 'console', 
                 'rotating_file.DEBUG', 
                 'rotating_file.ERROR',
-                'gcp_log'
+                # 'gcp_log'
                 ],
             'propagate': False,
             'level': 'INFO',

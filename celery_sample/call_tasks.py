@@ -30,8 +30,8 @@ def sample_call_a_task():
     print(
         "Task result 2:   ", result.get()
     )  # NOTE: this line will block util get result
-    print_result_queue1.delay("task from queue1")
-    print_result_queue2.delay("task from queue2")
+    # print_result_queue1.delay("task from queue1")
+    # print_result_queue2.delay("task from queue2")
 
 
 def sample_call_long_task():

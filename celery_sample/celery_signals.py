@@ -14,7 +14,8 @@ from celery.signals import (
     task_prerun,
     task_success,
     task_received,
-    task_retry
+    task_retry,
+    task_revoked
     # there are still many other task signals
 )
 
@@ -38,11 +39,20 @@ LOG = logging.getLogger('celery')
 # ========================================= TASK signals ============================
 @task_prerun.connect
 def task_prerun_handler(task_id, task, *args, **kwargs):
-    LOG.error(' sssssssssssssssssssssssssss 1 {} : {}'.format(task.name, task_id))
+    LOG.error(' sssssssssssssssssssssssssss 1 {} --- {} --- {} --- {}\n\n\n'.format(task.name, task_id, args, kwargs))
 
 @task_received.connect
 def task_received_handler(request, *args, **kwargs):
-    LOG.error(' sssssssssssssssssssssssssss 2 {}'.format(request))
+    LOG.error(' sssssssssssssssssssssssssss 2 {} --- {} --- {}\n\n\n'.format(request, args, kwargs))
+    # get all arguments which are passed to task
+    # references:
+    # https://stackoverflow.com/a/36848418/7639845
+    # https://github.com/celery/celery/pull/6049/files#diff-967757bbcc28b0b65c94047bbcce4769
+    # https://docs.celeryproject.org/en/stable/reference/celery.worker.request.html
+    LOG.error(' sssssssssssssssssssssssssss 20 : argument of this task: {}\n\n\n'.format(request.args))
+    LOG.error(" sssssssssssssssssssssssssss 21 {}".format(request.body))
+    LOG.error(" sssssssssssssssssssssssssss 22 task_id {}".format(request.task_id))
+
 
 @task_postrun.connect
 def task_postrun_handler(task_id, task, *args, **kwargs):
@@ -55,7 +65,6 @@ def task_success_handler(result, **kwargs):
 @task_failure.connect
 def task_failure_handler(task_id, exception, traceback, einfo, *args, **kwargs):
     LOG.error(' sssssssssssssssssssssssssss 5 {} \n\n\n {} \n\n\n {}'.format(task_id, exception, traceback))
-
 
 @task_retry.connect
 def task_retry_handler(request, reason, einfo, *args, **kwargs):
