@@ -13,6 +13,7 @@ from celery_tasks import (
     time_limited,
     MyTask,
     my_task,
+    fail_task_retry,
     fail_task,
     forever_task,
     countdown_task,
@@ -190,10 +191,9 @@ def test_call_class_based_Task_in_chord():
     ).apply_async([], queue="queue1", interval=3)
     print("result: {}".format(result))
 
-
-def test_call_fail_task():
+def test_call_fail_task_retry():
     task_id = uuid.uuid4().hex
-    result = fail_task.apply_async([task_id, 1], queue="queue1", task_id=task_id)
+    result = fail_task_retry.apply_async([task_id, 1], queue="queue1", task_id=task_id)
     
     time.sleep(3)
 
@@ -205,7 +205,7 @@ def test_call_fail_task():
     # create new task with same id, it will using old task
     # NOTE: because when revoke task, it is not removed from queue, just be marked as revoked task
     # https://stackoverflow.com/a/44429064/7639845
-    result = fail_task.apply_async([task_id, 2], queue="queue1", task_id=task_id)
+    result = fail_task_retry.apply_async([task_id, 2], queue="queue1", task_id=task_id)
     print("Task finished? 3 ", result.ready())
     print("Task result:   4 ", result.result)
 
@@ -234,15 +234,32 @@ def test_wait_a_task_by_id():
     print("Task result:   ", result.result)
     print("Task result:   ", result.get())
     
-    # NOTE: with unknow task_id state is alway == Pending
-    # task_id_or_ids = "unknow_task_id"
-    # print(app.AsyncResult(task_id_or_ids).state)
-    # print(app.AsyncResult(task_id_or_ids).get())        # block forever
-    # print(app.AsyncResult(task_id_or_ids).ready())    # block forever
+
+def get_task_state_by_id():
+    # see all exist state here: from celery import states
+    task_id = uuid.uuid4().hex
+    longtime_add.apply_async([1, 1], queue="queue1", task_id=task_id)
+    print(" TTTTTTTTTTTTTT {}".format(app.AsyncResult(task_id).state))
+    time.sleep(1)
+    print(" TTTTTTTTTTTTTT {}".format(app.AsyncResult(task_id).state))
+    print(" TTTTTTTTTTTTTT {}".format(app.AsyncResult(task_id).info)) 
+    time.sleep(2)
+    print(" TTTTTTTTTTTTTT {}".format(app.AsyncResult(task_id).state))
+    print(" TTTTTTTTTTTTTT {}".format(app.AsyncResult(task_id).info))       # this line get meta, set by self.update_state()
+
+    fail_task_id = fail_task.apply_async(queue="queue1").task_id
+    time.sleep(1)
+    print(" TTTTTTTTTTTTTT {}".format(app.AsyncResult(fail_task_id).state))
+    print(" TTTTTTTTTTTTTT {}".format(app.AsyncResult(fail_task_id).info)) 
+
+    # reference: https://stackoverflow.com/a/38267978/7639845
+    task_id_or_ids = "unknow_task_id"
+    print(" TTTTTTTTTTTTTT {}".format(app.AsyncResult(task_id_or_ids).state))    # NOTE: with unknow task_id state is alway == Pending
+
   
 
 if __name__ == "__main__":
-    sample_call_a_task()
+    # sample_call_a_task()
     # sample_call_long_task()
     # sample_callback()
     # sample_chains()
@@ -255,5 +272,6 @@ if __name__ == "__main__":
     # test_time_limited()
     # test_call_class_based_Task()
     # test_call_class_based_Task_in_chord()
-    # test_call_fail_task()
+    # test_call_fail_task_retry()
     # test_wait_a_task_by_id()
+    get_task_state_by_id()

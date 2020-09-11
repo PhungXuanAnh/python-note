@@ -19,23 +19,34 @@ def add(self, x, y):
     return result
 
 
-@app.task
-def longtime_add(x, y):
+@app.task(bind=True)
+def longtime_add(self, x, y, sleep_time=3):
     LOG.info('long time task begins')
-    time.sleep(3)
+
+    time.sleep(2)
+    # Reference: https://docs.celeryproject.org/en/latest/userguide/tasks.html#custom-states
+    self.update_state(state="PROGRESS --> this custom state.", meta={"key": "value"})
+    time.sleep(2)
+
     LOG.info('long time task finished')
     return x + y
 
 
 @app.task(max_retries=5)
-def fail_task(task_id, number=0):
+def fail_task_retry(task_id, number=0):
     try:
         LOG.info('tttttttttttttttttttttt {}, task id: {}'.format(number, task_id))
         raise Exception("")
     except:
         print("tttttttttttttttttttttt EEEEEEEEEEEEEEEEEEEEEEEEException")
         number += 1
-        fail_task.retry(args=[task_id, number], countdown=5)
+        fail_task_retry.retry(args=[task_id, number], countdown=5)
+
+
+@app.task
+def fail_task():
+    LOG.info('tttttttttttttttttttttt')
+    raise Exception("This is fail task")
 
 @app.task
 def forever_task(arg):

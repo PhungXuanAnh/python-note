@@ -77,6 +77,10 @@ task_publish_retry_policy = {
 # worker_disable_rate_limits = True
 # result_expires = 30 * 60
 
+# ==================== TRACKING TASK IS STARTED ===========================================
+# Reference: https://docs.celeryproject.org/en/latest/userguide/tasks.html#custom-states
+task_track_started = True
+
 # ==================== LOGGING ===========================================
 # LOGGING_SLACK_API_KEY = ""
 # LOGGING_SLACK_CHANNEL = "#general"
