@@ -24,7 +24,10 @@ from celery_app import app
 
 
 def sample_call_a_task():
-    result = add.apply_async([1, 1], queue="queue1")
+    # Use one of above lines to call task
+    result = add.apply_async([1, 1])
+    # result = add.apply_async([1, 1], queue="queue1")
+    
     time.sleep(1)
     print("Task finished? ", result.ready())
     print("Task result 1:   ", result.result)
@@ -259,7 +262,7 @@ def get_task_state_by_id():
   
 
 if __name__ == "__main__":
-    # sample_call_a_task()
+    sample_call_a_task()
     # sample_call_long_task()
     # sample_callback()
     # sample_chains()
@@ -274,4 +277,4 @@ if __name__ == "__main__":
     # test_call_class_based_Task_in_chord()
     # test_call_fail_task_retry()
     # test_wait_a_task_by_id()
-    get_task_state_by_id()
+    # get_task_state_by_id()

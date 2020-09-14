@@ -1,13 +1,15 @@
-# NOTE: nếu chỉ định queue khi chạy worker thì lúc call task cũng phải chỉ định queue
-# nếu không task sẽ không chạy 
+# NOTE: it must set task_default_queue = 'default' in celeryconfig
+# and specify default queue while running worker
+# if not the task which is called without specified queue will not be run by any worker
 
 run-worker:
+	rm -rf .celery && rm -rf logs && sleep 1
 	../.venv/bin/celery worker \
 		-A celery_tasks \
 		--loglevel=info \
 		--concurrency=3 \
 		-n worker1@%h \
-		-Q queue1,queue2
+		-Q default,queue1,queue2
 
 run-worker-watchdog:
 	../.venv/bin/watchmedo auto-restart --directory . \
@@ -19,7 +21,7 @@ run-worker-watchdog:
 			--loglevel=info \
 			--concurrency=3 \
 			-n worker1@%h \
-			-Q queue1,queue2
+			-Q default,queue1,queue2
 
 run-beat:
 	celery beat -A celery_tasks --loglevel=info

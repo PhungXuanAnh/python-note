@@ -2,6 +2,8 @@ import os
 
 current_dir = os.path.dirname(__file__)
 
+task_default_queue = 'default'
+
 # ==================== RABBITMQ ===========================================
 """
 Create rabbitmq server with command:
