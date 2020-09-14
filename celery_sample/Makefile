@@ -34,6 +34,25 @@ run-worker-route-feed-media:
 		-n worker1@%h \
 		-Q feed,media
 
+
+# ============================= worker with priority task ========================================== 
+run-worker-normal:
+	../.venv/bin/celery worker \
+		-A celery_tasks \
+		--loglevel=info \
+		--concurrency=1 \
+		-n worker_normal@%h \
+		-Q default,high_priority
+
+run-worker-high-priority:
+	../.venv/bin/celery worker \
+		-A celery_tasks \
+		--loglevel=info \
+		--concurrency=1 \
+		-n worker-high_priority@%h \
+		-Q high_priority
+
+# ==================================================== beat ========================================== 
 run-beat:
 	celery beat -A celery_tasks --loglevel=info
 

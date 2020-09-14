@@ -24,6 +24,8 @@ from task_routed_sample.image.tasks import task_image
 from task_routed_sample.video.tasks import task_video
 from task_routed_sample.web.tasks import task_web
 
+from task_priority.tasks import normal_task, high_priority_task
+
 import time
 from celery_app import app
 
@@ -266,8 +268,28 @@ def get_task_state_by_id():
 
 
 def test_route():
+    """
+    Start 2 worker to see results:
+        make run-worker
+        make run-worker-route-feed-media
+    """
     task_feed.delay()
     task_image.delay()
+
+def test_priority_task():
+    """
+        make run-worker-normal
+        make run-worker-high-priority
+
+    """
+    task_id = uuid.uuid4().hex
+
+    high_priority_task.apply_async(queue='high_priority')
+    normal_task.apply_async(queue='default')
+
+    task1 = high_priority_task.apply_async(args=['high task 1'], queue='default', task_id=task_id)
+    time.sleep(1)
+    high_priority_task.apply_async(args=['high task 2'], queue='default', task_id=task_id)
   
 
 if __name__ == "__main__":
@@ -288,4 +310,5 @@ if __name__ == "__main__":
     # test_wait_a_task_by_id()
     # get_task_state_by_id()
 
-    test_route()
+    # test_route()
+    test_priority_task()

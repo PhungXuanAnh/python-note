@@ -58,14 +58,8 @@ for dir in [OUT_DIR, RESULT_DIR, PROCESESSED_DIR]:
         os.makedirs(dir)
 
 broker_url = 'filesystem://'
-broker_transport_options = {
-        'data_folder_in': OUT_DIR,
-        'data_folder_out': OUT_DIR,
-        'data_folder_processed': PROCESESSED_DIR
-}
-result_backend = "file://" + RESULT_DIR
-# result_backend = 'db+sqlite:///celery-task-results.sqlite'
 
+# ====================================================== task setup ======================================
 # task_time_limit = 150
 # task_soft_time_limit = 140
 
@@ -77,28 +71,38 @@ imports = (
     'task_routed_sample.image.tasks',
     'task_routed_sample.video.tasks',
     'task_routed_sample.web.tasks',
+
+    'task_priority.tasks'
 )
 # task_publish_retry = True
 task_publish_retry_policy = {
     'max_retries': 30,
 }
-# broker_connection_retry = True          # retry connect to broker if lost connection
-# broker_connection_max_retries = None    # retry forever
+# Reference: https://docs.celeryproject.org/en/latest/userguide/tasks.html#custom-states
+task_track_started = True
 
 # task_serializer = 'json'
-
 # result_serializer = 'json'
 # accept_content = ['json']
+
+# ====================================================== broker setup ======================================
+# https://docs.celeryproject.org/en/stable/userguide/configuration.html#std:setting-broker_transport_options
+broker_transport_options = {
+        'data_folder_in': OUT_DIR,
+        'data_folder_out': OUT_DIR,
+        'data_folder_processed': PROCESESSED_DIR
+}
+result_backend = "file://" + RESULT_DIR
+# result_backend = 'db+sqlite:///celery-task-results.sqlite'
+
+# broker_connection_retry = True          # retry connect to broker if lost connection
+# broker_connection_max_retries = None    # retry forever
 
 # timezone = 'Europe/Polish'
 # enable_utc = True
 
 # worker_disable_rate_limits = True
 # result_expires = 30 * 60
-
-# ==================== TRACKING TASK IS STARTED ===========================================
-# Reference: https://docs.celeryproject.org/en/latest/userguide/tasks.html#custom-states
-task_track_started = True
 
 # ==================== LOGGING ===========================================
 # LOGGING_SLACK_API_KEY = ""

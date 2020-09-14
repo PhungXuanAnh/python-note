@@ -20,13 +20,13 @@ def add(self, x, y):
 
 
 @app.task(bind=True)
-def longtime_add(self, x, y, sleep_time=3):
+def longtime_add(self, x=1, y=1, sleep_time=2):
     LOG.info('long time task begins')
 
     time.sleep(2)
     # Reference: https://docs.celeryproject.org/en/latest/userguide/tasks.html#custom-states
     self.update_state(state="PROGRESS --> this custom state.", meta={"key": "value"})
-    time.sleep(2)
+    time.sleep(sleep_time)
 
     LOG.info('long time task finished')
     return x + y
