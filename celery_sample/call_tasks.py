@@ -19,6 +19,11 @@ from celery_tasks import (
     countdown_task,
     wait_for
 )
+from task_routed_sample.feed.tasks import task_feed
+from task_routed_sample.image.tasks import task_image
+from task_routed_sample.video.tasks import task_video
+from task_routed_sample.web.tasks import task_web
+
 import time
 from celery_app import app
 
@@ -27,7 +32,7 @@ def sample_call_a_task():
     # Use one of above lines to call task
     result = add.apply_async([1, 1])
     # result = add.apply_async([1, 1], queue="queue1")
-    
+
     time.sleep(1)
     print("Task finished? ", result.ready())
     print("Task result 1:   ", result.result)
@@ -259,10 +264,14 @@ def get_task_state_by_id():
     task_id_or_ids = "unknow_task_id"
     print(" TTTTTTTTTTTTTT {}".format(app.AsyncResult(task_id_or_ids).state))    # NOTE: with unknow task_id state is alway == Pending
 
+
+def test_route():
+    task_feed.delay()
+    task_image.delay()
   
 
 if __name__ == "__main__":
-    sample_call_a_task()
+    # sample_call_a_task()
     # sample_call_long_task()
     # sample_callback()
     # sample_chains()
@@ -278,3 +287,5 @@ if __name__ == "__main__":
     # test_call_fail_task_retry()
     # test_wait_a_task_by_id()
     # get_task_state_by_id()
+
+    test_route()

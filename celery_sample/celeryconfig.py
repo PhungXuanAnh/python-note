@@ -1,8 +1,20 @@
 import os
+import re
 
 current_dir = os.path.dirname(__file__)
 
 task_default_queue = 'default'
+
+task_create_missing_queues = True
+
+# task routing
+# https://docs.celeryproject.org/en/stable/userguide/routing.html
+task_routes = ([
+    ('task_routed_sample.feed.tasks.*', {'queue': 'feed'}),
+    ('task_routed_sample.web.tasks.*', {'queue': 'web'}),
+    (re.compile(r'task_routed_sample\.(video|image)\.tasks\..*'), {'queue': 'media'}),
+],)
+
 
 # ==================== RABBITMQ ===========================================
 """
@@ -59,7 +71,12 @@ result_backend = "file://" + RESULT_DIR
 
 imports = (
     'celery_tasks',
-    'celery_signals'
+    'celery_signals',
+
+    'task_routed_sample.feed.tasks',
+    'task_routed_sample.image.tasks',
+    'task_routed_sample.video.tasks',
+    'task_routed_sample.web.tasks',
 )
 # task_publish_retry = True
 task_publish_retry_policy = {
