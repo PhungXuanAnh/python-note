@@ -72,7 +72,8 @@ imports = (
     'task_routed_sample.video.tasks',
     'task_routed_sample.web.tasks',
 
-    'task_priority.tasks'
+    'task_priority.tasks',
+    'task_base_class_sample.tasks'
 )
 # task_publish_retry = True
 task_publish_retry_policy = {

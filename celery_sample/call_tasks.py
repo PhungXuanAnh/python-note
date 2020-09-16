@@ -9,16 +9,13 @@ from celery_tasks import (
     chord_task,
     print_result_queue1,
     print_result_queue2,
-    test_base_class,
     time_limited,
-    MyTask,
-    my_task,
     fail_task_retry,
     fail_task,
     forever_task,
     countdown_task,
     wait_for,
-    long_task
+    long_task,
 )
 from task_routed_sample.feed.tasks import task_feed
 from task_routed_sample.image.tasks import task_image
@@ -26,6 +23,8 @@ from task_routed_sample.video.tasks import task_video
 from task_routed_sample.web.tasks import task_web
 
 from task_priority.tasks import normal_task, high_priority_task
+
+from task_base_class_sample.tasks import add1, add2, add3, MyTask, my_task
 
 import time
 from celery_app import app
@@ -179,11 +178,17 @@ def test_time_limited():
     time_limited.apply_async([31], queue="queue1")
 
 
-def test_call_class_based_Task():
+def test_call_task_base_class1():
     my_task.apply_async([10], queue="queue1")
 
     app.register_task(MyTask()).apply_async([11], queue="queue1")
     app.register_task(MyTask()).apply_async([12], queue="queue2")
+
+
+def test_call_task_base_class2():
+    add1.delay(1)
+    add2.delay(1)
+    add3.delay(1)
 
 
 def test_call_class_based_Task_in_chord():
@@ -202,10 +207,11 @@ def test_call_class_based_Task_in_chord():
     ).apply_async([], queue="queue1", interval=3)
     print("result: {}".format(result))
 
+
 def test_call_fail_task_retry():
     task_id = uuid.uuid4().hex
     result = fail_task_retry.apply_async([task_id, 1], queue="queue1", task_id=task_id)
-    
+
     time.sleep(3)
 
     # remove task and calling forever_task
@@ -244,7 +250,7 @@ def test_wait_a_task_by_id():
     print("Task finished? ", result.ready())
     print("Task result:   ", result.result)
     print("Task result:   ", result.get())
-    
+
 
 def get_task_state_by_id():
     # see all exist state here: from celery import states
@@ -253,19 +259,23 @@ def get_task_state_by_id():
     print(" TTTTTTTTTTTTTT {}".format(app.AsyncResult(task_id).state))
     time.sleep(1)
     print(" TTTTTTTTTTTTTT {}".format(app.AsyncResult(task_id).state))
-    print(" TTTTTTTTTTTTTT {}".format(app.AsyncResult(task_id).info)) 
+    print(" TTTTTTTTTTTTTT {}".format(app.AsyncResult(task_id).info))
     time.sleep(2)
     print(" TTTTTTTTTTTTTT {}".format(app.AsyncResult(task_id).state))
-    print(" TTTTTTTTTTTTTT {}".format(app.AsyncResult(task_id).info))       # this line get meta, set by self.update_state()
+    print(
+        " TTTTTTTTTTTTTT {}".format(app.AsyncResult(task_id).info)
+    )  # this line get meta, set by self.update_state()
 
     fail_task_id = fail_task.apply_async(queue="queue1").task_id
     time.sleep(1)
     print(" TTTTTTTTTTTTTT {}".format(app.AsyncResult(fail_task_id).state))
-    print(" TTTTTTTTTTTTTT {}".format(app.AsyncResult(fail_task_id).info)) 
+    print(" TTTTTTTTTTTTTT {}".format(app.AsyncResult(fail_task_id).info))
 
     # reference: https://stackoverflow.com/a/38267978/7639845
     task_id_or_ids = "unknow_task_id"
-    print(" TTTTTTTTTTTTTT {}".format(app.AsyncResult(task_id_or_ids).state))    # NOTE: with unknow task_id state is alway == Pending
+    print(
+        " TTTTTTTTTTTTTT {}".format(app.AsyncResult(task_id_or_ids).state)
+    )  # NOTE: with unknow task_id state is alway == Pending
 
 
 def test_route():
@@ -277,6 +287,7 @@ def test_route():
     task_feed.delay()
     task_image.delay()
 
+
 def test_priority_task():
     """
         make run-worker-normal
@@ -285,12 +296,17 @@ def test_priority_task():
     """
     task_id = uuid.uuid4().hex
 
-    high_priority_task.apply_async(queue='high_priority')
-    normal_task.apply_async(queue='default')
+    high_priority_task.apply_async(queue="high_priority")
+    normal_task.apply_async(queue="default")
 
-    task1 = high_priority_task.apply_async(args=['high task 1'], queue='default', task_id=task_id)
+    task1 = high_priority_task.apply_async(
+        args=["high task 1"], queue="default", task_id=task_id
+    )
     time.sleep(1)
-    high_priority_task.apply_async(args=['high task 2'], queue='default', task_id=task_id)
+    high_priority_task.apply_async(
+        args=["high task 2"], queue="default", task_id=task_id
+    )
+
 
 def test_revoke_task1():
     """
@@ -308,12 +324,15 @@ def test_revoke_task1():
             ==> task will be executed 2 time with 2 type of arguments
     """
     task_id = uuid.uuid4().hex
-    
-    waiting_task = long_task.apply_async(args=[5], task_id=task_id, countdown=10, queue='queue1')
+
+    waiting_task = long_task.apply_async(
+        args=[5], task_id=task_id, countdown=10, queue="queue1"
+    )
     # waiting_task.revoke()
     app.control.revoke(task_id=task_id, terminal=True)
     time.sleep(2)
-    new_task = long_task.apply_async(args=[3], task_id=task_id, queue='queue2')
+    new_task = long_task.apply_async(args=[3], task_id=task_id, queue="queue2")
+
 
 def test_revoke_task2():
     """
@@ -334,15 +353,14 @@ def test_revoke_task2():
                 old task will run continuously at stop point
     """
     task_id = uuid.uuid4().hex
-    
-    running_task = long_task.apply_async(args=[10], task_id=task_id, queue='queue1')
+
+    running_task = long_task.apply_async(args=[10], task_id=task_id, queue="queue1")
     time.sleep(3)
     # running_task.revoke()
     app.control.revoke(task_id=task_id, terminal=True)
     time.sleep(1)
-    
-    new_task = long_task.apply_async(args=[3], task_id=task_id, queue='queue2')
 
+    new_task = long_task.apply_async(args=[3], task_id=task_id, queue="queue2")
 
 
 if __name__ == "__main__":
@@ -351,7 +369,6 @@ if __name__ == "__main__":
     # sample_callback()
     # sample_chains()
     # sample_group()
-    # result = test_base_class.delay()
     # print('Task finished? ', result.ready())
     # print('Task result:   ', result.result)
     # test_max_concurrency_with_callback()
@@ -368,5 +385,10 @@ if __name__ == "__main__":
 
     # NOTE: don't revoke and create new task will same id
     # to change input of a task it should read from database/redis
+    # or to share state between tasks, use key-value in redis
     # test_revoke_task1()
     # test_revoke_task2()
+
+    # test_call_task_base_class1()
+    test_call_task_base_class2()
+

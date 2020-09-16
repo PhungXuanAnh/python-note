@@ -120,41 +120,12 @@ def chord_callback(arg):
     LOG.info(' ======= chord task : {}'.format(arg))
     return chord_result
 
-
-# Task inheritance
-# http://docs.celeryproject.org/en/stable/userguide/tasks.html#task-inheritance
-class MyTask(Task):
-
-    def on_failure(self, exc, task_id, args, kwargs, einfo):
-        print('tttttttttttttttttttttt on_failure {0!r} failed: {1!r}'.format(task_id, exc))
-        return None
-
-    def run(self, arg):
-        if arg == 6:
-            raise Exception(' tttttttttttttttttttttt raise exception')
-
-        print(' tttttttttttttttttttttt arg = {}'.format(arg))
-        for i in range(0, arg):
-            time.sleep(1)
-            print(' tttttttttttttttttttttt {}: This is class based Task {}'.format(i, arg))
-        return arg
-
-
-my_task = app.register_task(MyTask())
-
-
 @app.task(name='super_task.error_callback')
 def error_callback(*args, **kwargs):
     print(' tttttttttttttttttttttt error_callback ')
     print(args)
     print(kwargs)
     return 'error'
-
-
-@app.task(base=MyTask)
-def test_base_class():
-    print(' tttttttttttttttttttttt task')
-    raise KeyError()
 
 
 @app.task
