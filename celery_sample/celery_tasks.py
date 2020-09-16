@@ -32,6 +32,14 @@ def longtime_add(self, x=1, y=1, sleep_time=2):
     return x + y
 
 
+@app.task
+def long_task(sleep_time):
+    for i in range(0, sleep_time):
+        LOG.info(" ttttttttttttttttttttttt long_task: {}:{}".format(sleep_time, i))
+        time.sleep(i)
+    return sleep_time
+
+
 @app.task(max_retries=5)
 def fail_task_retry(task_id, number=0):
     try:

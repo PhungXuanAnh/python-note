@@ -17,7 +17,8 @@ from celery_tasks import (
     fail_task,
     forever_task,
     countdown_task,
-    wait_for
+    wait_for,
+    long_task
 )
 from task_routed_sample.feed.tasks import task_feed
 from task_routed_sample.image.tasks import task_image
@@ -290,7 +291,59 @@ def test_priority_task():
     task1 = high_priority_task.apply_async(args=['high task 1'], queue='default', task_id=task_id)
     time.sleep(1)
     high_priority_task.apply_async(args=['high task 2'], queue='default', task_id=task_id)
-  
+
+def test_revoke_task1():
+    """
+        make run-worker
+
+        task is create but not run
+        revoke task
+        
+        create task with same id but differ argument
+        check task argument
+
+        Conclution: 
+            revoke task with old arguments at queue1
+            create new task with new arguments at queue2 but same id
+            ==> task will be executed 2 time with 2 type of arguments
+    """
+    task_id = uuid.uuid4().hex
+    
+    waiting_task = long_task.apply_async(args=[5], task_id=task_id, countdown=10, queue='queue1')
+    # waiting_task.revoke()
+    app.control.revoke(task_id=task_id, terminal=True)
+    time.sleep(2)
+    new_task = long_task.apply_async(args=[3], task_id=task_id, queue='queue2')
+
+def test_revoke_task2():
+    """
+        make run-worker
+
+        task is created and running
+        revoke task
+        
+        create task with same id but differ argument
+        check task argument
+
+        Conclution: 
+            revoke task with old arguments at queue1
+            create new task with new arguments at queue2 but same id
+            ==> old task will be stop running
+                new task will be run
+                new task is finish
+                old task will run continuously at stop point
+    """
+    task_id = uuid.uuid4().hex
+    
+    running_task = long_task.apply_async(args=[10], task_id=task_id, queue='queue1')
+    time.sleep(3)
+    # running_task.revoke()
+    app.control.revoke(task_id=task_id, terminal=True)
+    time.sleep(1)
+    
+    new_task = long_task.apply_async(args=[3], task_id=task_id, queue='queue2')
+
+
 
 if __name__ == "__main__":
     # sample_call_a_task()
@@ -311,4 +364,9 @@ if __name__ == "__main__":
     # get_task_state_by_id()
 
     # test_route()
-    test_priority_task()
+    # test_priority_task()
+
+    # NOTE: don't revoke and create new task will same id
+    # to change input of a task it should read from database/redis
+    # test_revoke_task1()
+    # test_revoke_task2()
