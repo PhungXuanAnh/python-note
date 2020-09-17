@@ -65,7 +65,8 @@ pipeline = [
                                 u"$$user_id"
                             ]
                         },
-                        u"is_completed": False
+                        u"is_completed": False,
+                        u"task_status_type": {u"$ne": 4}
                     }
                 }
             ],
