@@ -12,6 +12,7 @@ import time
 import logging
 import pymongo
 import threading
+from pymongo import InsertOne, DeleteOne, ReplaceOne, UpdateOne, UpdateMany
 from utils import  BsonTimestampEncoder
 from url import AUTHEN_URL
 
@@ -89,13 +90,33 @@ def test_do_collection_action():
     time.sleep(1)
     collection.delete_one({"_id": 400})
 
+    time.sleep(1)
+    # https://pymongo.readthedocs.io/en/stable/api/pymongo/collection.html#pymongo.collection.Collection.bulk_write
+    requests = [
+        InsertOne({
+            "_id": 500,
+            "age": random.choice(range(1, 100)),
+            "name": random.choice(["Anh", "Hoa", "Nghia", "Phuc", "Hieu"]),
+            "address": random.choice(
+                ["Hanoi", "HCM", "Hai Phong", "Quang Ninh", "Ha Tay"]
+            ),
+        }),
+        UpdateOne({"_id": 500}, {"$set": {"age": 500, "name": "500", "address": "500"}}),
+        ReplaceOne({"_id": 555}, {"_id": 555, "age": "555", "name": "555", "address": "555"}),
+        DeleteOne({"_id": 500}),
+        UpdateMany({"_id": 0}, {"$set": {"age": 0}})
+    ]
+    collection.bulk_write(requests, ordered=True)
+    
+
 def blocking_listener():
     insert_sample_data()
     try:
         resume_token = None
         # with collection.watch(PIPELINE, FULL_DOCUMENT_TYPE) as stream:
         # with collection.watch(PIPELINE) as stream:
-        with collection.watch() as stream:
+        # with collection.watch() as stream:
+        with collection.watch(pipeline=None, full_document=FULL_DOCUMENT_TYPE) as stream:
             for event_change in stream:
                 print(" ============================== {} ============================== ".format(event_change["operationType"]))
                 print(json.dumps(event_change, indent=4, sort_keys=True, cls=BsonTimestampEncoder))
@@ -122,9 +143,10 @@ def blocking_listener():
 
 def non_blocking_listener():
     insert_sample_data()
-    # with collection.watch(PIPELINE, FULL_DOCUMENT_TYPE) as stream:
-    # with collection.watch(PIPELINE) as stream:
-    with collection.watch() as stream:
+    # with collection.watch(pipeline=PIPELINE, full_document=FULL_DOCUMENT_TYPE) as stream:
+    # with collection.watch(pipeline=PIPELINE) as stream:
+    # with collection.watch() as stream:
+    with collection.watch(pipeline=None, full_document=FULL_DOCUMENT_TYPE) as stream:
         while stream.alive:
             change = stream.try_next()
             # Note that the ChangeStream's resume token may be updated
