@@ -26,7 +26,7 @@ def insert_sample_data():
                 "address": random.choice(['Hanoi', 'HCM', "Hai Phong", "Quang Ninh", "Ha Tay"])
             },
         )
-    # for item in collection.find({'_id': False}):
+    # for item in collection.find({}, {'_id': False}):
     #     print("Sample data  :", item)
     print('------------------------------------------------------------')
 

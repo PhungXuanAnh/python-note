@@ -7,11 +7,11 @@ from utils import ObjectIdEncoder
 from url import AUTHEN_URL
 
 
-# client = pymongo.MongoClient('localhost', 27017)
-client = pymongo.MongoClient(AUTHEN_URL)
+client = pymongo.MongoClient('localhost', 27017)
+# client = pymongo.MongoClient(AUTHEN_URL)
 
-db = client.test
-collection = db.test_query_array
+db = client.test_database
+collection = db.test_collection
 
 # match an array
 # for item in db.inventory.find({"tags": ["red", "blank"]}):
@@ -65,7 +65,7 @@ def insert_sample_data():
             "array1": [2, 6, 3]
         }
     ])
-    for item in collection.find({'_id': False}):
+    for item in collection.find({}, {'_id': False}):
         print("Sample data  :", item)
     print('------------------------------------------------------------')
 
@@ -168,7 +168,7 @@ if __name__ == "__main__":
     # query.match_array1_contain_2_and_3()
     # query.match_array1_contain_value_greate_or_equal_3()
 
-    find = Find_And_Do_Something()
+    # find = Find_And_Do_Something()
     # find.find_item1_change_name()
     # find.find_item2_add_set()
     # find.find_item4_remove_array()
