@@ -26,10 +26,9 @@ if __name__ == '__main__':
     # print (json.dumps(request, indent=4, sort_keys=True))
 
     data = {
-        #         'shortLink': '123qwe',
-        'longLink': 'http://abc112.com'
+        'shortLink': '123qwe',
+        # 'longLink': 'http://abc112.com'
     }
+    print(post(json.dumps(data)).text)
 
-#     print post(json.dumps(data)).text
-
-    print(requests.get('http://0.0.0.0:8001/todo/api/v1.0/servers').text)
+    # print(requests.get('http://0.0.0.0:8001/todo/api/v1.0/servers').text)

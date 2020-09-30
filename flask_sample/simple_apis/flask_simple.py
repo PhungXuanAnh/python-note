@@ -1,5 +1,8 @@
 from flask import Flask, jsonify, abort, make_response, request, url_for
-from response_function import response_200
+import os
+import sys
+sys.path.append(os.getcwd() + "/..")
+from common.response_function import response_200
 
 app = Flask(__name__)
 
@@ -62,24 +65,28 @@ def create_server():
 @app.route('/todo/api/v1.0/servers/<int:server_id>', methods=['PUT'])
 def update_server(server_id):
     server = [server for server in servers if server['id'] == server_id]
-    print("aaaaaaaaaaaa")
+    for server in servers:
+        if server["id"] == server_id:
+            break
+    # print("============== server_id: {}".format(server_id))
+    # print("============== servers: {}".format(servers))
     print(request.json)
     
-    if len(server) == 0:
-        abort(400, description="write something for decorate error")
+    if not server:
+        abort(400, description="server is not in pool")
     if not request.json:
-        abort(400, description="write something for decorate error")
-    if 'title' in request.json and type(request.json['title']) != unicode:
-        abort(400, description="write something for decorate error")
-    if 'description' in request.json and type(request.json['description']) is not unicode:
-        abort(400, description="write something for decorate error")
+        abort(400, description="missing body")
+    if 'title' in request.json and not isinstance(request.json['title'], str):
+        abort(400, description="missing title")
+    if 'description' in request.json and not isinstance(request.json['description'], str):
+        abort(400, description="missing des")
     if 'done' in request.json and type(request.json['done']) is not bool:
-        abort(400, description="write something for decorate error")
+        abort(400, description="missing done")
         
-    server[0]['title'] = request.json.get('title', server[0]['title'])
-    server[0]['description'] = request.json.get('title', server[0]['description'])
-    server[0]['done'] = request.json.get('title', server[0]['done'])
-    return jsonify({'server': server[0]})
+    server['title'] = request.json.get('title', server['title'])
+    server['description'] = request.json.get('title', server['description'])
+    server['done'] = request.json.get('title', server['done'])
+    return jsonify({'server': server})
 
 @app.route('/todo/api/v1.0/servers/<int:server_id>', methods=['delete'])
 def delete_server(server_id):
