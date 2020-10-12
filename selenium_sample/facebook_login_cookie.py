@@ -5,6 +5,7 @@ from selenium.webdriver import ChromeOptions
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
+import pickle
 
 
 def wait_for_element_display(webdriver, by, by_value, wait_in_second):
@@ -83,10 +84,13 @@ def parse_dict_cookies(value):
 
 cookie = parse_dict_cookies(raw_cookie)
 
-print(json.dumps(cookie, indent=4, sort_keys=True))
+# print(json.dumps(cookie, indent=4, sort_keys=True))
+# for key, value in cookie.items():
+#     driver.add_cookie({'name' : key, 'value' : value, 'domain' : 'facebook.com'})
 
-for key, value in cookie.items():
-    driver.add_cookie({'name' : key, 'value' : value, 'domain' : 'facebook.com'})
+cookies = pickle.load(open("/home/xuananh/Dropbox/facebook_cookies.pkl", "rb"))
+for cookie in cookies:
+    driver.add_cookie(cookie)
 
 driver.get("https://www.facebook.com/amykute.tkuydung")
 

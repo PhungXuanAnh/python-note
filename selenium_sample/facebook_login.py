@@ -5,6 +5,7 @@ from selenium.webdriver import ChromeOptions
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
+import pickle
 
 with open('/home/xuananh/Dropbox/Work/Other/facebook-account.json', "r") as in_file:
     accounts = json.load(in_file)
@@ -91,6 +92,10 @@ driver.find_element_by_id('pass').send_keys(password)
 driver.find_element_by_name('login').click()
 
 # https://stackoverflow.com/a/15058521
+# -----------save cookie
+pickle.dump( driver.get_cookies() , open("cookies.pkl","wb"))
+
+# ------- load cookie
 cookies = pickle.load(open("cookies.pkl", "rb"))
 for cookie in cookies:
     print(cookie)
