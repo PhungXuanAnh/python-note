@@ -25,13 +25,13 @@ def wait_for_element_display(webdriver, by, by_value, wait_in_second):
 
 class FacebookLogin(object):
 
-    def __init__(self, webdriver):
+    def __init__(self, webdriver:Chrome):
         self.driver = webdriver
 
     def login(self, email, password):
         self.driver.find_element_by_id('email').send_keys(email)
         self.driver.find_element_by_id('pass').send_keys(password)
-        self.driver.find_element_by_id('loginbutton').click()
+        self.driver.find_element_by_name('login').click()
         return FacebookHomePage(self.driver)
 
 
@@ -84,3 +84,13 @@ driver.get("https://facebook.com/officialdoda/")
 
 scroll_until_loaded(driver)
 # driver.close()
+
+
+driver.find_element_by_id('email').send_keys(email)
+driver.find_element_by_id('pass').send_keys(password)
+driver.find_element_by_name('login').click()
+
+# https://stackoverflow.com/a/15058521
+cookies = pickle.load(open("cookies.pkl", "rb"))
+for cookie in cookies:
+    print(cookie)
