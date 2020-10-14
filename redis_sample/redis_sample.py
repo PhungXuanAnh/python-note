@@ -4,8 +4,12 @@ import json
 r = redis.StrictRedis(host='localhost', port=6379, db=1)
 def connect_directly():
     r0 = redis.StrictRedis(host='localhost', port=6379, db=1)
-    r0.set('set2', 'bar')
+    print(r0.set('set2', 'bar'))
+    print(r0.set('set2', 'value', px=5000, nx=True))    # create key if not exists
     print(r0.get('set2'))
+    print('--------------------')
+    print(r0.set('set1', 'value', px=5000, nx=True))    # create key if not exists
+    print(r0.get('set1'))
 
 def connect_using_pool():
     pool = redis.ConnectionPool(host='localhost', port=6379, db=2)
@@ -48,9 +52,9 @@ def save_a_dict():
 
 
 if __name__ == "__main__":
-    # connect_directly()
+    connect_directly()
     # connect_using_pool()
     # pipeline()
     # set_bit()
     # check_key_exist()
-    save_a_dict()
+    # save_a_dict()
