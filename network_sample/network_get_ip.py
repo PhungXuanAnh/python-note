@@ -2,6 +2,8 @@ import socket
 import fcntl
 import struct
 import traceback
+import requests
+import json
 
 
 def get_ip_address_interface1(ifname):
@@ -50,6 +52,10 @@ def get_all_interface_and_their_ip():
         addresses = [i['addr'] for i in ifaddresses(ifaceName).setdefault(AF_INET, [{'addr': 'No IP addr'}])]
         print('%s: %s' % (ifaceName, ', '.join(addresses)))
 
+def get_external_ip():
+    resp = requests.get("https://ipinfo.io/json")
+    print(json.dumps(resp.json(), indent=4, sort_keys=True))
+
 
 if __name__ == "__main__":
     get_ip_which_can_connect_to_internet1()
@@ -59,3 +65,5 @@ if __name__ == "__main__":
     get_ip_address_interface1('wlo1')
     print('----------------------------------')
     get_all_interface_and_their_ip()
+    print('----------------------------------')
+    get_external_ip()
