@@ -48,3 +48,6 @@ def repl(m):
 
 
 print(re.sub('\[\[:(.+?):\]\]', repl, text))
+
+link = 'https://www.facebook.com/yannews/posts/5721802284557280?__cft__[0]=AZXI_rwwPH21uoOewXjqwlD_KdbFvLSj6yHHYm-7QzxWDa6D5cSC71DTIBlpuQc7xMRfVxY-m3gUYpGbOCfXVGdv-pasymJ7zHBAkCT22NkCs0TinWCp-fndQSIv0RsI9t-37lP9KYS4RBm464zXKa21X1VVIla-ucjzOwfTEldSxcdlyVNEsqa1k36rKFywhRUPyuSD1IxsoIaC3nxMl91EzOiDbGoX_ciiqzXvnVBV3A&__tn__=%2CO%2CP-R'
+print("post_id: ", re.search(r'posts/([0-9]+)?', link).group(1))

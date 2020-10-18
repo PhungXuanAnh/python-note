@@ -4,7 +4,7 @@ from selenium.webdriver import ChromeOptions
 # set chrome driver and its options
 chrome_option = ChromeOptions()
 driver = Chrome(executable_path='webdriver/chromedriver',
-                chrome_options=chrome_option)
+                options=chrome_option)
 
 # get website
 driver.get("http://www.calculator.net/")

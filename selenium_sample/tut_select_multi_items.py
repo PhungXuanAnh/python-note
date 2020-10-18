@@ -11,7 +11,7 @@ chrome_path = '/home/xuananh/Downloads/chromedriver_linux64/chromedriver'
 
 chrome_option = ChromeOptions()
 driver = Chrome(executable_path=chrome_path,
-                chrome_options=chrome_option)
+                options=chrome_option)
 driver.maximize_window()
 driver.get(url)
 

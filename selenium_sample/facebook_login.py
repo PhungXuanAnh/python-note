@@ -68,7 +68,7 @@ chrome_option = ChromeOptions()
 chrome_option.add_argument("--disable-notifications")
 
 driver = Chrome(executable_path='webdriver/chromedriver',
-                chrome_options=chrome_option)
+                options=chrome_option)
 
 driver.get("https://facebook.com")
 driver.maximize_window()

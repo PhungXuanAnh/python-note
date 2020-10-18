@@ -10,7 +10,7 @@ from selenium.webdriver.common.action_chains import ActionChains
 
 chrome_option = ChromeOptions()
 driver = Chrome(executable_path='webdriver/chromedriver',
-                chrome_options=chrome_option)
+                options=chrome_option)
 driver.maximize_window()
 driver.get("http://viettuts.vn")
 

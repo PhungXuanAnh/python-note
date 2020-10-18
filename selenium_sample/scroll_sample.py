@@ -8,7 +8,7 @@ chrome_option = ChromeOptions()
 # chrome_option.set_headless()
 
 driver = Chrome(executable_path='webdriver/chromedriver',
-                chrome_options=chrome_option)
+                options=chrome_option)
 
 driver.get('http://www.python.org')
 assert "Python" in driver.title

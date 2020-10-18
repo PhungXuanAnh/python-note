@@ -27,7 +27,7 @@ url = "https://www.vebongdaonline.vn/bookTicket"
 # url = "file:///home/xuananh/2-chon-thong-tin-ve-he-thong-dang-ban/H%E1%BB%86%20TH%E1%BB%90NG%20%C4%90%E1%BA%B6T%20V%C3%89%20ONLINE.html"
 
 chrome_option = ChromeOptions()
-driver = Chrome(executable_path=configs['duong_dan_den_file_chrome'], chrome_options=chrome_option)
+driver = Chrome(executable_path=configs['duong_dan_den_file_chrome'], options=chrome_option)
 
 # firefox_option = FirefoxOptions()
 # driver = Firefox(executable_path="/home/xuananh/data/Downloads/geckodriver-v0.23.0-linux64/geckodriver")
