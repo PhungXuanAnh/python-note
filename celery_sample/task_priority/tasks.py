@@ -12,5 +12,6 @@ def normal_task():
 
 @app.task
 def high_priority_task(arg=None):
-    time.sleep(10)
-    LOG.info(" tttttttttttttttttttttt high_priority_task : {}".format(arg))
+    for _ in range(0, 10):
+        LOG.info(" tttttttttttttttttttttt high_priority_task : {}".format(arg))
+        time.sleep(1)
