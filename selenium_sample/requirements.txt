@@ -1,1 +1,2 @@
 selenium==3.141.0
+undetected-chromedriver==1.5.0
