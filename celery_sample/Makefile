@@ -5,6 +5,16 @@
 rm-log-dir:
 	rm -rf .celery && rm -rf logs && sleep 1
 
+run-worker-eventlet:
+	../.venv/bin/celery worker \
+		-A celery_tasks \
+		--loglevel=info \
+		--concurrency=300 \
+		--pool=eventlet \
+		-n worker1@%h \
+		-Q default,queue1,queue2
+
+
 run-worker:
 	../.venv/bin/celery worker \
 		-A celery_tasks \

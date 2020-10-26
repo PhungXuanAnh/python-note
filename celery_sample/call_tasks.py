@@ -363,6 +363,22 @@ def test_revoke_task2():
     new_task = long_task.apply_async(args=[3], task_id=task_id, queue="queue2")
 
 
+def test_call_multiple_tasks_same_id():
+    """
+        make run-worker
+            using this worker, all task will be implement concurently
+        
+        make run-worker-eventlet
+            using this worker, all task will be implement concurently
+    """
+    task_id = uuid.uuid4().hex
+    for i in range(0, 15):
+        high_priority_task.apply_async(
+            args=[i], queue="default", task_id=task_id
+        )
+
+
+
 if __name__ == "__main__":
     # sample_call_a_task()
     # sample_call_long_task()
@@ -382,6 +398,7 @@ if __name__ == "__main__":
 
     # test_route()
     # test_priority_task()
+    test_call_multiple_tasks_same_id()
 
     # NOTE: don't revoke and create new task will same id
     # to change input of a task it should read from database/redis
@@ -390,5 +407,5 @@ if __name__ == "__main__":
     # test_revoke_task2()
 
     # test_call_task_base_class1()
-    test_call_task_base_class2()
+    # test_call_task_base_class2()
 

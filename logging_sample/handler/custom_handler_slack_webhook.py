@@ -28,7 +28,7 @@ if __name__ == "__main__":
     logger1 = logging.getLogger('logger1')
     logger2 = logging.getLogger('logger2')
 
-    #======================================== add handler
+    #======================================== add handler =============================
     """
         1. How to get webhook, go to: https://api.slack.com/apps
         2. Choose your app in below of website
