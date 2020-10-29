@@ -34,6 +34,13 @@ def get_ip_which_can_connect_to_internet1():
 
 
 def get_ip_which_can_connect_to_internet2():
+    # NOTE: this lib only support Linux, don't work on MacOS
+    # refer here: https://github.com/svinota/pyroute2/issues/437#issuecomment-343117084
+    import platform
+    if platform.system() == "Darwin":
+        print("This lib is only support Linux")
+        return 
+
     from pyroute2 import IPRoute
     ip_addresses = []
     with IPRoute() as ipr:
