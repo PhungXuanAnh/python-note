@@ -32,7 +32,7 @@ logging.basicConfig(
 #     filename="/media/xuananh/data/Temp/example.log",
     )
 
-logging.debug('aaaaaaaaaaaaa 2')
-logging.info('aaaaaaaaaaaaa 2')
-logging.error('aaaaaaaaaaaaa 2')
-logging.warning('aaaaaaaaaaaaa 2')
+logging.debug('aaaaaaaaaaaaa debug')
+logging.info('aaaaaaaaaaaaa info')
+logging.error('aaaaaaaaaaaaa error')
+logging.warning('aaaaaaaaaaaaa warning')
