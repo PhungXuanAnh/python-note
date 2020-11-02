@@ -85,6 +85,7 @@ d = datetime.datetime.utcnow()
 for i in range(-2, 3):
     d1 = d + datetime.timedelta(minutes=i)
     print(d1.strftime("%Y-%m-%dT%H:%M"))
+    print(d1.strftime("%Y-%m-%d"))
 
 print('----------------------------------------------- extract year, month, hour, minute')
 print(datetime.datetime.now().year)
