@@ -8,8 +8,8 @@ from utils import ObjectIdEncoder
 from url import AUTHEN_URL
 
 
-# client = pymongo.MongoClient('localhost', 27017)
-client = pymongo.MongoClient(AUTHEN_URL)
+client = pymongo.MongoClient('localhost', 27017)
+# client = pymongo.MongoClient(AUTHEN_URL)
 
 db = client.test_database
 collection = db.test_collection
@@ -18,7 +18,7 @@ collection = db.test_collection
 def insert_sample_data():
     collection.drop()
     for i in range(0, 50):
-        collection.insert_one(
+        result = collection.insert_one(
             {
                 "_id": i,
                 "age": random.choice(range(50, 90)),
@@ -27,6 +27,7 @@ def insert_sample_data():
                 "scores": random.sample(range(5, 10), 3)
             },
         )
+        print("--------- document _id: {}".format(result.inserted_id))
     for item in collection.find():
         print(item)
     print(collection.find().count())
