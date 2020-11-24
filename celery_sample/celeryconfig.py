@@ -65,7 +65,7 @@ broker_url = 'filesystem://'
 
 imports = (
     'celery_tasks',
-    'celery_signals',
+    # 'celery_signals',
 
     'task_routed_sample.feed.tasks',
     'task_routed_sample.image.tasks',
