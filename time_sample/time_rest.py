@@ -2,11 +2,7 @@
 import subprocess
 import datetime
 import time
-import logging
 import sys
-import os
-import multiprocessing
-from logging.handlers import RotatingFileHandler
 
 
 def run_cmd(command):
@@ -51,7 +47,7 @@ def working_time(times):
     start = datetime.datetime.now()
     now = datetime.datetime.now()
     while (now - start).seconds < times:
-        print("working time: {}".format((now - start).seconds))
+        print("working time: {} of {}".format((now - start).seconds, times))
         time.sleep(1)
         now = datetime.datetime.now()
 
@@ -62,7 +58,7 @@ def break_time(time_to_break):
     now = datetime.datetime.now()
 
     while (now - start).seconds < time_to_break:
-        print("break time: {}".format((now - start).seconds))
+        print("break time: {} of {}".format((now - start).seconds, time_to_break))
         time.sleep(1)
         now = datetime.datetime.now()
         if not is_screensaver_active():

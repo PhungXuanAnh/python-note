@@ -74,3 +74,6 @@ run-beat-watchdog:
 
 test:
 	../.venv/bin/python call_tasks.py
+
+remove-result:
+	rm -rf .celery/result/*

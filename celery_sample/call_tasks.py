@@ -17,6 +17,7 @@ from celery_tasks import (
     wait_for,
     long_task,
 )
+from celery.app.control import Inspect
 from task_routed_sample.feed.tasks import task_feed
 from task_routed_sample.image.tasks import task_image
 from task_routed_sample.video.tasks import task_video
@@ -378,6 +379,24 @@ def test_call_multiple_tasks_same_id():
         )
 
 
+def test_list_task():
+    # create tasks
+    for _ in range(0, 15):
+        longtime_add.apply_async([1, 2, 4], queue="queue2", countdown=5)
+
+    # Inspect all nodes.
+    i = Inspect(app=app)
+
+    # Show the items that have an ETA or are scheduled for later processing
+    print(i.scheduled())
+
+    # # Show tasks that are currently active.
+    print(i.active())
+
+    # # Show tasks that have been claimed by workers
+    print(i.reserved())
+
+
 
 if __name__ == "__main__":
     # sample_call_a_task()
@@ -398,7 +417,7 @@ if __name__ == "__main__":
 
     # test_route()
     # test_priority_task()
-    test_call_multiple_tasks_same_id()
+    # test_call_multiple_tasks_same_id()
 
     # NOTE: don't revoke and create new task will same id
     # to change input of a task it should read from database/redis
@@ -408,4 +427,4 @@ if __name__ == "__main__":
 
     # test_call_task_base_class1()
     # test_call_task_base_class2()
-
+    test_list_task()
