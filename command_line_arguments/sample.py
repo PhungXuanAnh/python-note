@@ -1,5 +1,3 @@
-#!/usr/bin/python
-
 import sys, json
 
 print ('Number of arguments:', len(sys.argv), 'arguments.')
