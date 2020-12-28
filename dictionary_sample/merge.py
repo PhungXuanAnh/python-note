@@ -26,7 +26,6 @@ updated_dict = {
             }
         }
     }
-#================================== GOOD
 def merge(update, origin):
     for key, value in update.items():
         if isinstance(value, dict):
@@ -37,8 +36,7 @@ def merge(update, origin):
             origin[key] = value
 
     return origin
-print ("1 = ", merge(update_dict, origin_dict))
-#================================== GOOD
+
 from copy import deepcopy
 def dict_merge(update, origin):
     '''recursively merges dict's. not just simple a['key'] = b['key'], if
@@ -47,27 +45,23 @@ def dict_merge(update, origin):
     if not isinstance(origin, dict):
         return origin
     result = deepcopy(update)
-    for k, v in origin.iteritems():
+    for k, v in origin.items():
         if k in result and isinstance(result[k], dict):
                 result[k] = dict_merge(result[k], v)
         else:
             result[k] = deepcopy(v)
     return result
-print ("2 = ", dict_merge(update_dict, origin_dict))
-#================================== REFERENCE
-# return update dictionary, shoulde return origin dictionary
+
 import collections
 def update_PYTHON2(update, origin):
-    for k, v in origin.iteritems():
+    for k, v in origin.items():
         if isinstance(v, collections.Mapping):
             r = update_PYTHON2(update.get(k, {}), v)
             update[k] = r
         else:
             update[k] = origin[k]
     return update
-print ("3 = ", update_PYTHON2(update_dict, origin_dict))
-#================================== REFERENCE
-# return update dictionary, shoulde return origin dictionary
+
 import collections
 def update_PYTHON3(update, origin):
     for k, v in origin.items():
@@ -77,4 +71,28 @@ def update_PYTHON3(update, origin):
         else:
             update[k] = origin[k]
     return update
-print ("4 = ", update_PYTHON2(update_dict, origin_dict))
+
+
+def merge_2_dict():
+    x = {"one": 1, "two": 2}
+    y = {"two": 7, "three": 3}
+    # NOTE: "two" will be replace by value in y
+    print({**x, **y})
+
+if __name__ == "__main__":
+    # GOOD
+    print("1 = ", merge(update_dict, origin_dict))
+
+    #================================== REFERENCE
+    # return update dictionary, shoulde return origin dictionary
+    print("2 = ", dict_merge(update_dict, origin_dict))
+
+    #================================== REFERENCE
+    # return update dictionary, shoulde return origin dictionary
+    print ("3 = ", update_PYTHON2(update_dict, origin_dict))
+
+    print ("4 = ", update_PYTHON2(update_dict, origin_dict))
+
+    merge_2_dict()
+
+
