@@ -3,6 +3,8 @@ import subprocess
 import datetime
 import time
 import sys
+from sys import platform
+import Quartz
 
 
 def run_cmd(command):
@@ -25,10 +27,18 @@ def move_mouse():
 
 
 def lock_screen():
-    run_cmd("gnome-screensaver-command --lock")
+    if platform == "linux" or platform == "linux2":
+        run_cmd("gnome-screensaver-command --lock")
+    elif platform == "darwin":
+        run_cmd("maclock")
 
 
-def is_screensaver_active():
+def is_osx_screen_lock():
+    d = Quartz.CGSessionCopyCurrentDictionary()
+    return 'CGSSessionScreenIsLocked' in d.keys()
+
+
+def is_ubuntu_screen_lock():
     process = subprocess.Popen("gnome-screensaver-command -q", shell=True,
                                stdout=subprocess.PIPE,
                                stderr=subprocess.STDOUT)
@@ -37,6 +47,13 @@ def is_screensaver_active():
         return True
     elif result[0] == b'The screensaver is inactive\n':
         return False
+
+
+def is_screensaver_active():
+    if platform == "linux" or platform == "linux2":
+        return is_ubuntu_screen_lock()
+    elif platform == "darwin":
+        return is_osx_screen_lock()
 
 
 def active_screen():
@@ -73,3 +90,7 @@ if __name__ == '__main__':
     """
     working_time(int(sys.argv[1]) * 60)
     break_time(3 * 60)
+
+    ## -------------------this is for test
+    # working_time(5)
+    # break_time(30)

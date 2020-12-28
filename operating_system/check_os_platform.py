@@ -27,4 +27,5 @@ def get_os_platform2():
 
 if __name__ == "__main__":
     print(get_os_platform1())
+    print("-----------------------------")
     print(get_os_platform2())
