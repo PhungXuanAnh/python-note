@@ -3,8 +3,13 @@ import subprocess
 import datetime
 import time
 import sys
+import os
 from sys import platform
 import Quartz
+
+current_dir = os.path.dirname(__file__)
+sys.path.append(current_dir + "/..")
+from mp3.play import play_mp3
 
 
 def run_cmd(command):
@@ -90,6 +95,7 @@ if __name__ == '__main__':
     """
     working_time(int(sys.argv[1]) * 60)
     break_time(3 * 60)
+    play_mp3()
 
     ## -------------------this is for test
     # working_time(5)
