@@ -55,6 +55,13 @@ def get_time_period():
     period = (now - start).seconds
     print("period: ", period)
 
+
+    t1 = datetime.datetime(2008, 9, 3, 20, 56, 35, 450686)
+    t2 = datetime.datetime(2008, 9, 5, 20, 56, 45, 450686)
+    print("NOTE: It should use total_seconds when t2 - t1 > 1 day, see the difference below:")
+    print("(t2-t1).seconds(): {}".format((t2-t1).seconds))
+    print("(t2-t1).total_seconds(): {}".format((t2-t1).total_seconds()))
+
 def datetime_in_pass():
     now = datetime.datetime.now()
     datetime_7_day_ago = now - datetime.timedelta(days=7)
@@ -102,7 +109,7 @@ if __name__ == '__main__':
     # format_datetime_for_some_standar()
     # datetime_format()
     
-    # get_time_period()
+    get_time_period()
     
     # datetime_in_pass()
     # date_time_in_furture()
