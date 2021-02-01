@@ -1,11 +1,9 @@
-#!/usr/bin/python
 import subprocess
 import datetime
 import time
 import sys
 import os
 from sys import platform
-import Quartz
 
 current_dir = os.path.dirname(__file__)
 sys.path.append(current_dir + "/..")
@@ -39,6 +37,7 @@ def lock_screen():
 
 
 def is_osx_screen_lock():
+    import Quartz
     d = Quartz.CGSessionCopyCurrentDictionary()
     return 'CGSSessionScreenIsLocked' in d.keys()
 
