@@ -3,12 +3,18 @@ import datetime
 import time
 import sys
 import os
+import threading
+from flask import Flask
 from sys import platform
+
 
 current_dir = os.path.dirname(__file__)
 sys.path.append(current_dir + "/..")
 from mp3.play import play_mp3
 
+
+RELEASE_LOCK_SCREEN = True
+app = Flask(__name__)
 
 def run_cmd(command):
     subprocess.Popen(command, shell=True,
@@ -65,20 +71,28 @@ def active_screen():
 
 
 def working_time(times):
+    global RELEASE_LOCK_SCREEN
+    RELEASE_LOCK_SCREEN = True
+
     start = datetime.datetime.now()
     now = datetime.datetime.now()
     while (now - start).seconds < times:
         print("working time: {} of {}".format((now - start).seconds, times))
-        time.sleep(1)
-        now = datetime.datetime.now()
+        
+        if is_screensaver_active():
+            start = datetime.datetime.now()
 
+        now = datetime.datetime.now()
+        time.sleep(1)
+
+    RELEASE_LOCK_SCREEN = False
 
 def break_time(time_to_break):
     lock_screen()
     start = datetime.datetime.now()
     now = datetime.datetime.now()
 
-    while (now - start).seconds < time_to_break:
+    while (now - start).seconds < time_to_break and not RELEASE_LOCK_SCREEN:
         print("break time: {} of {}".format((now - start).seconds, time_to_break))
         time.sleep(1)
         now = datetime.datetime.now()
@@ -87,15 +101,24 @@ def break_time(time_to_break):
             time.sleep(5)
 
 
+def main():
+    while True:
+        working_time(int(sys.argv[1]) * 60)
+        break_time(3 * 60)
+        play_mp3()
+
+@app.route('/rl-lock', methods=['get'])
+def release_lock_screen():
+    global RELEASE_LOCK_SCREEN
+    RELEASE_LOCK_SCREEN = True
+    return str(datetime.datetime.now())
+
 if __name__ == '__main__':
     """
         run countdown timer, time to 0, then force lock screen in 3 menutes
         wait 3 menutes for open screen
     """
-    working_time(int(sys.argv[1]) * 60)
-    break_time(3 * 60)
-    play_mp3()
+    threading.Thread(target=main, args=[]).start()
+    threading.Thread(target=run_cmd, args=["lt --port 8001 --subdomain xuananh"]).start()
+    app.run(host='0.0.0.0', port=8001, debug=False)
 
-    ## -------------------this is for test
-    # working_time(5)
-    # break_time(30)
