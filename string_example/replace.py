@@ -1,23 +1,23 @@
 sample_string = "192.168.0.1"
-
 print(sample_string.replace(".", "_"))
+
+test1 = '%s is %s years old' % ("Mar", "1")
+print(test1)
+name = 'John'
+balance = 235765
+formatted_str = '----------- Hello %(name)s, your current balance is %(balance)6.0f dollars.' % {"name":name, "balance":balance}
+print(formatted_str)
 
 Fname = "John"
 Lname = "Doe"
 Age = "24"
-
-
-# PYTHON 2
-test1 = '%s is %s years old' % ("Mar", "1")
-print(test1)
-
-
-# PYTHON 3
 print('{} {} is {} years old.'.format(Fname, Lname, Age))
-
 print('{0} {1} is {2} years old.'.format(Fname, Lname, Age))
-
 print('{0} {1} is {0} years old.'.format(Fname, Lname, Age))
+
+dictionary = {'quantity': 10, 'name': 'bananas', 'price': 2.6743}
+formatted_str = '----------- I got {quantity:d} {name:s} for {price:.2f}$'.format(**dictionary)
+print(formatted_str)
 
 ONBOARD_RUN_CMD = 'sudo docker run -d \ \n' \
     '--name {containerName}-{hostPort} \ \n' \
@@ -28,8 +28,6 @@ ONBOARD_RUN_CMD = 'sudo docker run -d \ \n' \
     '-v {hostConfigDir}:{absolutePathContainerConfigDir} \ \n' \
     '-v {hostSourceDir}:{absolutePathContainerSourceDir} \ \n' \
     '{image}:{tag} {cmd}' \
-
-# docker run --name "container_name" --hostname "container_hostname" --net=host -p <host_port:container_port> -v <host_dir>:<absolute_container_path> image_name:tag
 
 print(ONBOARD_RUN_CMD.format(containerName="onboard-microservice",
                              containerHostName="onboard_microservice",

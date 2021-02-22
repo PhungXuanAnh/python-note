@@ -19,6 +19,7 @@ def play_mp3():
         then: 
             pip install -r requirements.txt
     """
+    print("playing file %s" % (song_file))
     import playsound
     playsound.playsound(song_file, True)
 

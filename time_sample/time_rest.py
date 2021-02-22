@@ -11,12 +11,13 @@ from sys import platform
 current_dir = os.path.dirname(__file__)
 sys.path.append(current_dir + "/..")
 from mp3.play import play_mp3
-
+from subprocess_sample.subprocess_sample import run_command_print_output1
 
 RELEASE_LOCK_SCREEN = True
 app = Flask(__name__)
 
 def run_cmd(command):
+    print(command)
     subprocess.Popen(command, shell=True,
                      stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
@@ -88,9 +89,10 @@ def working_time(times):
     RELEASE_LOCK_SCREEN = False
 
 def break_time(time_to_break):
-    lock_screen()
+    # lock_screen()
     start = datetime.datetime.now()
     now = datetime.datetime.now()
+    print(RELEASE_LOCK_SCREEN)
 
     while (now - start).seconds < time_to_break and not RELEASE_LOCK_SCREEN:
         print("break time: {} of {}".format((now - start).seconds, time_to_break))
@@ -98,20 +100,30 @@ def break_time(time_to_break):
         now = datetime.datetime.now()
         if not is_screensaver_active():
             lock_screen()
-            time.sleep(5)
+            time.sleep(1)
 
+    print(RELEASE_LOCK_SCREEN)
 
 def main():
     while True:
         working_time(int(sys.argv[1]) * 60)
         break_time(3 * 60)
+        # working_time(10)
+        # break_time(30)
         play_mp3()
 
-@app.route('/rl-lock', methods=['get'])
+def get_domain():
+    if platform == "linux" or platform == "linux2":
+        return "xuananh-rl-lock-ubuntu"
+    elif platform == "darwin":
+        return "xuananh-rl-lock-mac"
+
+@app.route('/', methods=['get'])
 def release_lock_screen():
     global RELEASE_LOCK_SCREEN
     RELEASE_LOCK_SCREEN = True
     return str(datetime.datetime.now())
+
 
 if __name__ == '__main__':
     """
@@ -119,6 +131,5 @@ if __name__ == '__main__':
         wait 3 menutes for open screen
     """
     threading.Thread(target=main, args=[]).start()
-    threading.Thread(target=run_cmd, args=["lt --port 8001 --subdomain xuananh"]).start()
+    threading.Thread(target=run_command_print_output1, args=["lt --port 8001 --subdomain {}".format(get_domain())]).start()
     app.run(host='0.0.0.0', port=8001, debug=False)
-
