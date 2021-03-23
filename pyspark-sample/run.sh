@@ -1,24 +1,3 @@
-# ===================================================================
-# INSTALL JAVA 8
-# ===================================================================
-https://askubuntu.com/questions/56104/how-can-i-install-sun-oracles-proprietary-java-jdk-6-7-8-or-jre
-
-# ===================================================================
-# INSTALL SPARK
-# ===================================================================
-wget https://archive.apache.org/dist/spark/spark-2.2.0/spark-2.2.0-bin-hadoop2.7.tgz
-tar xvf spark-2.2.0-bin-hadoop2.7.tgz
-sudo mv spark-2.2.0-bin-hadoop2.7/ /opt/spark 
-
-export SPARK_HOME=/opt/spark
-export PATH=$PATH:$SPARK_HOME/bin:$SPARK_HOME/sbin
-
-start-master.sh 
-ss -tunelp | grep 8080
-start-slave.sh spark://sigma:7077
-
-sudo update-alternatives --install  /usr/bin/python python /usr/bin/python3.6 1
-
 export SPARK_HOME='/{YOUR_SPARK_DIRECTORY}/spark-2.3.1-bin-hadoop2.7'
 export PYTHONPATH=$SPARK_HOME/python:$PYTHONPATH
 export PYSPARK_DRIVER_PYTHON="jupyter"
