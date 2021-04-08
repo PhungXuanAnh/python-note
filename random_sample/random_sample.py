@@ -1,5 +1,6 @@
 import random
 import time
+import datetime
 
 print('choose 1 random number in range 0 - 9: ', random.randint(0, 9))
 
@@ -20,3 +21,16 @@ def randomize_time(start_timestamp,end_timestamp):
     print(time.strftime('%b %d %Y %I:%M:%S', time.localtime(random.randrange(start_timestamp,end_timestamp))))
     # return time.strftime('%b %d %Y %I:%M:%S', time.localtime(random.randrange(start_timestamp,end_timestamp)))
 randomize_time(start_timestamp,end_timestamp)
+
+
+def randomtimes(n=100):
+    start = "2021-1-1 00:00:00"
+    end = "2021-12-1 00:00:00"
+    frmt = '%Y-%m-%d %H:%M:%S'
+    stime = datetime.datetime.strptime(start, frmt)
+    etime = datetime.datetime.strptime(end, frmt)
+
+    td = etime - stime
+    # return [random.random() * td + stime for _ in range(n)]
+    return random.random() * td + stime
+print(randomtimes())
