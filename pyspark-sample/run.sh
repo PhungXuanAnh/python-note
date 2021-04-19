@@ -6,14 +6,30 @@ https://askubuntu.com/questions/56104/how-can-i-install-sun-oracles-proprietary-
 # ===================================================================
 # INSTALL SPARK
 # ===================================================================
-wget https://archive.apache.org/dist/spark/spark-2.2.0/spark-2.2.0-bin-hadoop2.7.tgz
-tar xvf spark-2.2.0-bin-hadoop2.7.tgz
-sudo mv spark-2.2.0-bin-hadoop2.7/ /opt/spark 
+cd /opt
+rm -rf spark
+wget https://archive.apache.org/dist/spark/spark-3.1.1/spark-3.1.1-bin-hadoop2.7.tgz
+tar xvf spark-3.1.1-bin-hadoop2.7.tgz
+sudo mv spark-3.1.1-bin-hadoop2.7 spark
 
+vim ~/.bashrc
 export SPARK_HOME=/opt/spark
 export PATH=$PATH:$SPARK_HOME/bin:$SPARK_HOME/sbin
 
-start-master.sh 
+export SPARK_MASTER_HOST=67.205.158.186
+export JAVA_HOME=/usr/lib/jvm/jdk1.8.0_211/bin/
+
+# on master
+export YOUR_IP=67.205.158.186
+SPARK_LOCAL_IP=${YOUR_IP} SPARK_MASTER_HOST=${YOUR_IP} start-master.sh
+ss -tunelp | grep 8080
+
+# on slave
+export YOUR_IP=67.205.158.186
+SPARK_LOCAL_IP=${YOUR_IP} start-worker.sh spark://${YOUR_IP}:7077
+ss -tunelp | grep 8081
+
+start-master.sh         # default master ip is hostname
 ss -tunelp | grep 8080
 start-slave.sh spark://sigma:7077
 
