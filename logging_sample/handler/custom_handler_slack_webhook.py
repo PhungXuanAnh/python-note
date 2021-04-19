@@ -35,8 +35,11 @@ if __name__ == "__main__":
         3. Choose `Incomming Webhooks`
         4. Choose `Activate Incoming Webhooks`
         5. Choose `Add New Webhook to Workspace`
+
+        link to bellow incomming webhook app : https://phungxuananh.slack.com/services/B01ULRZTC9K?added=1
+        
     """
-    WEBHOOK_URL = open("/Users/xuananh/Dropbox/cantec/advesa_slack_webhook_for_app_cantec-alert.txt", "r").read()
+    WEBHOOK_URL = open("/home/xuananh/Dropbox/Work/Other/credentials_bk/slack_webhook_workspace-phungxuananh_channel_test-webhook-logging-python.txt", "r").read()
     slack_webhook_handler = SlackWebhookHandler(webhook_url=WEBHOOK_URL)
     slack_webhook_handler.setLevel(logging.INFO)
     slack_webhook_handler.setFormatter(logging.Formatter(

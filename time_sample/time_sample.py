@@ -106,10 +106,10 @@ if __name__ == '__main__':
     # print(datetime.date(1991, 1, 1))
     # get_timezone()
     
-    # format_datetime_for_some_standar()
+    format_datetime_for_some_standar()
     # datetime_format()
     
-    get_time_period()
+    # get_time_period()
     
     # datetime_in_pass()
     # date_time_in_furture()
