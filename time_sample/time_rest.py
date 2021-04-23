@@ -132,5 +132,6 @@ if __name__ == '__main__':
     """
     threading.Thread(target=main, args=[]).start()
     # threading.Thread(target=run_command_print_output1, args=["lt --port 8001 --subdomain {}".format(get_domain())]).start()
-    threading.Thread(target=run_command_print_output1, args=["staqlab-tunnel 8001 hostname={}".format(get_domain())]).start()
+    threading.Thread(target=run_command_print_output1, args=["staqlab-tunnel 8001"]).start()
+    # threading.Thread(target=run_command_print_output1, args=["staqlab-tunnel 8001 hostname={}".format(get_domain())]).start()
     app.run(host='0.0.0.0', port=8001, debug=False)
