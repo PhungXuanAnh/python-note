@@ -79,6 +79,10 @@ def working_time(times):
     now = datetime.datetime.now()
     while (now - start).seconds < times:
         print("working time: {} of {}".format((now - start).seconds, times))
+
+        if RELEASE_LOCK_SCREEN:
+            start = datetime.datetime.now()
+            RELEASE_LOCK_SCREEN = False
         
         if is_screensaver_active():
             start = datetime.datetime.now()
