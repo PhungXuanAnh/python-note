@@ -56,8 +56,19 @@ def write_csv_from_dict(delimiter):
         writer.writerow({'emp_name': 'Erica Meyers', 'dept': 'IT', 'birth_month': 'March'})
 
 
+def split_string_by_comma_but_ignore_comma_within_double_quotes():
+    """
+        Split string on commas but ignore commas within double-quotes?
+        Reference: https://stackoverflow.com/a/8070008/7639845
+    """
+    from csv import reader
+    infile = ['1,"2,3",4']
+    for line in reader(infile):
+        print(line)
+
 if __name__ == "__main__":
     # read_in_dict()
     # read_line_by_line()
-    write_csv_line_by_line(delimiter='|')
+    # write_csv_line_by_line(delimiter='|')
     # write_csv_from_dict(delimiter=',')
+    split_string_by_comma_but_ignore_comma_within_double_quotes()
