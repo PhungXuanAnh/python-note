@@ -16,23 +16,27 @@ from subprocess_sample.subprocess_sample import run_command_print_output1
 RELEASE_LOCK_SCREEN = True
 app = Flask(__name__)
 
+
 def run_cmd(command):
     print(command)
-    subprocess.Popen(command, shell=True,
-                     stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    subprocess.Popen(
+        command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT
+    )
 
 
 def _move_mouse(x, y):
-    run_cmd('xdotool mousemove {} {}'.format(x, y))
+    run_cmd("xdotool mousemove {} {}".format(x, y))
 
 
 def move_mouse():
-    with open('/home/xuananh/repo/python-note/time_sample/mouse-position.txt', 'r') as f:
+    with open(
+        "/home/xuananh/repo/python-note/time_sample/mouse-position.txt", "r"
+    ) as f:
         for position in f.readlines():
-            command = 'xdotool mousemove {}'.format(position)
-            p = subprocess.Popen(command, shell=True,
-                                 stdout=subprocess.PIPE,
-                                 stderr=subprocess.STDOUT)
+            command = "xdotool mousemove {}".format(position)
+            p = subprocess.Popen(
+                command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT
+            )
             p.wait()
 
 
@@ -45,18 +49,22 @@ def lock_screen():
 
 def is_osx_screen_lock():
     import Quartz
+
     d = Quartz.CGSessionCopyCurrentDictionary()
-    return 'CGSSessionScreenIsLocked' in d.keys()
+    return "CGSSessionScreenIsLocked" in d.keys()
 
 
 def is_ubuntu_screen_lock():
-    process = subprocess.Popen("gnome-screensaver-command -q", shell=True,
-                               stdout=subprocess.PIPE,
-                               stderr=subprocess.STDOUT)
+    process = subprocess.Popen(
+        "gnome-screensaver-command -q",
+        shell=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+    )
     result = process.communicate()
-    if result[0] == b'The screensaver is active\n':
+    if result[0] == b"The screensaver is active\n":
         return True
-    elif result[0] == b'The screensaver is inactive\n':
+    elif result[0] == b"The screensaver is inactive\n":
         return False
 
 
@@ -83,7 +91,7 @@ def working_time(times):
         if RELEASE_LOCK_SCREEN:
             start = datetime.datetime.now()
             RELEASE_LOCK_SCREEN = False
-        
+
         if is_screensaver_active():
             start = datetime.datetime.now()
 
@@ -91,6 +99,7 @@ def working_time(times):
         time.sleep(1)
 
     RELEASE_LOCK_SCREEN = False
+
 
 def break_time(time_to_break):
     # lock_screen()
@@ -108,6 +117,7 @@ def break_time(time_to_break):
 
     print(RELEASE_LOCK_SCREEN)
 
+
 def main():
     while True:
         working_time(int(sys.argv[1]) * 60)
@@ -116,26 +126,59 @@ def main():
         # break_time(30)
         play_mp3()
 
+
 def get_domain():
     if platform == "linux" or platform == "linux2":
         return "xuananh-rl-lock-ubuntu"
     elif platform == "darwin":
         return "xuananh-rl-lock-mac"
 
-@app.route('/', methods=['get'])
+
+def update_screen_url(unlock_screen_url):
+    import requests, json
+    resp = requests.put(
+        url="https://52.220.204.132:444/api/v1/unlock-screen-url/1",
+        verify=False,
+        headers={'Content-Type': 'application/json'},
+        data=json.dumps({"url": unlock_screen_url}),
+    )
+
+def run_command_staqlab(command):
+    print("Running command '{}' ...".format(command))
+    p = subprocess.Popen(
+        command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT
+    )
+    while True:
+        out = p.stdout.readline()
+        if out == b"" and p.poll() is not None:
+            break
+        if out != b"":
+            output_string = out.strip().decode()
+            print(output_string)
+            output_list = output_string.split(" ")
+            # print(output_list)
+            if output_list[0] == "HTTPS":
+                # print(output_list[3])
+                update_screen_url(output_list[3])
+    print("return-code = {} after run command '{}'".format(p.poll(), command))
+
+
+
+@app.route("/", methods=["get"])
 def release_lock_screen():
     global RELEASE_LOCK_SCREEN
     RELEASE_LOCK_SCREEN = True
     return str(datetime.datetime.now())
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     """
-        run countdown timer, time to 0, then force lock screen in 3 menutes
-        wait 3 menutes for open screen
+    run countdown timer, time to 0, then force lock screen in 3 menutes
+    wait 3 menutes for open screen
     """
+    # update_screen_url("adsfasdf.com")
     threading.Thread(target=main, args=[]).start()
     # threading.Thread(target=run_command_print_output1, args=["lt --port 8001 --subdomain {}".format(get_domain())]).start()
-    threading.Thread(target=run_command_print_output1, args=["staqlab-tunnel 8001"]).start()
+    threading.Thread(target=run_command_staqlab, args=["staqlab-tunnel 8001"]).start()
     # threading.Thread(target=run_command_print_output1, args=["staqlab-tunnel 8001 hostname={}".format(get_domain())]).start()
-    app.run(host='0.0.0.0', port=8001, debug=False)
+    app.run(host="0.0.0.0", port=8001, debug=False)
