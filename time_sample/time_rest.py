@@ -10,7 +10,7 @@ from sys import platform
 
 current_dir = os.path.dirname(__file__)
 sys.path.append(current_dir + "/..")
-from mp3.play import play_mp3
+from mp3.play import play_mp3_with_volume
 from subprocess_sample.subprocess_sample import run_command_print_output1
 
 RELEASE_LOCK_SCREEN = True
@@ -124,7 +124,7 @@ def main():
         break_time(3 * 60)
         # working_time(10)
         # break_time(30)
-        play_mp3()
+        play_mp3_with_volume()
 
 
 def get_domain():

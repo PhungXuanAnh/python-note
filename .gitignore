@@ -7,3 +7,5 @@ metastore_db
 .DS_Store
 test
 *.pyc
+
+celerybeat*
