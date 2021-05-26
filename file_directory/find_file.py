@@ -8,11 +8,6 @@ def find(name, path):
         if name in files:
             return os.path.join(root, name)
 
-# result = find('Temp.py', '/media/xuananh/data/Temp')
-# print result
-
-# ====================================================
-
 
 def find_all(name, path):
     result = []
@@ -20,12 +15,6 @@ def find_all(name, path):
         if name in files:
             result.append(os.path.join(root, name))
     return result
-
-
-result = find_all('Temp.py', '/media/xuananh/data/Temp')
-print(json.dumps(result, indent=4, sort_keys=True))
-
-# ====================================================
 
 
 def find_pattern(pattern, path):
@@ -36,5 +25,9 @@ def find_pattern(pattern, path):
                 result.append(os.path.join(root, name))
     return result
 
-# result = find_pattern('*.txt', '/media/xuananh/data/Temp')
-# print (json.dumps(result, indent=4, sort_keys=True))
+
+if __name__ == '__main__':
+    # result = find('.zshrc', '/home/xuananh')
+    # result = find_pattern('*rc', '/home/xuananh')
+    result = find_all('.zshrc', '/home/xuananh')
+    print (json.dumps(result, indent=4, sort_keys=True))
