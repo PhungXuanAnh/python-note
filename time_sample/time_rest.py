@@ -126,7 +126,7 @@ def main():
         # working_time(10)
         # break_time(30)
         # play_mp3_with_volume()
-        while not RELEASE_LOCK_SCREEN:
+        while not RELEASE_LOCK_SCREEN and is_screensaver_active():
             move_mouse()
 
 
