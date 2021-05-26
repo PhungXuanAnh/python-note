@@ -169,7 +169,7 @@ def run_command_staqlab(command):
 def update_ngrok_public_url():
     resp = list_tunnel()
     for value in resp['tunnels']:
-        if value['proto'] == 'http' and value['config']['addr'] == "http://localhost:8100":
+        if value['name'] == "time-break-api-server (http)":
             update_screen_url(value['public_url'])
 
 
