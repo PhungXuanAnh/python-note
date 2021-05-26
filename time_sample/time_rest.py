@@ -12,6 +12,7 @@ current_dir = os.path.dirname(__file__)
 sys.path.append(current_dir + "/..")
 from mp3.play import play_mp3_with_volume
 from subprocess_sample.subprocess_sample import run_command_print_output1
+from ngrok_sample.ngrok_client_api import list_tunnel
 
 RELEASE_LOCK_SCREEN = True
 app = Flask(__name__)
@@ -124,7 +125,9 @@ def main():
         break_time(3 * 60)
         # working_time(10)
         # break_time(30)
-        play_mp3_with_volume()
+        # play_mp3_with_volume()
+        while not RELEASE_LOCK_SCREEN:
+            move_mouse()
 
 
 def get_domain():
@@ -163,6 +166,12 @@ def run_command_staqlab(command):
     print("return-code = {} after run command '{}'".format(p.poll(), command))
 
 
+def update_ngrok_public_url():
+    resp = list_tunnel()
+    for value in resp['tunnels']:
+        if value['proto'] == 'http' and value['config']['addr'] == "http://localhost:8100":
+            update_screen_url(value['public_url'])
+
 
 @app.route("/", methods=["get"])
 def release_lock_screen():
@@ -176,9 +185,14 @@ if __name__ == "__main__":
     run countdown timer, time to 0, then force lock screen in 3 menutes
     wait 3 menutes for open screen
     """
-    # update_screen_url("adsfasdf.com")
+    # update_screen_url("test.com")
+    # move_mouse()
+
+    threading.Thread(target=run_command_print_output1, args=["ngrok start --all"]).start()
     threading.Thread(target=main, args=[]).start()
-    # threading.Thread(target=run_command_print_output1, args=["lt --port 8001 --subdomain {}".format(get_domain())]).start()
-    threading.Thread(target=run_command_staqlab, args=["staqlab-tunnel 8001"]).start()
-    # threading.Thread(target=run_command_print_output1, args=["staqlab-tunnel 8001 hostname={}".format(get_domain())]).start()
-    app.run(host="0.0.0.0", port=8001, debug=False)
+    
+    time.sleep(3)
+    update_ngrok_public_url()
+
+    app.run(host="0.0.0.0", port=8100, debug=False)
+

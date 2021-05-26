@@ -1,3 +1,11 @@
 {
-    "python.analysis.extraPaths": ["celery_sample"],
+    "python.analysis.extraPaths": [
+        "celery_sample",
+        "urllib_sample",
+        "json_sample",
+        "pymongo_sample",
+        "flask_sample",
+        "scrapy-sample",
+        "selenium_sample",
+    ],
 }
