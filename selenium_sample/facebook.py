@@ -8,6 +8,16 @@ from selenium.common.exceptions import NoSuchElementException, TimeoutException
 import pickle
 
 
+def create_driver():
+    chrome_option = ChromeOptions()
+    # chrome_option.set_headless()
+    chrome_option.add_argument("--disable-notifications")
+
+    driver = Chrome(executable_path='/home/xuananh/Downloads/chromedriver_linux64/chromedriver',
+                    options=chrome_option)
+    return driver
+
+
 def wait_for_element_display(webdriver, by, by_value, wait_in_second):
     for _ in range(0, wait_in_second - 1):
         try:
@@ -56,19 +66,6 @@ def scroll_until_loaded(driver):
         except TimeoutException:
             break
 
-
-# test login facebook
-chrome_option = ChromeOptions()
-# chrome_option.set_headless()
-chrome_option.add_argument("--disable-notifications")
-
-driver = Chrome(executable_path='webdriver/chromedriver',
-                options=chrome_option)
-
-driver.get("https://facebook.com")
-
-raw_cookie = ""
-
 def parse_dict_cookies(value):
     result = {}
     for item in value.split(';'):
@@ -82,16 +79,24 @@ def parse_dict_cookies(value):
         result[name] = value
     return result
 
-cookie = parse_dict_cookies(raw_cookie)
+def login_cookie(driver: Chrome):
+    raw_cookie = "sb=sJyfYPRg73_iH7HXwXh8Z7jS; datr=sJyfYG7kFe-wxSuCHWsSgiDv; dpr=1.25; wd=1479x734; c_user=100003617755928; xs=21%3AE0HZCHbl-LJw1Q%3A2%3A1621073168%3A-1%3A6381; fr=1bSzt7fdPoQutylf6.AWXwhkAAla0xRmN2Z1v3maVz5_w.Bgn5yw.O6.AAA.0.0.Bgn50Q.AWXmd3f3OSI; spin=r.1003799421_b.trunk_t.1621073170_s.1_v.2_"
+    cookie = parse_dict_cookies(raw_cookie)
 
-# print(json.dumps(cookie, indent=4, sort_keys=True))
-# for key, value in cookie.items():
-#     driver.add_cookie({'name' : key, 'value' : value, 'domain' : 'facebook.com'})
+    print(json.dumps(cookie, indent=4, sort_keys=True))
+    driver.get("https://facebook.com")  # NOTE: it must be access facebook.com before add cookie of facebook, else ERROR happend
+    for key, value in cookie.items():
+        driver.add_cookie({'name' : key, 'value' : value, 'domain' : 'facebook.com'})
 
-cookies = pickle.load(open("/home/xuananh/Dropbox/facebook_cookies.pkl", "rb"))
-for cookie in cookies:
-    driver.add_cookie(cookie)
+    # cookies = pickle.load(open("/home/xuananh/Dropbox/facebook_cookies.pkl", "rb"))
+    # driver.get("https://facebook.com")  # NOTE: it must be access facebook.com before add cookie of facebook, else ERROR happend
+    # for cookie in cookies:
+    #     driver.add_cookie(cookie)
 
-driver.get("https://www.facebook.com/amykute.tkuydung")
+    driver.get("https://www.facebook.com")
+    driver.maximize_window()
 
-driver.maximize_window()
+
+if __name__ == "__main__":
+    driver = create_driver()
+    login_cookie(driver)

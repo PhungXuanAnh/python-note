@@ -100,7 +100,9 @@ SPLASH_COOKIES_DEBUG = True
 
 SELENIUM_DRIVER_NAME = 'chrome'
 SELENIUM_DRIVER_EXECUTABLE_PATH = '/home/xuananh/Downloads/chromedriver_linux64/chromedriver'
-SELENIUM_DRIVER_ARGUMENTS = []
+SELENIUM_DRIVER_ARGUMENTS = [
+    "--disable-notifications"
+]
 
 
 SPIDER_MIDDLEWARES = {

@@ -1,3 +1,4 @@
+import json
 from scrapy import signals
 from scrapy.http import HtmlResponse
 from scrapy.exceptions import NotConfigured
@@ -9,6 +10,26 @@ from selenium.webdriver.support.ui import WebDriverWait
 from .request import SeleniumRequest
 
 import scrapy
+
+
+raw_cookie = ""
+
+def parse_dict_cookies(value):
+    result = {}
+    for item in value.split(';'):
+        item = item.strip()
+        if not item:
+            continue
+        if '=' not in item:
+            result[item] = None
+            continue
+        name, value = item.split('=', 1)
+        result[name] = value
+    return result
+
+cookie = parse_dict_cookies(raw_cookie)
+print(json.dumps(cookie, indent=4, sort_keys=True))
+
 
 class SeleniumMiddleware(object):
     # Not all methods need to be defined. If a method is not defined,
@@ -72,6 +93,10 @@ class SeleniumMiddleware(object):
         }
 
         self.driver = driver_class(**driver_kargs)
+        self.driver.get("https://facebook.com")  # NOTE: it must be access facebook.com before add cookie of facebook, else ERROR happend
+
+        for key, value in cookie.items():
+            self.driver.add_cookie({'name' : key, 'value' : value, 'domain' : 'facebook.com'})
 
     def process_request(self, request, spider):
         # Called for each request that goes through the downloader

@@ -69,7 +69,7 @@ def wait_until(driver):
 
 
 class FacebookSpider(scrapy.Spider):
-    name = 'face1'
+    name = 'facebook-selenium-spider'
 
     custom_settings = {
         'ITEM_PIPELINES': {

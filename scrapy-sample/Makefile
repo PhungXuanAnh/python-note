@@ -18,7 +18,7 @@ stackoverflow:
 	scrapy crawl stack -o stackoverflow.json -t json
 
 facebook-selenium:
-	scrapy crawl face1 -o facebook-selenium.json -t json
+	scrapy crawl facebook-selenium-spider -o facebook-selenium.json -t json
 
 loza:
 	scrapy crawl loza -o loza.json -t json

@@ -15,9 +15,3 @@ class FacebookLogin(scrapy.Spider):
 
 # https://www.facebook.com/login/device-based/regular/login/?login_attempt=1&lwv=110
 # https://www.facebook.com/login.php?login_attempt=1
-
-sigmasolutions.test@gmail.com
-Sigma2017
-
-pstempien@coretechnology.pl
-coreTech@2019
