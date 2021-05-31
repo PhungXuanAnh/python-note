@@ -37,7 +37,7 @@ class MyClass:
     @staticmethod
     def static_method(arg="static method arguments"):
         print('static method called: ', arg)
-        print('static method CANNOT access and modify instance/class attributes')
+        print('static method CANNOT access and modify instance or class attributes')
         print("------------------------------------------------------------")
 
     @staticmethod
