@@ -73,10 +73,6 @@ list2 = [9, 1, 3, 6, 7, 2]
 print(combine_join_remove_duplicated_and_sort(list1, list2))
 
 
-# ==========================================
-# bo cac phan tu lap nhau trong 1 list cac dictionaries
-# remove duplicated dict in a list of dict
-# ==========================================
 list4 = [
     {'a': 123, 'b': 1234},
     {'a': 123, 'b': 1234},
@@ -84,9 +80,12 @@ list4 = [
     {'a': 3222, 'b': 1234},
 ]
 
-
 def remove_duplicate_dict(list_of_dicts):
     # this function to remove duplicate dict from a list of dicts
+    print('--------------------------------------------------------------------')
+    print('remove DUPLICATE dict in list of dict')
+    print('origin list', list_of_dicts)
+    # -------------------------------------- method 1
     seen = set()
     new_l = []
     for d in list_of_dicts:
@@ -94,34 +93,40 @@ def remove_duplicate_dict(list_of_dicts):
         if t not in seen:
             seen.add(t)
             new_l.append(d)
-
-    return new_l
-
-
-print(remove_duplicate_dict(list4))
-
-
-def remove_duplicate_dict1(list_of_dicts):
+    print('method 1: result: ', new_l)
+    # -------------------------------------- method 2
     new_d = []
     for x in list_of_dicts:
         if x not in new_d:
             new_d.append(x)
-    return new_d
+    print('method 2: result: ', new_d)
 
 
-print(remove_duplicate_dict1(list4))
+def duyet_cac_phan_tu_trong_list_theo_chi_so():
+    print('--------------------------------------------------------------------')
+    print('---------duyet cac phan tu trong list theo chi so-------------')
+    t_list = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+    for index in range(0, len(t_list) - 1):
+        print('phan tu so {} la: {}'.format(index, t_list[index]))
 
-# ================================================
-# duyet cac phan tu trong list theo chi so
-# ================================================
-print('---------duyet cac phan tu trong list theo chi so-------------')
-t_list = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
-for index in range(0, len(t_list) - 1):
-    print('phan tu so {} la: {}'.format(index, t_list[index]))
+    print('--------------in ra noi dung cua range(5, 0, -1) trong python 3---------------')
+    print(list(range(5, 0, -1)))  # print range for python 3
 
-print('--------------in ra noi dung cua range(5, 0, -1) trong python 3---------------')
-print(list(range(5, 0, -1)))  # print range for python 3
+    list1 = [1]
+    list2 = [0]
+    print(list1 * 3 + list2 * 9)
 
-list1 = [1]
-list2 = [0]
-print(list1 * 3 + list2 * 9)
+
+def remove_None_value_inline_for_loop():
+    print('--------------------------------------------------------------------')
+    print('remove None value in list')
+    test_list = [1, None, 4, None, None, 5, 8, None]
+    print ("The original list is : " + str(test_list))
+    print ("method 1: List after removal of None values : ",  [i for i in test_list if i])
+    print ("method 2: List after removal of None values : ",  list(filter(None, test_list)))
+
+
+if __name__ == "__main__":
+    duyet_cac_phan_tu_trong_list_theo_chi_so()
+    remove_duplicate_dict(list4)
+    remove_None_value_inline_for_loop()
