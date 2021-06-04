@@ -20,9 +20,7 @@ app = Flask(__name__)
 
 def run_cmd(command):
     print(command)
-    subprocess.Popen(
-        command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT
-    )
+    subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
 
 def _move_mouse(x, y):
@@ -30,9 +28,7 @@ def _move_mouse(x, y):
 
 
 def move_mouse():
-    with open(
-        "/home/xuananh/repo/python-note/time_sample/mouse-position.txt", "r"
-    ) as f:
+    with open("/home/xuananh/repo/python-note/datetime_sample/mouse-position.txt", "r") as f:
         for position in f.readlines():
             command = "xdotool mousemove {}".format(position)
             p = subprocess.Popen(
@@ -139,18 +135,18 @@ def get_domain():
 
 def update_screen_url(unlock_screen_url):
     import requests, json
+
     resp = requests.put(
         url="https://52.220.204.132:444/api/v1/unlock-screen-url/1",
         verify=False,
-        headers={'Content-Type': 'application/json'},
+        headers={"Content-Type": "application/json"},
         data=json.dumps({"url": unlock_screen_url}),
     )
 
+
 def run_command_staqlab(command):
     print("Running command '{}' ...".format(command))
-    p = subprocess.Popen(
-        command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT
-    )
+    p = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     while True:
         out = p.stdout.readline()
         if out == b"" and p.poll() is not None:
@@ -168,9 +164,9 @@ def run_command_staqlab(command):
 
 def update_ngrok_public_url():
     resp = list_tunnel()
-    for value in resp['tunnels']:
-        if value['name'] == "time-break-api-server (http)":
-            update_screen_url(value['public_url'])
+    for value in resp["tunnels"]:
+        if value["name"] == "time-break-api-server (http)":
+            update_screen_url(value["public_url"])
 
 
 @app.route("/", methods=["get"])
@@ -190,9 +186,8 @@ if __name__ == "__main__":
 
     threading.Thread(target=run_command_print_output1, args=["ngrok start --all"]).start()
     threading.Thread(target=main, args=[]).start()
-    
+
     time.sleep(3)
     update_ngrok_public_url()
 
     app.run(host="0.0.0.0", port=8100, debug=False)
-

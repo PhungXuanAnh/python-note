@@ -34,6 +34,7 @@ def format_datetime_for_some_standar():
     print('                                  ', datetime.datetime(2008, 9, 3, 0, 0))
 
 def datetime_format():
+    print('-------------------------- datetime format ------------------------------')
     my_time = dateutil.parser.parse("2018-06-06T08:01:53.420Z")
     print('my_time:          ', my_time)
     print("my_time formated: ", my_time.strftime("[%Y-%m-%d]-[%H:%M:%S]"))
@@ -95,24 +96,25 @@ def time_around_a_moment():
         # print(d1.strftime("%Y-%m-%d"))
 
 def extract_year_month_day_hour_minute_second():
-    print(datetime.datetime.now().year)
-    print(datetime.datetime.now().month)
-    print(datetime.datetime.now().day)
-    print(datetime.datetime.now().hour)
-    print(datetime.datetime.now().minute)
-    print(datetime.datetime.now().second)
+    print('-----------------------extract_year_month_day_hour_minute_second-----------------------')
+    print('year: ', datetime.datetime.now().year)
+    print('month: ', datetime.datetime.now().month)
+    print('day: ', datetime.datetime.now().day)
+    print('hour: ', datetime.datetime.now().hour)
+    print('minute: ', datetime.datetime.now().minute)
+    print('second: ', datetime.datetime.now().second)
 
 if __name__ == '__main__':
-    # print(datetime.date(1991, 1, 1))
-    # get_timezone()
+    print(datetime.date(1991, 1, 1))
+    get_timezone()
     
     format_datetime_for_some_standar()
-    # datetime_format()
+    datetime_format()
     
-    # get_time_period()
+    get_time_period()
     
-    # datetime_in_pass()
-    # date_time_in_furture()
-    # time_around_a_moment()
+    datetime_in_pass()
+    date_time_in_furture()
+    time_around_a_moment()
 
-    # extract_year_month_day_hour_minute_second()
+    extract_year_month_day_hour_minute_second()
