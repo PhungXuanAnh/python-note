@@ -47,21 +47,25 @@ def format_datetime_base_on_defined_string_format():
 
 def get_time_period():
     print('-----------------------------------get_time_period-----------------------------------------')
-    start = datetime.datetime.now()
-    print("start:          ", start)
-    print('....spleeping 3s...')
-    time.sleep(3)
-    now = datetime.datetime.now()
-    print("now:          ", now)
-    print("period in second: ", (now - start).seconds)
-
-
     t1 = datetime.datetime(2008, 9, 3, 20, 56, 35, 450686)
     t2 = datetime.datetime(2008, 9, 5, 20, 56, 45, 450686)
-    print("(t2-t1).days: {}".format((t2-t1).days))
+    duration = t2 - t1
+
+    def convert_timedelta(duration):
+        days, seconds = duration.days, duration.seconds
+        hours = seconds // 3600
+        minutes = (seconds % 3600) // 60
+        seconds = (seconds % 60)
+        return days, hours, minutes, seconds
+
+    days, hours, minutes, seconds = convert_timedelta(duration)
     print("NOTE: It should use total_seconds when t2 - t1 > 1 day, see the difference below:")
-    print("(t2-t1).seconds: {}".format((t2-t1).seconds))
-    print("(t2-t1).total_seconds(): {}".format((t2-t1).total_seconds()))
+    print("t2 - t1 = {} days".format(days))
+    print("t2 - t1 = {} hours".format(hours))
+    print("t2 - t1 = {} minutes".format(minutes))
+    print("t2 - t1 = {} seconds".format(seconds))
+    print("t2 - t1 = {} total_seconds".format(duration.total_seconds()))
+
 
 def datetime_in_pass():
     print('-----------------------------------datetime_in_pass-----------------------------------------')
