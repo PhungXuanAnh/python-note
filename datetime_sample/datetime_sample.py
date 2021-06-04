@@ -10,9 +10,11 @@ import dateutil.parser
 from dateutil.tz import tzutc
 
 def get_timezone():
-    print(time.tzname)
+    print('-------------------------get timezone ----------------------------------------')
+    print('timezone: ', time.tzname)
 
-def format_datetime_for_some_standar(): 
+def format_datetime_base_on_standard():
+    print('-----------------------------format_datetime_base_on_standard-------------------')
     print('UTC timestamp now 1: ', time.time())
     print('UTC timestamp now 2: ', datetime.datetime.now().timestamp())
     print('UTC timestamp now 3: ', datetime.datetime.utcnow())
@@ -33,8 +35,8 @@ def format_datetime_for_some_standar():
     print('ISO 8601 basic format, date only: ', dateutil.parser.parse('20080903'))
     print('                                  ', datetime.datetime(2008, 9, 3, 0, 0))
 
-def datetime_format():
-    print('-------------------------- datetime format ------------------------------')
+def format_datetime_base_on_defined_string_format():
+    print('--------------- format_datetime_base_on_defined_string_format -----------------------')
     my_time = dateutil.parser.parse("2018-06-06T08:01:53.420Z")
     print('my_time:          ', my_time)
     print("my_time formated: ", my_time.strftime("[%Y-%m-%d]-[%H:%M:%S]"))
@@ -44,26 +46,25 @@ def datetime_format():
 
 
 def get_time_period():
+    print('-----------------------------------get_time_period-----------------------------------------')
     start = datetime.datetime.now()
     print("start:          ", start)
-
     print('....spleeping 3s...')
     time.sleep(3)
-
     now = datetime.datetime.now()
     print("now:          ", now)
-
-    period = (now - start).seconds
-    print("period: ", period)
+    print("period in second: ", (now - start).seconds)
 
 
     t1 = datetime.datetime(2008, 9, 3, 20, 56, 35, 450686)
     t2 = datetime.datetime(2008, 9, 5, 20, 56, 45, 450686)
+    print("(t2-t1).days: {}".format((t2-t1).days))
     print("NOTE: It should use total_seconds when t2 - t1 > 1 day, see the difference below:")
-    print("(t2-t1).seconds(): {}".format((t2-t1).seconds))
+    print("(t2-t1).seconds: {}".format((t2-t1).seconds))
     print("(t2-t1).total_seconds(): {}".format((t2-t1).total_seconds()))
 
 def datetime_in_pass():
+    print('-----------------------------------datetime_in_pass-----------------------------------------')
     now = datetime.datetime.now()
     datetime_7_day_ago = now - datetime.timedelta(days=7)
     print("now :           ", now)
@@ -75,6 +76,7 @@ def datetime_in_pass():
     print('date_7_day_ago: ', date_7_day_ago)
 
 def date_time_in_furture():
+    print('--------------------------------------date_time_in_furture--------------------------------------')
     now = datetime.datetime.now()
     datetime_7_day_ago = now + datetime.timedelta(days=7)
     print("now :                 ", now)
@@ -89,6 +91,7 @@ def date_time_in_furture():
 
 
 def time_around_a_moment():
+    print('---------------------------time_around_a_moment-------------------------------------')
     d = datetime.datetime.utcnow()
     for i in range(-2, 3):
         d1 = d + datetime.timedelta(minutes=i)
@@ -108,8 +111,8 @@ if __name__ == '__main__':
     print(datetime.date(1991, 1, 1))
     get_timezone()
     
-    format_datetime_for_some_standar()
-    datetime_format()
+    format_datetime_base_on_defined_string_format()
+    format_datetime_base_on_defined_string_format()
     
     get_time_period()
     
