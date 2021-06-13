@@ -5,16 +5,32 @@ Created on Jun 26, 2017
 '''
 import datetime
 import calendar
+import pytz
 import time
 import dateutil.parser
 from dateutil.tz import tzutc
 
-def get_timezone():
-    print('-------------------------get timezone ----------------------------------------')
+def get_current_server_timezone_number():
+    print('\n------------------------ get_current_server_timezone_number ----------------------------------------')
     print('timezone: ', time.tzname)
 
+
+def list_all_timezones_string():
+    print('\n------------------------ list_all_timezones_string ----------------------------------------')
+    print("to list all timezone: ", "using this method: pytz.all_timezones")
+    # print("all timezone: ", pytz.all_timezones)
+
+
+def show_date_time_with_timezone():
+    print('\n------------------------show_date_time_with_timezone ----------------------------------------')
+    print('naive datetime with server timezone: ', datetime.datetime.now())
+    print('naive datetime utc:                  ', datetime.datetime.utcnow())
+    print('aware datetime utc:                  ', datetime.datetime.now(datetime.timezone.utc))
+    print('aware datetime with server timezone: ', datetime.datetime.now(datetime.timezone.utc).astimezone())
+    print('current datetime in given timezone : ', datetime.datetime.now(pytz.timezone('Asia/Ho_Chi_Minh')))
+
 def format_datetime_base_on_standard():
-    print('-----------------------------format_datetime_base_on_standard-------------------')
+    print('\n----------------------------format_datetime_base_on_standard-------------------')
     print('UTC timestamp now 1: ', time.time())
     print('UTC timestamp now 2: ', datetime.datetime.now().timestamp())
     print('UTC timestamp now 3: ', datetime.datetime.utcnow())
@@ -36,7 +52,7 @@ def format_datetime_base_on_standard():
     print('                                  ', datetime.datetime(2008, 9, 3, 0, 0))
 
 def format_datetime_base_on_defined_string_format():
-    print('--------------- format_datetime_base_on_defined_string_format -----------------------')
+    print('\n-------------- format_datetime_base_on_defined_string_format -----------------------')
     my_time = dateutil.parser.parse("2018-06-06T08:01:53.420Z")
     print('my_time:          ', my_time)
     print("my_time formated: ", my_time.strftime("[%Y-%m-%d]-[%H:%M:%S]"))
@@ -46,7 +62,7 @@ def format_datetime_base_on_defined_string_format():
 
 
 def get_time_period():
-    print('-----------------------------------get_time_period-----------------------------------------')
+    print('\n----------------------------------get_time_period-----------------------------------------')
     t1 = datetime.datetime(2008, 9, 3, 20, 56, 35, 450686)
     t2 = datetime.datetime(2008, 9, 5, 20, 56, 45, 450686)
     duration = t2 - t1
@@ -68,7 +84,7 @@ def get_time_period():
 
 
 def datetime_in_pass():
-    print('-----------------------------------datetime_in_pass-----------------------------------------')
+    print('\n----------------------------------datetime_in_pass-----------------------------------------')
     now = datetime.datetime.now()
     datetime_7_day_ago = now - datetime.timedelta(days=7)
     print("now :           ", now)
@@ -80,7 +96,7 @@ def datetime_in_pass():
     print('date_7_day_ago: ', date_7_day_ago)
 
 def date_time_in_furture():
-    print('--------------------------------------date_time_in_furture--------------------------------------')
+    print('\n-------------------------------------date_time_in_furture--------------------------------------')
     now = datetime.datetime.now()
     datetime_7_day_ago = now + datetime.timedelta(days=7)
     print("now :                 ", now)
@@ -95,7 +111,7 @@ def date_time_in_furture():
 
 
 def time_around_a_moment():
-    print('---------------------------time_around_a_moment-------------------------------------')
+    print('\n--------------------------time_around_a_moment-------------------------------------')
     d = datetime.datetime.utcnow()
     for i in range(-2, 3):
         d1 = d + datetime.timedelta(minutes=i)
@@ -103,7 +119,7 @@ def time_around_a_moment():
         # print(d1.strftime("%Y-%m-%d"))
 
 def extract_year_month_day_hour_minute_second():
-    print('-----------------------extract_year_month_day_hour_minute_second-----------------------')
+    print('\n----------------------extract_year_month_day_hour_minute_second-----------------------')
     print('year: ', datetime.datetime.now().year)
     print('month: ', datetime.datetime.now().month)
     print('day: ', datetime.datetime.now().day)
@@ -113,7 +129,9 @@ def extract_year_month_day_hour_minute_second():
 
 if __name__ == '__main__':
     print(datetime.date(1991, 1, 1))
-    get_timezone()
+    get_current_server_timezone_number()
+    list_all_timezones_string()
+    show_date_time_with_timezone()
     
     format_datetime_base_on_defined_string_format()
     format_datetime_base_on_defined_string_format()
