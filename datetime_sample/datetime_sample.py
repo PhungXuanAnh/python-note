@@ -22,11 +22,13 @@ def list_all_timezones_string():
 
 
 def show_date_time_with_timezone():
+    # reference: https://stackoverflow.com/a/25887393/7639845
     print('\n------------------------show_date_time_with_timezone ----------------------------------------')
     print('naive datetime with server timezone: ', datetime.datetime.now())
     print('naive datetime utc:                  ', datetime.datetime.utcnow())
     print('aware datetime utc:                  ', datetime.datetime.now(datetime.timezone.utc))
     print('aware datetime with server timezone: ', datetime.datetime.now(datetime.timezone.utc).astimezone())
+    print('aware datetime with given  timezone: ', datetime.datetime.now(datetime.timezone.utc).astimezone(pytz.timezone('Asia/Ho_Chi_Minh')))
     print('current datetime in given timezone : ', datetime.datetime.now(pytz.timezone('Asia/Ho_Chi_Minh')))
 
 def format_datetime_base_on_standard():
