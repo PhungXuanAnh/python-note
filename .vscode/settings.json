@@ -8,4 +8,7 @@
         "scrapy-sample",
         "selenium_sample",
     ],
+    "cSpell.words": [
+        "pyexcelerate"
+    ],
 }
