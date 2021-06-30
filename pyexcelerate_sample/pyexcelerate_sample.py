@@ -278,6 +278,28 @@ def styling_defined_ALL_style_by_objects():
     wb.save("styling_defined_ALL_style_by_objects.xlsx")
 
 
+def styling_cell_some_sample_format():
+    from pyexcelerate import Workbook, Style
+
+    wb = Workbook()
+    ws = wb.new_sheet("sheet name")
+    ws.set_col_style(5, Style(size=30))     # set width of column   # E col
+    
+    ws.cell("E1").value = datetime.now()
+    ws.cell("E1").style.format.format = 'mm/dd/yy hh:MM:ss'  # datetime
+
+    ws.cell("E2").value = 12345678
+    ws.cell("E2").style.format.format = '#,##0'             # number    : 12,345,678
+
+    ws.cell("E3").value = 1234.5678
+    ws.cell("E3").style.format.format = '#,##0.00'          # float number : 1,234.57
+
+    ws.cell("E4").value = 0.12345
+    ws.cell("E4").style.format.format = '0.00%'             # percentage: 12.35%
+
+    wb.save("styling_cell_some_sample_format.xlsx")
+
+
 if __name__ == "__main__":
     # write_bulk_data_cell_by_cell()
     # write_bulk_data_to_a_range()
@@ -290,6 +312,7 @@ if __name__ == "__main__":
     # styling_cell_fastest()
     # styling_cell_faster()
     # styling_cell_fast()
+    styling_cell_some_sample_format()
 
     # styling_ranges()
 
@@ -302,5 +325,5 @@ if __name__ == "__main__":
     # styling_available()
     # row_height_width()
 
-    styling_defined_by_objects()
-    styling_defined_ALL_style_by_objects()
+    # styling_defined_by_objects()
+    # styling_defined_ALL_style_by_objects()
