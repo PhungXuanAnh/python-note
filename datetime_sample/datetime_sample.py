@@ -27,9 +27,11 @@ def show_date_time_with_timezone():
     print('naive datetime with server timezone: ', datetime.datetime.now())
     print('naive datetime utc:                  ', datetime.datetime.utcnow())
     print('aware datetime utc:                  ', datetime.datetime.now(datetime.timezone.utc))
-    print('aware datetime with server timezone: ', datetime.datetime.now(datetime.timezone.utc).astimezone())
-    print('aware datetime with given  timezone: ', datetime.datetime.now(datetime.timezone.utc).astimezone(pytz.timezone('Asia/Ho_Chi_Minh')))
-    print('current datetime in given timezone : ', datetime.datetime.now(pytz.timezone('Asia/Ho_Chi_Minh')))
+    print('aware datetime with timezone = utc get from pytz:     ', datetime.datetime.now(datetime.timezone.utc).astimezone(pytz.utc))
+    print('aware datetime with timezone = utc get from datetime: ', datetime.datetime.now(datetime.timezone.utc).astimezone(datetime.timezone.utc))
+    print('aware datetime with timezone = default:               ', datetime.datetime.now(datetime.timezone.utc).astimezone())
+    print('aware datetime with given  timezone = hcm:            ', datetime.datetime.now(datetime.timezone.utc).astimezone(pytz.timezone('Asia/Ho_Chi_Minh')))
+    print('current datetime in given  timezone = hcm:            ', datetime.datetime.now(pytz.timezone('Asia/Ho_Chi_Minh')))
 
 def format_datetime_base_on_standard():
     print('\n----------------------------format_datetime_base_on_standard-------------------')
