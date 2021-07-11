@@ -116,11 +116,17 @@ def break_time(time_to_break):
 
 
 def main():
-    while True:
-        working_time(int(sys.argv[1]) * 60)
+    while True:        
+        working_time(20 * 60)
+        lock_screen()
+
+        working_time(20 * 60)
+        lock_screen()
+
+        working_time(20 * 60)
+        move_mouse()
         break_time(3 * 60)
-        # working_time(10)
-        # break_time(30)
+       
         # play_mp3_with_volume()
         while not RELEASE_LOCK_SCREEN and is_screensaver_active():
             move_mouse()
