@@ -17,6 +17,7 @@ from celery_tasks import (
     wait_for,
     long_task,
 )
+from celery.schedules import crontab_parser
 from celery.app.control import Inspect
 from task_routed_sample.feed.tasks import task_feed
 from task_routed_sample.image.tasks import task_image
@@ -397,6 +398,18 @@ def test_list_task():
     print(i.reserved())
 
 
+def test_crontab_parser():
+    print('minutes: specified minutes: ', crontab_parser(60).parse('14,39'))
+    print('minutes: every 15 minutes from 0 minute:  ', crontab_parser(60).parse('*/15'))
+    print('minutes: every 15 minutes from 1 minute:  ', crontab_parser(60).parse('1-59/15'))
+    print('hours: every 4 hours from 0h : ', crontab_parser(24).parse('*/4'))
+    print('hours: every 4 hours from 1h : ', crontab_parser(24).parse('1-23/4'))
+    print('day_of_week: sunday - saturday: ', crontab_parser(7).parse('*'))
+    print('day_of_month: every 3 days of month from first day:  ', crontab_parser(31, 1).parse('*/3'))
+    print('day_of_month: every 3 days of month from second day: ', crontab_parser(31, 1).parse('2-30/3'))
+    print('months_of_year: every 2 months of year from january :  ', crontab_parser(12, 1).parse('*/2'))
+    print('months_of_year: every 2 months of year from february : ', crontab_parser(12, 1).parse('2-12/2'))
+
 
 if __name__ == "__main__":
     # sample_call_a_task()
@@ -427,4 +440,7 @@ if __name__ == "__main__":
 
     # test_call_task_base_class1()
     # test_call_task_base_class2()
-    test_list_task()
+
+    # test_list_task()
+
+    test_crontab_parser()
