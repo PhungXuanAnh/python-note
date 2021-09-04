@@ -92,6 +92,19 @@ def format_datetime_base_on_defined_string_format():
     print("my_time formated: ", my_time.strftime("[%Y-%m-%d]-[%H:%M:%S]"))
 
 
+def parse_date_time_from_string():
+    # see datetime format code here : https://docs.python.org/3/library/datetime.html#strftime-and-strptime-format-codes
+    print("\n-------------- parse_date_time_from_string -----------------------")
+    string_contain_date_time = 'Test string contain datetime Jun 1 2005  1:33PM'
+    define_format_code_of_string_contain_date_time = 'Test string contain datetime %b %d %Y %I:%M%p'
+    datetime_object = datetime.datetime.strptime(string_contain_date_time, define_format_code_of_string_contain_date_time)
+    print(datetime_object)
+
+    string_contain_date_time1 = 'Delivered Monday, August 16, 2021  at 10:37'
+    define_format_code_of_string_contain_date_time1 = 'Delivered %A, %B %d, %Y at %H:%M'
+    datetime_object = datetime.datetime.strptime(string_contain_date_time1, define_format_code_of_string_contain_date_time1)
+    print(datetime_object)
+
 def get_time_period():
     print(
         "\n----------------------------------get_time_period-----------------------------------------"
@@ -185,7 +198,7 @@ if __name__ == "__main__":
     # show_date_time_with_timezone()
 
     # format_datetime_base_on_defined_string_format()
-    # format_datetime_base_on_defined_string_format()
+    parse_date_time_from_string()
 
     # get_time_period()
 
@@ -194,4 +207,4 @@ if __name__ == "__main__":
     # time_around_a_moment()
 
     # extract_year_month_day_hour_minute_second()
-    convert_date_time__to__date_and_opposite()
+    # convert_date_time__to__date_and_opposite()
