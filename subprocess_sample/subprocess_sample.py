@@ -18,7 +18,7 @@ background processes.
 """
 
 
-def run_command_print_output1(command):
+def run_command_print_output(command):
     """[Reference: https://stackoverflow.com/a/803396]
 
     Arguments:
@@ -40,50 +40,22 @@ def run_command_print_output1(command):
             # tham khảo:
             # https://stackoverflow.com/questions/42589584/ansi-color-lost-when-using-python-subprocess
             # https://stackoverflow.com/questions/32486974/how-to-print-original-color-output-using-subprocess-check-output
-    print("return-code = {} after run command '{}'".format(p.poll(), command))
+    print("=== return-code = {} after run command '{}'".format(p.poll(), command))
 
-
-def run_command_return_output(command):
+def run_command_return_results(command):
     logging.info("Running command '{}' ...".format(command))
-    logs_message = ""
-    process = subprocess.Popen(shlex.split(command), shell=True,
-                               stdout=subprocess.PIPE,
-                               stderr=subprocess.STDOUT)
-    while True:
-        output = process.stdout.readline()
-        if output == '' and process.poll() is not None:
-            break
-        if output:
-            logs_message = logs_message + output
-    return {
-        'return-code': process.poll(),
-        'logs-message': logs_message
-    }
-
-
-def run_command_return_output3(command):
-    logging.info("Running command '{}' ...".format(command))
-    process = subprocess.Popen(shlex.split(command), shell=True,
+    process = subprocess.Popen(command, shell=True,
                                stdout=subprocess.PIPE,
                                stderr=subprocess.PIPE)
-    result = process.communicate()
+    result = process.communicate() # NOTE: this line cause this func wait until command exit
 
-    return {
+    results = {
         'return-code': process.poll(),
         'stdout': result[0],
         'stderr': result[1]
     }
-
-
-def run_command_background(command):
-    logging.info("Running command '{}' ...".format(command))
-    process = subprocess.Popen(shlex.split(command), shell=True,
-                               stdout=subprocess.PIPE,
-                               stderr=subprocess.PIPE)
-    print(process.pid)
-    print(process.poll())
-    print(process.returncode)
-
+    print(results)
+    return results
 
 def run_command_with_timeout1(command, timeout):
     start = datetime.datetime.now()
@@ -100,7 +72,7 @@ def run_command_with_timeout1(command, timeout):
         if out == '' and p.poll() != None:
             break
         if out != '':
-            sys.stdout.write(out)
+            sys.stdout.write(out.strip().decode())
             sys.stdout.flush()
 
         if (now - start).seconds > timeout:
@@ -151,25 +123,11 @@ def run_command_with_timeout3(command, timeout):
 
 
 if __name__ == '__main__':
-    mypass = '1'
-    cmd1 = 'apt-get update'
-#     cmd1 = 'mkdir /root/test1'
-    cmd = "echo %s | sudo -S %s" % (mypass, cmd1)
+    # cmd = 'ping 8.8.8.8 -c 10'  # NOTE: using this cmd for test timeout
+    # NOTE: to run chainging command must set shell=True
+    cmd = 'cd ~/ && ls -lha | grep zsh'
 
-    cmd = 'du -csh /home/xuananh/data/Downloads/PythonBook'
-    cmd = 'ping 8.8.8.8 -c 10'
-#     run_command_background(cmd)
-
-    run_command_print_output1(cmd)
-
-#     run_command_with_timeout(cmd, 10)
-
-    # result = run_command_return_output(cmd)
-    # result = run_command_with_timeout3(cmd, 5)
-    # print("return-code = {}".format(result['return-code']))
-    # print("logs-message = {}".format(result['logs-message']))
-
-    # result = run_command_return_output3(cmd)
-    # print("return-code = {}".format(result['return-code']))
-    # print("stdout = {}".format(result['stdout'].decode('utf-8')))
-    # print("stderr = {}".format(result['stderr']))
+    # run_command_print_output(cmd)
+    # run_command_return_results(cmd)
+    # run_command_with_timeout1(cmd, 3)
+    # run_command_with_timeout3(cmd, 3)
