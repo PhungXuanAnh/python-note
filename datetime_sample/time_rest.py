@@ -29,7 +29,7 @@ def _move_mouse(x, y):
 
 def move_mouse():
     with open("/home/xuananh/repo/python-note/datetime_sample/mouse-position.txt", "r") as f:
-        for position in f.readlines():
+        
             command = "xdotool mousemove {}".format(position)
             p = subprocess.Popen(
                 command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT
@@ -117,9 +117,9 @@ def break_time(time_to_break):
 
 def main():
     while True:        
-        working_time(45 * 60)
+        working_time(20 * 60)
         lock_screen()
-        break_time(5 * 60)
+        break_time(1 * 60)
         move_mouse()
        
         # play_mp3_with_volume()
