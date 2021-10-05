@@ -11,7 +11,7 @@ from sys import platform
 current_dir = os.path.dirname(__file__)
 sys.path.append(current_dir + "/..")
 from mp3.play import play_mp3_with_volume
-from subprocess_sample.subprocess_sample import run_command_print_output1
+from subprocess_sample.subprocess_sample import run_command_print_output
 from ngrok_sample.ngrok_client_api import list_tunnel
 
 RELEASE_LOCK_SCREEN = True
@@ -29,7 +29,7 @@ def _move_mouse(x, y):
 
 def move_mouse():
     with open("/home/xuananh/repo/python-note/datetime_sample/mouse-position.txt", "r") as f:
-        
+        for position in f.readlines():
             command = "xdotool mousemove {}".format(position)
             p = subprocess.Popen(
                 command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT
@@ -185,7 +185,7 @@ if __name__ == "__main__":
     # update_screen_url("test.com")
     # move_mouse()
 
-    threading.Thread(target=run_command_print_output1, args=["ngrok start --all"]).start()
+    threading.Thread(target=run_command_print_output, args=["ngrok start --all"]).start()
     threading.Thread(target=main, args=[]).start()
 
     time.sleep(3)
