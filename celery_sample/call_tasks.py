@@ -399,16 +399,17 @@ def test_list_task():
 
 
 def test_crontab_parser():
-    print('minutes: specified minutes: ', crontab_parser(60).parse('14,39'))
-    print('minutes: every 15 minutes from 0 minute:  ', crontab_parser(60).parse('*/15'))
-    print('minutes: every 15 minutes from 1 minute:  ', crontab_parser(60).parse('1-59/15'))
-    print('hours: every 4 hours from 0h : ', crontab_parser(24).parse('*/4'))
-    print('hours: every 4 hours from 1h : ', crontab_parser(24).parse('1-23/4'))
-    print('day_of_week: sunday - saturday: ', crontab_parser(7).parse('*'))
-    print('day_of_month: every 3 days of month from first day:  ', crontab_parser(31, 1).parse('*/3'))
-    print('day_of_month: every 3 days of month from second day: ', crontab_parser(31, 1).parse('2-30/3'))
-    print('months_of_year: every 2 months of year from january :  ', crontab_parser(12, 1).parse('*/2'))
-    print('months_of_year: every 2 months of year from february : ', crontab_parser(12, 1).parse('2-12/2'))
+    print('minutes: specified minutes: ', crontab_parser(max_=60).parse('14,39'))   # it mean choose minute 14 and menute 39 in every hour
+    print('minutes: every 15 minutes from 0 minute:  ', crontab_parser(max_=60).parse('*/15'))  # trả về giá trị cách nhau 15 đơn vị, bắt đầu đếm từ 0, đến 60, gia tri nay cung phai nam trong khoang (min, max)
+    print('minutes: every 15 minutes from 1 minute:  ', crontab_parser(max_=60).parse('1-59/15'))   # tra ve gia tri cách nhau 15 đơn vị, bắt đầu đếm từ 1 den 59, gia tri nay cung phai nam trong khoang (min, max)
+    print('hours: every 4 hours from 0h : ', crontab_parser(max_=24).parse('*/4'))
+    print('hours: every 4 hours from 1h : ', crontab_parser(max_=24).parse('1-23/4'))
+    print('day_of_week: sunday - saturday: ', crontab_parser(max_=7).parse('*'))
+    print('day_of_week: do not choose any day of week, same setting with other fields: ', crontab_parser(max_=7).parse('0'))
+    print('day_of_month: every 3 days of month from first day:  ', crontab_parser(max_=31, min_=1).parse('*/3'))
+    print('day_of_month: every 3 days of month from second day: ', crontab_parser(max_=31, min_=1).parse('2-30/3')) # trả về giá trị cách nhau 3 đơn vị, bắt đầu đếm từ 2 đến 30, các giá trị trả về nằm trong khoảng (min, max)
+    print('months_of_year: every 2 months of year from january :  ', crontab_parser(max_=12, min_=1).parse('*/2'))   # trả về giá trị cách nhau 2 đơn vị, bắt đầu đếm từ 1 đến 12, giá trị trả về cũng phải nằm trong khoảng (min, max)
+    print('months_of_year: every 2 months of year from february : ', crontab_parser(max_=12, min_=1).parse('2-10/2')) # trả về giá trị cách nhau 2 đơn vị, bắt đầu đếm từ 2 về kêt thúc ở 10, tính cả giá trị 2 đầu, gia tri nay cung phai nam trong khoang (min, max)
 
 
 if __name__ == "__main__":
