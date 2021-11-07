@@ -1,9 +1,2 @@
 jupyter 
-notebook
-celery
-falcon
-falcon-auth
-gunicorn
-flask
-selenium
-kafka-python
+psutil
