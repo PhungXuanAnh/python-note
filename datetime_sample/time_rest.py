@@ -11,7 +11,7 @@ from sys import platform
 current_dir = os.path.dirname(__file__)
 sys.path.append(current_dir + "/..")
 from mp3.play import play_mp3_with_volume
-from subprocess_sample.subprocess_sample import run_command_print_output
+from subprocess_sample.subprocess_sample import run_command_print_output, run_command_return_results
 from ngrok_sample.ngrok_client_api import list_tunnel
 
 RELEASE_LOCK_SCREEN = True
@@ -185,7 +185,7 @@ if __name__ == "__main__":
     # update_screen_url("test.com")
     # move_mouse()
 
-    threading.Thread(target=run_command_print_output, args=["ngrok start --all"]).start()
+    # threading.Thread(target=run_command_return_results, args=["ngrok start --all"]).start()
     threading.Thread(target=main, args=[]).start()
 
     time.sleep(3)

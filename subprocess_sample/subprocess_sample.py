@@ -18,7 +18,7 @@ background processes.
 """
 
 
-def run_command_print_output(command):
+def run_command_print_output(command, print_output=True):
     """[Reference: https://stackoverflow.com/a/803396]
 
     Arguments:
@@ -34,7 +34,8 @@ def run_command_print_output(command):
         if out == b'' and p.poll() is not None:
             break
         if out != b'':
-            print(out.strip().decode())
+            if print_output:
+                print(out.strip().decode())
             # NOTE: trong một số trường hợp không in được màu của text trên terminal
             # lúc này phải enable color output của command, nếu có
             # tham khảo:
@@ -54,7 +55,7 @@ def run_command_return_results(command):
         'stdout': result[0],
         'stderr': result[1]
     }
-    print(results)
+    # print(results)
     return results
 
 def run_command_with_timeout1(command, timeout):
