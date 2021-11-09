@@ -410,7 +410,7 @@ def test_crontab_parser():
     print('day_of_month: every 3 days of month from second day: ', crontab_parser(max_=31, min_=1).parse('2-30/3')) # trả về giá trị cách nhau 3 đơn vị, bắt đầu đếm từ 2 đến 30, các giá trị trả về nằm trong khoảng (min, max)
     print('months_of_year: every 2 months of year from january :  ', crontab_parser(max_=12, min_=1).parse('*/2'))   # trả về giá trị cách nhau 2 đơn vị, bắt đầu đếm từ 1 đến 12, giá trị trả về cũng phải nằm trong khoảng (min, max)
     print('months_of_year: every 2 months of year from february : ', crontab_parser(max_=12, min_=1).parse('2-10/2')) # trả về giá trị cách nhau 2 đơn vị, bắt đầu đếm từ 2 về kêt thúc ở 10, tính cả giá trị 2 đầu, gia tri nay cung phai nam trong khoang (min, max)
-
+    print(crontab_parser(max_=7).parse('0-5'))
 
 if __name__ == "__main__":
     # sample_call_a_task()
