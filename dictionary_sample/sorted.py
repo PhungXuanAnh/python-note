@@ -3,25 +3,21 @@ import operator
 import json
 from collections import OrderedDict
 
-x = {'value2': 2, 'value3': 4, 'value3': 3, 'value1': 1, 'value0': 0}
+print('\n\n========================================================== sort elements in a dictionary by value')
+dict1 = {
+    "1": 10,
+    "key_5": 5,
+    "key_4": 4,
+    "key_3": 3,
+    "key_2": 2,
+    "2": 20,
+    "key_1": 1
+}
 
-print('========================================================== 0')
-sorted_x = sorted(x.items(), key=operator.itemgetter(1))
-print(json.dumps(sorted_x, indent=4, sort_keys=True))
+print("ascending by value: {}".format(sorted(dict1.items(), key=lambda kv: kv[1])))
+print("descending by value: {}".format(sorted(dict1.items(), key=lambda kv: kv[1], reverse=True)))
 
-print('========================================================== 1')
-sorted_by_value = sorted(x.items(), key=lambda kv: kv[1])
-print(json.dumps(sorted_by_value, indent=4, sort_keys=True))
-
-print('========================================================== 2')
-s = [(k, x[k]) for k in sorted(x, key=x.get, reverse=True)]
-print(json.dumps(s, indent=4, sort_keys=True))
-
-print('========================================================== 3')
-data_sorted = {k: v for k, v in sorted(x.items(), key=lambda y: y[1])}
-print(json.dumps(data_sorted, indent=4, sort_keys=True))
-
-print('========================================================== 4')
+print('\n\n========================================================== sort list of dictionaries by value')
 list1 = [
     {'name': 'Homer', 'age': 39},
     {'name': 'Yart', 'age': 10},
@@ -29,43 +25,19 @@ list1 = [
     {'name': 'Aart', 'age': 14}
 ]
 
-newlist = sorted(list1, key=lambda k: k['name'])
-print(newlist)
-newlist = sorted(list1, key=lambda k: k['age'])
-print(newlist)
-newlist = sorted(list1, key=lambda k: k['age'], reverse=True)
-print(newlist)
-newlist = sorted(list1, key=itemgetter('name'))
-print(newlist)
-newlist = sorted(list1, key=itemgetter('age'))
-print(newlist)
-newlist = sorted(list1, key=itemgetter('age'), reverse=True)
+print("sort list of dict by name: {}".format(sorted(list1, key=lambda k: k['name'])))
+print("sort list of dict by age ascending: {}".format(sorted(list1, key=lambda k: k['age'])))
+print("sort list of dict by age descending: {}".format(sorted(list1, key=lambda k: k['age'], reverse=True)))
+print('-------------------------------')
+print("sort list of dict by name: {}".format(sorted(list1, key=itemgetter('name'))))
+print("sort list of dict by age ascending: {}".format(sorted(list1, key=itemgetter('age'))))
+print("sort list of dict by age descending: {}".format(sorted(list1, key=itemgetter('age'), reverse=True)))
 
-print('========================================================== 5')
-
-dict1 = {
-    "17292": 5000,
-    "sigma_v2": 870,
-    "sigma_v4": 230,
-    "sigma_v3": 245,
-    "sigma_v2": 870,
-    "sigma_v10": 878,
-    "27291": 50,
-    "sigma_v1": 4100
-}
-sorted_by_value_descending = sorted(dict1.items(), key=lambda kv: kv[1], reverse=True)
-sorted_by_value_ascending = sorted(dict1.items(), key=lambda kv: kv[1])
-print(sorted_by_value_descending)
-print(sorted_by_value_ascending)
-
-print('========================================================== 6')
-
-
-d = {'123': {'key1': 3, 'key2': 11, 'key3': 3},
-     '124': {'key1': 6, 'key2': 56, 'key3': 6},
-     '125': {'key1': 7, 'key2': 44, 'key3': 9},
-     }
-d_ascending = OrderedDict(sorted(d.items(), key=lambda kv: kv[1]['key3']))
-d_descending = OrderedDict(sorted(d.items(), key=lambda kv: kv[1]['key3'], reverse=True))
-print(d_ascending)
-print(d_descending)
+print('\n\n========================================================== sort nested dictionaries by value')
+nested_dict = {
+        'a': {'key1': 3, 'key2': 11, 'key3': 3},
+        'c': {'key1': 6, 'key2': 56, 'key3': 6},
+        'b': {'key1': 7, 'key2': 44, 'key3': 9},
+    }
+print("ascending by key3'value: \n{}".format(OrderedDict(sorted(nested_dict.items(), key=lambda kv: kv[1]['key3']))))
+print("descending by key3'value: \n{}".format(OrderedDict(sorted(nested_dict.items(), key=lambda kv: kv[1]['key3'], reverse=True))))
