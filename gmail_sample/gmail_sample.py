@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 '''
+NOTE: Error: (535, b'5.7.8 Username and Password not accepted. Learn more at\n5.7.8  https://support.google.com/mail/?p=BadCredentials a5-20020a621a05000000b004f79f8f795fsm2328786pfa.0 - gsmtp')!
 Turn off Tùy chọn cài đặt về quyền truy cập cho các ứng dụng kém an toàn tai link:
 https://myaccount.google.com/lesssecureapps
 '''

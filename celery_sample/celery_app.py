@@ -2,6 +2,7 @@ from celery import Celery
 from celery.schedules import crontab
 from celery.backends import redis
 
+# NOTE: best practice https://betterprogramming.pub/python-celery-best-practices-ae182730bb81
 
 app = Celery('task_name_1')
 
