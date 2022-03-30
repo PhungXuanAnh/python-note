@@ -19,6 +19,6 @@ def using_string_format():
 
 
 if __name__ == '__main__':
-    using_string_format()
     using_locale_lib()
+    using_string_format()
 
