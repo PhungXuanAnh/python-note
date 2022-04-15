@@ -59,8 +59,8 @@ def show_date_time_with_timezone():
 def format_datetime_base_on_standard():
     print("\n----------------------------format_datetime_base_on_standard-------------------")
     print("UTC timestamp now 1: ", time.time())
-    print("UTC timestamp now 2: ", datetime.datetime.now().timestamp())
-    print("UTC timestamp now 3: ", datetime.datetime.utcnow())
+    print("UTC timestamp now 2: ", datetime.datetime.now().timestamp()) # it will return a float value
+    print("UTC timestamp now 3: ", datetime.datetime.utcnow())  # it will return a datetime object
     print("UTC timestamp now 4: ", calendar.timegm(time.gmtime()))
     print("UTC timestamp to datetime :       ", datetime.datetime.fromtimestamp(1575963196))
     print(
@@ -198,7 +198,7 @@ if __name__ == "__main__":
     # show_date_time_with_timezone()
 
     # format_datetime_base_on_defined_string_format()
-    parse_date_time_from_string()
+    # parse_date_time_from_string()
 
     # get_time_period()
 
@@ -208,3 +208,5 @@ if __name__ == "__main__":
 
     # extract_year_month_day_hour_minute_second()
     # convert_date_time__to__date_and_opposite()
+
+    format_datetime_base_on_standard()
