@@ -1,1 +1,3 @@
 boto3
+s2sphere
+dynamodbgeo

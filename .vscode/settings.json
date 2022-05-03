@@ -40,4 +40,5 @@
         "!ImportValue sequence",
         "!Split sequence"
     ],
+    "python.formatting.provider": "black",
 }
