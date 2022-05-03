@@ -1,13 +1,23 @@
+# reference: https://aws.amazon.com/blogs/mobile/geo-library-for-amazon-dynamodb-part-1-table-structure/
+
+from audioop import add
 import boto3
 import dynamodbgeo
 import uuid
 import json
 
 # Import the AWS sdk and set up your DynamoDB connection
-dynamodb = boto3.client("dynamodb", region_name="ap-southeast-2")
+
+# dynamodb client
+# dynamodb = boto3.client("dynamodb", region_name="ap-southeast-2")
+
+# dynamodb resource
+boto3_session = boto3.session.Session()
+dynamodb = boto3_session.resource('dynamodb', region_name="ap-southeast-2")
 
 # Create an instance of GeoDataManagerConfiguration for each geospatial table you wish to interact with
-config = dynamodbgeo.GeoDataManagerConfiguration(dynamodb, "test_geo_table")
+# config = dynamodbgeo.GeoDataManagerConfiguration(dynamodb, "test_geo_table")  # dynamodb client
+config = dynamodbgeo.GeoDataManagerConfiguration("test_geo_table", dynamodb)  # dynamodb resource
 
 # Initiate a manager to query and write to the table using this config object
 geoDataManager = dynamodbgeo.GeoDataManager(config)
@@ -130,22 +140,36 @@ def circular_query_point(center_point, radius):
 
 if __name__ == "__main__":
     # create_table()
-    # add_point(
-    #     longitude=21.0278,
-    #     latitude=105.8342,
-    #     addition_data={
-    #         "Country": {"S": "Vietnam"},
-    #         "Capital": {"S": "Hanoi"},
-    #         "year": {"S": "2020"},
-    #     }
-    # )
+    add_point(
+        longitude=21.0278,
+        latitude=105.8342,
+        # addition_data={
+        #     "Country": {"S": "Vietnam"},
+        #     "Capital": {"S": "Hanoi"},
+        #     "year": {"S": "2020"},
+        # }
+        addition_data={
+            "street": "48 Pirrama Rd",
+            "city": "Pyrmont",
+            "state": "NSW",
+            "pcode": "2009",
+            "country": "Australia",
+            "code":"AU",
+            "formated": "48 Pirrama Rd, Pyrmont NSW 2009, Australia",
+            "location":
+            {
+                "lat": '-33.866489',
+                "lng": '151.1958561'
+            }
+        }
+    )
     # update_non_location_fields()
     # delete_point()
     # rectangular_query_point()
     
-    center_point = (-33.855487566099534, 151.21735424489904)
-    radius = 2015 # meters
-    circular_query_point(center_point, radius)
+    # center_point = (-33.855487566099534, 151.21735424489904)
+    # radius = 2015 # meters
+    # circular_query_point(center_point, radius)
     
     # latitude longitude
     

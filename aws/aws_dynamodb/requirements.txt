@@ -1,3 +1,7 @@
 boto3
 s2sphere
-dynamodbgeo
+
+# dynamodbgeo
+
+# install dynamodbgeo from github, this repo using dynamodb resource instead of dynamodb client
+git+https://github.com/bsneider/dynamodb-geo.py.git
