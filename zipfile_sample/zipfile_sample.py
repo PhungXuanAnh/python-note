@@ -43,6 +43,7 @@ def retrieve_archive_member_info(archive_file, member_list):
 
 def zipfolder(the_name_of_the_zipfile="test_zipfile", 
               the_directory_to_be_zipped="/home/xuananh/repo/python-note/unittest_sample"):            
+    # reference : https://stackoverflow.com/a/10480441/7639845
     zipobj = zipfile.ZipFile(the_name_of_the_zipfile + '.zip', 'w', zipfile.ZIP_DEFLATED)
     rootlen = len(the_directory_to_be_zipped) + 1
     for base, dirs, files in os.walk(the_directory_to_be_zipped):
@@ -63,3 +64,4 @@ if __name__ == '__main__':
     # retrieve_archive_member_info(path_to_zip_file, [ 'README.txt', 'ping.yaml', 'ping-nsb1/ping.py' ])
     
     zipfolder()
+    
