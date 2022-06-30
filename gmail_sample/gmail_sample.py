@@ -1,40 +1,59 @@
 # -*- coding: utf-8 -*-
-'''
-NOTE: Error: (535, b'5.7.8 Username and Password not accepted. Learn more at\n5.7.8  https://support.google.com/mail/?p=BadCredentials a5-20020a621a05000000b004f79f8f795fsm2328786pfa.0 - gsmtp')!
-Turn off Tùy chọn cài đặt về quyền truy cập cho các ứng dụng kém an toàn tai link:
-https://myaccount.google.com/lesssecureapps
-'''
+"""
+Send gmail using  App password. 
+    You must got to Google account. Security tab: https://myaccount.google.com/security
+    Active 2 Step Verification. 
+    After this new option under "Signing in to Google" the "App passwords" option will be activated. 
+    Just create one app password and use as password to authenticate
+References: https://stackoverflow.com/questions/72478573/sending-and-email-using-python-problem-causes-by-last-google-policy-update-on
+"""
 import json
 import smtplib
+from typing import Any
+from pathlib import Path
+
+import sys, os
+sys.path.append(
+    os.path.abspath(os.path.join(os.path.dirname(__file__), "../json_sample"))
+)
+
+from json_with_c_comment import JSONWithCommentsDecoder
 
 
 def send_gmail(sent_subject, sent_text):
-    with open('/home/xuananh/Dropbox/Work/Other/credentials_bk/google-account.json', 'r') as f:
-        account = json.loads(f.read())[0]
-        gmail_user = account['email']
-        gmail_app_password = account['password']
+    with open(
+        "/home/xuananh/Dropbox/Work/Other/credentials_bk/google-account.json", "r"
+    ) as f:
+        account = json.loads(f.read(), cls=JSONWithCommentsDecoder)[0]
+        gmail_user = account["email"]
+        gmail_app_password = account["password"]
 
     sent_from = gmail_user
-    sent_to = ['phungxuananh1991@gmail.com', 'phungxuananh1991+1@gmail.com']
+    sent_to = ["phungxuananh1991+python_app@gmail.com"]
 
-    email_text = '\r\n'.join(['To: {}'.format(", ".join(sent_to)),
-                              'From: {}'.format(sent_from),
-                              'Subject: {}'.format(sent_subject),
-                              '', sent_text])
+    email_text = "\r\n".join(
+        [
+            "To: {}".format(", ".join(sent_to)),
+            "From: {}".format(sent_from),
+            "Subject: {}".format(sent_subject),
+            "",
+            sent_text,
+        ]
+    )
 
     try:
-        server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
+        server = smtplib.SMTP_SSL("smtp.gmail.com", 465)
         server.ehlo()
         server.login(gmail_user, gmail_app_password)
         server.sendmail(sent_from, sent_to, email_text)
         server.close()
 
-        print('Email sent!')
+        print("Email sent!")
     except Exception as exception:
         print("Error: %s!\n\n" % exception)
 
 
-if __name__ == '__main__':
-    sent_subject = 'this is test'
-    sent_text = 'this is content'
+if __name__ == "__main__":
+    sent_subject = "this is test"
+    sent_text = "this is content"
     send_gmail(sent_subject, sent_text)

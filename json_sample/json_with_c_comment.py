@@ -4,6 +4,7 @@ Created on Jun 23, 2017
 @author: xuananh
 '''
 import json
+from typing import Any
 
 def check_line_is_comment(line):
     pass
@@ -41,3 +42,26 @@ def remove_c_comment(file_name):
                 
     with open(file_name, 'w+') as f:
         f.write(json_string)
+        
+        
+
+class JSONWithCommentsDecoder(json.JSONDecoder):
+    def __init__(self, **kw):
+        super().__init__(**kw)
+
+    def decode(self, s: str) -> Any:
+        s = '\n'.join(l if not l.lstrip().startswith('//') else '' for l in s.split('\n'))
+        return super().decode(s)
+
+
+def decode_json_file_with_c_comment():
+    print("---------------------decode_json_file_with_c_comment --------------------")
+    with open('/home/xuananh/Dropbox/Work/Other/credentials_bk/google-account.json', 'r') as f:
+        account = json.loads(f.read(), cls=JSONWithCommentsDecoder)[0]
+        print(account['email'])
+        print(account['password'])
+        
+        
+if __name__ == '__main__':
+    decode_json_file_with_c_comment()
+        

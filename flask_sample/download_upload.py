@@ -60,7 +60,7 @@ def upload_file():
                 return redirect(request.url)
         except ValueError:
             traceback.print_exc()
-            return 'Fale'
+            return 'False'
         file = request.files['UPLOADED_FILE']
         # if user does not select file, browser also
         # submit an empty part without filename
