@@ -3,8 +3,6 @@ import glob
 import json
 from tkinter import N
 
-from django.urls import include    
-
 
 def list_file_with_extension_on_current_folder(folder):
     # NOTE: only list *.py file on current folder, not in sub-folder
