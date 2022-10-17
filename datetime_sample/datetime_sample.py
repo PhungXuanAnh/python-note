@@ -33,7 +33,10 @@ def show_date_time_with_timezone():
     )
     print("naive datetime with server timezone: ", datetime.datetime.now())
     print("naive datetime utc:                  ", datetime.datetime.utcnow())
-    print("aware datetime utc:                  ", datetime.datetime.now(datetime.timezone.utc))
+    print(
+        "aware datetime utc:                  ",
+        datetime.datetime.now(datetime.timezone.utc),
+    )
     print(
         "aware datetime with timezone = utc get from pytz:     ",
         datetime.datetime.now(datetime.timezone.utc).astimezone(pytz.utc),
@@ -48,7 +51,9 @@ def show_date_time_with_timezone():
     )
     print(
         "aware datetime with given  timezone = hcm:            ",
-        datetime.datetime.now(datetime.timezone.utc).astimezone(pytz.timezone("Asia/Ho_Chi_Minh")),
+        datetime.datetime.now(datetime.timezone.utc).astimezone(
+            pytz.timezone("Asia/Ho_Chi_Minh")
+        ),
     )
     print(
         "current datetime in given  timezone = hcm:            ",
@@ -57,23 +62,43 @@ def show_date_time_with_timezone():
 
 
 def format_datetime_base_on_standard():
-    print("\n----------------------------format_datetime_base_on_standard-------------------")
+    print(
+        "\n----------------------------format_datetime_base_on_standard-------------------"
+    )
     print("UTC timestamp now 1: ", time.time())
-    print("UTC timestamp now 2: ", datetime.datetime.now().timestamp()) # it will return a float value
-    print("UTC timestamp now 3: ", datetime.datetime.utcnow())  # it will return a datetime object
+    print(
+        "UTC timestamp now 2: ", datetime.datetime.now().timestamp()
+    )  # it will return a float value
+    print(
+        "UTC timestamp now 3: ", datetime.datetime.utcnow()
+    )  # it will return a datetime object
     print("UTC timestamp now 4: ", calendar.timegm(time.gmtime()))
-    print("UTC timestamp to datetime :       ", datetime.datetime.fromtimestamp(1575963196))
+    print(
+        "UTC timestamp to datetime :       ",
+        datetime.datetime.fromtimestamp(1575963196),
+    )
     print(
         "UTC timestamp to datatime - 24h : ",
         datetime.datetime.fromtimestamp(1575963196 - 24 * 60 * 60),
     )
-    print("UTC timestamp to hour :       ", datetime.datetime.fromtimestamp(1575963196).hour)
+    print(
+        "UTC timestamp to hour :       ",
+        datetime.datetime.fromtimestamp(1575963196).hour,
+    )
 
     print("RFC 3339 format: ", dateutil.parser.parse("2008-09-03T20:56:35.450686Z"))
-    print("                 ", datetime.datetime(2008, 9, 3, 20, 56, 35, 450686, tzinfo=tzutc()))
+    print(
+        "                 ",
+        datetime.datetime(2008, 9, 3, 20, 56, 35, 450686, tzinfo=tzutc()),
+    )
 
-    print("ISO 8601 extended format: ", dateutil.parser.parse("2008-09-03T20:56:35.450686"))
-    print("                          ", datetime.datetime(2008, 9, 3, 20, 56, 35, 450686))
+    print(
+        "ISO 8601 extended format: ",
+        dateutil.parser.parse("2008-09-03T20:56:35.450686"),
+    )
+    print(
+        "                          ", datetime.datetime(2008, 9, 3, 20, 56, 35, 450686)
+    )
 
     print("ISO 8601 basic format: ", dateutil.parser.parse("20080903T205635.450686"))
     print("                       ", datetime.datetime(2008, 9, 3, 20, 56, 35, 450686))
@@ -83,7 +108,9 @@ def format_datetime_base_on_standard():
 
 
 def format_datetime_base_on_defined_string_format():
-    print("\n-------------- format_datetime_base_on_defined_string_format -----------------------")
+    print(
+        "\n-------------- format_datetime_base_on_defined_string_format -----------------------"
+    )
     my_time = dateutil.parser.parse("2018-06-06T08:01:53.420Z")
     print("my_time:          ", my_time)
     print("my_time formated: ", my_time.strftime("[%Y-%m-%d]-[%H:%M:%S]"))
@@ -95,15 +122,22 @@ def format_datetime_base_on_defined_string_format():
 def parse_date_time_from_string():
     # see datetime format code here : https://docs.python.org/3/library/datetime.html#strftime-and-strptime-format-codes
     print("\n-------------- parse_date_time_from_string -----------------------")
-    string_contain_date_time = 'Test string contain datetime Jun 1 2005  1:33PM'
-    define_format_code_of_string_contain_date_time = 'Test string contain datetime %b %d %Y %I:%M%p'
-    datetime_object = datetime.datetime.strptime(string_contain_date_time, define_format_code_of_string_contain_date_time)
+    string_contain_date_time = "Test string contain datetime Jun 1 2005  1:33PM"
+    define_format_code_of_string_contain_date_time = (
+        "Test string contain datetime %b %d %Y %I:%M%p"
+    )
+    datetime_object = datetime.datetime.strptime(
+        string_contain_date_time, define_format_code_of_string_contain_date_time
+    )
     print(datetime_object)
 
-    string_contain_date_time1 = 'Delivered Monday, August 16, 2021  at 10:37'
-    define_format_code_of_string_contain_date_time1 = 'Delivered %A, %B %d, %Y at %H:%M'
-    datetime_object = datetime.datetime.strptime(string_contain_date_time1, define_format_code_of_string_contain_date_time1)
+    string_contain_date_time1 = "Delivered Monday, August 16, 2021  at 10:37"
+    define_format_code_of_string_contain_date_time1 = "Delivered %A, %B %d, %Y at %H:%M"
+    datetime_object = datetime.datetime.strptime(
+        string_contain_date_time1, define_format_code_of_string_contain_date_time1
+    )
     print(datetime_object)
+
 
 def get_time_period():
     print(
@@ -121,7 +155,9 @@ def get_time_period():
         return days, hours, minutes, seconds
 
     days, hours, minutes, seconds = convert_timedelta(duration)
-    print("NOTE: It should use total_seconds when t2 - t1 > 1 day, see the difference below:")
+    print(
+        "NOTE: It should use total_seconds when t2 - t1 > 1 day, see the difference below:"
+    )
     print("t2 - t1 = {} days".format(days))
     print("t2 - t1 = {} hours".format(hours))
     print("t2 - t1 = {} minutes".format(minutes))
@@ -162,7 +198,9 @@ def date_time_in_future():
 
 
 def time_around_a_moment():
-    print("\n--------------------------time_around_a_moment-------------------------------------")
+    print(
+        "\n--------------------------time_around_a_moment-------------------------------------"
+    )
     d = datetime.datetime.utcnow()
     for i in range(-2, 3):
         d1 = d + datetime.timedelta(minutes=i)
@@ -183,7 +221,9 @@ def extract_year_month_day_hour_minute_second():
 
 
 def convert_date_time__to__date_and_opposite():
-    print("\n----------------------convert_date_time__to__date_and_opposite-----------------------")
+    print(
+        "\n----------------------convert_date_time__to__date_and_opposite-----------------------"
+    )
     date_time = datetime.datetime.now()
     print("date_time to date: ", date_time.date())
 
@@ -209,4 +249,6 @@ if __name__ == "__main__":
     # extract_year_month_day_hour_minute_second()
     # convert_date_time__to__date_and_opposite()
 
-    format_datetime_base_on_standard()
+    # format_datetime_base_on_standard()
+
+    print(datetime.datetime.strptime("2022-08-31", "%Y-%m-%d"))
