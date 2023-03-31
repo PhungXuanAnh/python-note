@@ -21,14 +21,17 @@ def get_pr_comments(pr_id):
         },
     )
     # print(json.dumps(resp.json(), indent=4, sort_keys=True))
-    c = resp.json()[0]
-    print(c["body"])
-    print(c["commit_id"])
-    print(c["path"])
-    print(c["start_line"])
-    print(c["start_side"])
-    print(c["line"])
-    print(c["side"])
+    # c = resp.json()[0]
+    # print(c["body"])
+    # print(c["commit_id"])
+    # print(c["path"])
+    # print(c["start_line"])
+    # print(c["start_side"])
+    # print(c["line"])
+    # print(c["side"])
+    for c in resp.json():
+        if c["html_url"] == "https://github.com/ablr-com/ablr_django/pull/1319#discussion_r1154053261":
+            print(c["body"].replace("@", "_@_"))
     return resp.json()
 
 
@@ -51,7 +54,7 @@ def create_comment(new_pr_id, body, commit_id, path, line, side, **kwargs):
             "X-GitHub-Api-Version": "2022-11-28",
         },
         json={
-            "body": body,
+            "body": body.replace("@", "_@_"), # NOTE: replace @ to avoid tag a github account
             "commit_id": commit_id,
             "path": path,
             "line": line,
@@ -71,7 +74,7 @@ def create_comment(new_pr_id, body, commit_id, path, line, side, **kwargs):
 if __name__ == "__main__":
     pr_id = "1319"
     new_pr_id = "asdf"
-    # get_pr_comments(pr_id)
-    for c in get_pr_comments(pr_id):
-        create_comment(c["body"], c["commit_id"], c["path"], c["line"], c["side"])
+    get_pr_comments(pr_id)
+    # for c in get_pr_comments(pr_id):
+    #     create_comment(c["body"], c["commit_id"], c["path"], c["line"], c["side"])
     
