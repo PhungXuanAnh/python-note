@@ -57,6 +57,7 @@ def main(argv):
         else:
             print(",", sep="", end="")
     print(" took: {:.2f}s".format(end - start))
+    # print("results: ", res)
 
 
 if __name__ == "__main__":
@@ -64,11 +65,14 @@ if __name__ == "__main__":
     usage:
         python threadpool.py [sync|async]
     """
-    from sys import argv
-    if len(argv[1:]):
-        if argv[1] in ("async", "sync"):
-            main(argv[1])
-        else:
-            main("sync")
-    else:
-        main("sync")
+    # from sys import argv
+    # if len(argv[1:]):
+    #     if argv[1] in ("async", "sync"):
+    #         main(argv[1])
+    #     else:
+    #         main("sync")
+    # else:
+    #     main("sync")
+        
+    main("async")
+    main("sync")
