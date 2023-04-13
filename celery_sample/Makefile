@@ -2,6 +2,13 @@
 # and specify default queue while running worker
 # if not the task which is called without specified queue will not be run by any worker
 
+# NOTE: 2: all kinds of pool in celery: 
+# prefork
+# solo
+# eventlet
+# gevent
+# reference: https://distributedpython.com/posts/celery-execution-pools-what-is-it-all-about/
+
 rm-log-dir:
 	rm -rf .celery && rm -rf logs && sleep 1
 
