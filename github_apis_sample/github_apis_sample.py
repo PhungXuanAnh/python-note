@@ -72,9 +72,9 @@ def create_comment(new_pr_id, body, commit_id, path, line, side, **kwargs):
 
 
 if __name__ == "__main__":
-    pr_id = "1319"
-    new_pr_id = "asdf"
+    pr_id = "1326"
+    new_pr_id = "117"
     get_pr_comments(pr_id)
-    # for c in get_pr_comments(pr_id):
-    #     create_comment(c["body"], c["commit_id"], c["path"], c["line"], c["side"])
+    for c in get_pr_comments(pr_id):
+        create_comment(new_pr_id, c["body"], c["commit_id"], c["path"], c["line"], c["side"])
     
