@@ -2,6 +2,7 @@ import logging
 import requests
 import sys
 import traceback
+import json
 
 
 class SlackWebhookHandler(logging.Handler):
@@ -39,7 +40,7 @@ if __name__ == "__main__":
         link to bellow incomming webhook app : https://phungxuananh.slack.com/services/B01ULRZTC9K?added=1
         
     """
-    WEBHOOK_URL = open("/home/xuananh/Dropbox/Work/Other/credentials_bk/slack_webhook_workspace-phungxuananh_channel_test-webhook-logging-python.txt", "r").read()
+    WEBHOOK_URL = json.loads(open("/home/xuananh/Dropbox/Work/Other/credentials_bk/slack_phungxuananh_workspace.json", "r").read())["webhook"]
     slack_webhook_handler = SlackWebhookHandler(webhook_url=WEBHOOK_URL)
     slack_webhook_handler.setLevel(logging.INFO)
     slack_webhook_handler.setFormatter(logging.Formatter(
