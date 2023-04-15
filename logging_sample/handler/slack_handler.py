@@ -1,4 +1,6 @@
 """
+NOTE: deprecated, this lib using slacker that is deprecated with error auth
+
 HOW TO GET SLACK TOKEN API
 
 1. Login to your workspacke: https://slack.com/signin
