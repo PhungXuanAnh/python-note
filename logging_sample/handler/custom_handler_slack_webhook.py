@@ -36,9 +36,11 @@ if __name__ == "__main__":
         3. Choose `Incomming Webhooks`
         4. Choose `Activate Incoming Webhooks`
         5. Choose `Add New Webhook to Workspace`
-
-        link to bellow incomming webhook app : https://phungxuananh.slack.com/services/B01ULRZTC9K?added=1
         
+        For example: webhook in below json file for app xa-sample-app
+            you can access webhook management off xa-sample-app by this link: https://api.slack.com/apps/A052Z4HGNT1/incoming-webhooks?success=1
+            
+        NOTE: webhook only for 1 channel, if you want to send message to multiple channel, using slackclient with Bot User OAuth Token
     """
     WEBHOOK_URL = json.loads(open("/home/xuananh/Dropbox/Work/Other/credentials_bk/slack_phungxuananh_workspace.json", "r").read())["webhook"]
     slack_webhook_handler = SlackWebhookHandler(webhook_url=WEBHOOK_URL)
@@ -48,7 +50,7 @@ if __name__ == "__main__":
     logging.getLogger("logger1").addHandler(slack_webhook_handler)
     #========================================
 
-    logger1.error('11111111111111111111')
+    logger1.error('11111111111111111111, this message sent using webhook')
     logger2.error('22222222222222222222')
     logging.error('00000000000000000000')
 
