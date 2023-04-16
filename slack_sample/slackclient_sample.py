@@ -31,8 +31,13 @@ def send_slack_alert(channel: str, text: str):
         traceback.print_exc()
 
 
-def upload_slack_file(channel: str, file_content_bytes: bytes, text: str):
-    """Upload slack file"""
+def upload_slack_file(channel: str, file_content_bytes: bytes, initial_comment: str, filename: str):
+    """
+        Upload slack file to a slack channel
+        NOTE: to upload a file to a slack channel, the slack app must be installed to that channel,
+            else you will encountered error { "ok": false, "error": "not_in_channel" }
+            reference: https://stackoverflow.com/a/68475477/7639845
+    """
     client = WebClient(token=SLACK_API_TOKEN)
     try:
         with BytesIO() as b:
@@ -40,12 +45,17 @@ def upload_slack_file(channel: str, file_content_bytes: bytes, text: str):
             b.seek(0)
             client.files_upload(
                 channels=channel,
-                initial_comment=text,
+                initial_comment=initial_comment,
                 file=b,
-                filename="file",
+                filename=filename,
             )
     except SlackApiError as e:
         traceback.print_exc()
         
         
 send_slack_alert("#general", "aaaaaaaaaaaaaaaaaaaaaaaaaa, this message sent from slackclient")
+
+upload_slack_file("#general", open("requirements.txt", "rb").read(), 
+                  initial_comment="this is attachment from XuanAnh",
+                  filename="requirements.txt"
+                  )
