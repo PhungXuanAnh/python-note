@@ -16,6 +16,7 @@ from slack.errors import SlackApiError
     3. Go to OAuth & Permissions or access this link https://api.slack.com/apps/A052Z4HGNT1/oauth?
         a. Move to Scopes part, 
             Move to User Token Scopes, add scope that you want to add, refer list of scopes: https://api.slack.com/scopes
+                To be able to send slack message to a channel, you have to add scope: chat:write
         b. Move to OAuth Tokens for Your Workspace part
             Copy token in Bot User OAuth Token text box, this token will be use by slackclient 
 """
