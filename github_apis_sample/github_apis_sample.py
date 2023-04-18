@@ -70,11 +70,10 @@ def create_comment(new_pr_id, body, commit_id, path, line, side, **kwargs):
         print(json.dumps(resp.json(), indent=4, sort_keys=True))
         
 
+def move_comments_from_a_PR_to_other_PR(current_pr_id, new_pr_id):
+    # get_pr_comments(current_pr_id)
+    for c in get_pr_comments(current_pr_id):
+        create_comment(new_pr_id, c["body"], c["commit_id"], c["path"], c["line"], c["side"])
 
 if __name__ == "__main__":
-    pr_id = "1326"
-    new_pr_id = "117"
-    get_pr_comments(pr_id)
-    for c in get_pr_comments(pr_id):
-        create_comment(new_pr_id, c["body"], c["commit_id"], c["path"], c["line"], c["side"])
-    
+    move_comments_from_a_PR_to_other_PR(current_pr_id="", new_pr_id="")
