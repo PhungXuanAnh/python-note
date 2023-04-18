@@ -113,7 +113,7 @@ def merge_pr(owner, repo, pr_number):
         },
         json={
             "commit_title": "Update code",
-            "commit_message": "Update new code",
+            "commit_message": "",
             "merge_method": "squash"
         },
     )
@@ -148,20 +148,30 @@ def create_new_branch_spectre_dashboard_repo(working_branch, main_branch):
         Push name_main_timestamp to all remote
         print branch name name_main_timestamp
         Create PR manually
+        
+        Continue to create new PR for merging new_branch to main branch
     """
     repository_dir = "/home/xuananh/repo/Spectre.Dashboard.Backend"
     new_branch_name = create_new_branch(repository_dir, main_branch, working_branch)
 
     owner = "PhungXuanAnh"
     repo = "Spectre.Dashboard.Backend"
-    pr = create_pull_request(owner, repo, base_branch=new_branch_name, working_branch=working_branch)
+    temporary_pr = create_pull_request(owner, repo, base_branch=new_branch_name, working_branch=working_branch)
     
-    pr_number = pr.get("number")
+    pr_number = temporary_pr.get("number")
     if is_mergeable(owner, repo, pr_number):
         merge_pr(owner, repo, pr_number)
         pull_new_branch_after_merge(repository_dir, new_branch_name)
     else:
-        print(f"Cannot merge pull request: {pr_number}")
+        print(f"Cannot merge pull request for updating code to new created branch: {pr_number}")
+        
+    new_pr = create_pull_request(owner, repo, base_branch=main_branch, working_branch=new_branch_name)
+    new_pr_number = new_pr.get("number")
+    if is_mergeable(owner, repo, new_pr_number):
+        merge_pr(owner, repo, new_pr_number)
+        pull_new_branch_after_merge(repository_dir, main_branch)
+    else:
+        print(f"Cannot merge pull request: {new_pr_number}")
 
 if __name__ == "__main__":
     working_branch = 'working-feature1-abc'
