@@ -41,7 +41,9 @@ def run_command_print_output(command, print_output=True):
             # tham khảo:
             # https://stackoverflow.com/questions/42589584/ansi-color-lost-when-using-python-subprocess
             # https://stackoverflow.com/questions/32486974/how-to-print-original-color-output-using-subprocess-check-output
-    print("=== return-code = {} after run command '{}'".format(p.poll(), command))
+    return_code = p.poll()
+    print(f"===> return-code = {return_code} after run command'")
+    return return_code
 
 def run_command_return_results(command):
     logging.info("Running command '{}' ...".format(command))
@@ -128,7 +130,7 @@ if __name__ == '__main__':
     # NOTE: to run chainging command must set shell=True
     cmd = 'cd ~/ && ls -lha | grep zsh'
 
-    # run_command_print_output(cmd)
+    run_command_print_output(cmd)
     # run_command_return_results(cmd)
     # run_command_with_timeout1(cmd, 3)
     # run_command_with_timeout3(cmd, 3)
