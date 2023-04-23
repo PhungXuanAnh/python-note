@@ -135,7 +135,8 @@ def pull_new_branch_after_merge(repository_dir, new_branch_name):
         print(f"Completed to create new working branch: {new_branch_name}")
 
 
-def create_new_branch_spectre_dashboard_repo(working_branch, main_branch):
+def merge_working_branch_to_main_branch(working_branch, main_branch, repository_dir, owner, repo):
+
     """
         Create new branch name_main_timestamp from main branch same as working branch
         push new branch name_main_timestamp to PhungXuanAnh/reponame
@@ -151,10 +152,6 @@ def create_new_branch_spectre_dashboard_repo(working_branch, main_branch):
         
         Continue to create new PR for merging new_branch to main branch
     """
-    repository_dir = "/home/xuananh/repo/Spectre.Dashboard.Backend"
-    owner = "PhungXuanAnh"
-    repo = "Spectre.Dashboard.Backend"
-    
     # merge working branch to new branch
     new_branch_name = create_new_branch(repository_dir, main_branch, working_branch)
     temporary_pr = create_pull_request(owner, repo, base_branch=new_branch_name, working_branch=working_branch)
@@ -173,51 +170,32 @@ def create_new_branch_spectre_dashboard_repo(working_branch, main_branch):
         pull_new_branch_after_merge(repository_dir, main_branch)
     else:
         print(f"Cannot merge pull request: {new_pr_number}")
-        
 
 
+def create_new_branch_spectre_dashboard_repo(working_branch, main_branch):
+    repository_dir = "/home/xuananh/repo/Spectre.Dashboard.Backend"
+    owner = "PhungXuanAnh"
+    repo = "Spectre.Dashboard.Backend"
+    merge_working_branch_to_main_branch(working_branch, main_branch, repository_dir, owner, repo)
+    
+    
 def create_new_branch_ablr_repo(working_branch, main_branch):
-    """
-        Create new branch name_main_timestamp from main branch same as working branch
-        push new branch name_main_timestamp to PhungXuanAnh/reponame
-        create new PR from working branch to name_main_timestamp
-            https://docs.github.com/en/rest/pulls/pulls?apiVersion=2022-11-28#create-a-pull-request
-        Check Conflict 
-            https://docs.github.com/en/rest/pulls/pulls?apiVersion=2022-11-28#get-a-pull-request
-            If not conflict Accept PR and to merge squashed PR
-            Else stop and do other steps manually
-        Push name_main_timestamp to remote
-        print branch name name_main_timestamp
-        Create PR manually
-        Continue to create new PR for merging new_branch to main branch
-    """
     repository_dir = "/home/xuananh/repo/ablr_django"
     owner = "PhungXuanAnh"
     repo = "ablr_django"
-    
-    # merge working branch to temporary branch
-    new_branch_name = create_new_branch(repository_dir, main_branch, working_branch)
-    time.sleep(3)
-    temporary_pr = create_pull_request(owner, repo, base_branch=new_branch_name, working_branch=working_branch)
-    pr_number = temporary_pr.get("number")
-    if is_mergeable(owner, repo, pr_number):
-        merge_pr(owner, repo, pr_number)
-        pull_new_branch_after_merge(repository_dir, new_branch_name)
-    else:
-        print(f"Cannot merge pull request for updating code to new created branch: {pr_number}")
-        
-    # merge new branch to main branch
-    new_pr = create_pull_request(owner, repo, base_branch=main_branch, working_branch=new_branch_name)
-    new_pr_number = new_pr.get("number")
-    if is_mergeable(owner, repo, new_pr_number):
-        merge_pr(owner, repo, new_pr_number)
-        pull_new_branch_after_merge(repository_dir, main_branch)
-    else:
-        print(f"Cannot merge pull request: {new_pr_number}")
+    merge_working_branch_to_main_branch(working_branch, main_branch, repository_dir, owner, repo)
 
+
+def create_new_branch_castnet_repo(working_branch, main_branch):
+    repository_dir = "/home/xuananh/repo/castnet"
+    owner = "PhungXuanAnh"
+    repo = "castnet"
+    merge_working_branch_to_main_branch(working_branch, main_branch, repository_dir, owner, repo)
+    
 
 if __name__ == "__main__":
-    working_branch = 'feature/Upload-documents-to-sign-on-Merchan-admin___onboarding-item-admin'
-    main_branch = 'feature/create-docusign-django-app'
+    working_branch = 'fixbug/can-not-login'
+    main_branch = 'dev'
     # create_new_branch_spectre_dashboard_repo(working_branch, main_branch)
-    create_new_branch_ablr_repo(working_branch, main_branch)
+    # create_new_branch_ablr_repo(working_branch, main_branch)
+    create_new_branch_castnet_repo(working_branch, main_branch)
