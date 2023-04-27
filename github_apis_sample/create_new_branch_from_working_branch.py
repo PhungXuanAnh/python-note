@@ -135,7 +135,7 @@ def pull_new_branch_after_merge(repository_dir, new_branch_name):
         print(f"Completed to create new working branch: {new_branch_name}")
 
 
-def merge_working_branch_to_main_branch(working_branch, main_branch, repository_dir, owner, repo):
+def merge_working_branch_to_main_branch(working_branch, main_branch, repository_dir, owner, repo, merge_right_now):
 
     """
         Create new branch name_main_timestamp from main branch same as working branch
@@ -162,40 +162,42 @@ def merge_working_branch_to_main_branch(working_branch, main_branch, repository_
     else:
         print(f"Cannot merge pull request for updating code to new created branch: {pr_number}")
     
-    # merge new branch to main branch   
-    new_pr = create_pull_request(owner, repo, base_branch=main_branch, working_branch=new_branch_name)
-    new_pr_number = new_pr.get("number")
-    if is_mergeable(owner, repo, new_pr_number):
-        merge_pr(owner, repo, new_pr_number, commit_title=working_branch)
-        pull_new_branch_after_merge(repository_dir, main_branch)
-    else:
-        print(f"Cannot merge pull request: {new_pr_number}")
+    if merge_right_now:
+        # merge new branch to main branch
+        new_pr = create_pull_request(owner, repo, base_branch=main_branch, working_branch=new_branch_name)
+        new_pr_number = new_pr.get("number")
+        if is_mergeable(owner, repo, new_pr_number):
+            merge_pr(owner, repo, new_pr_number, commit_title=working_branch)
+            pull_new_branch_after_merge(repository_dir, main_branch)
+        else:
+            print(f"Cannot merge pull request: {new_pr_number}")
 
 
-def create_new_branch_spectre_dashboard_repo(working_branch, main_branch):
+def create_new_branch_spectre_dashboard_repo(working_branch, main_branch, merge_right_now):
     repository_dir = "/home/xuananh/repo/Spectre.Dashboard.Backend"
     owner = "PhungXuanAnh"
     repo = "Spectre.Dashboard.Backend"
-    merge_working_branch_to_main_branch(working_branch, main_branch, repository_dir, owner, repo)
+    merge_working_branch_to_main_branch(working_branch, main_branch, repository_dir, owner, repo, merge_right_now)
     
     
-def create_new_branch_ablr_repo(working_branch, main_branch):
+def create_new_branch_ablr_repo(working_branch, main_branch, merge_right_now):
     repository_dir = "/home/xuananh/repo/ablr_django"
     owner = "PhungXuanAnh"
     repo = "ablr_django"
-    merge_working_branch_to_main_branch(working_branch, main_branch, repository_dir, owner, repo)
+    merge_working_branch_to_main_branch(working_branch, main_branch, repository_dir, owner, repo, merge_right_now)
 
 
-def create_new_branch_castnet_repo(working_branch, main_branch):
+def create_new_branch_castnet_repo(working_branch, main_branch, merge_right_now):
     repository_dir = "/home/xuananh/repo/castnet"
     owner = "PhungXuanAnh"
     repo = "castnet"
-    merge_working_branch_to_main_branch(working_branch, main_branch, repository_dir, owner, repo)
+    merge_working_branch_to_main_branch(working_branch, main_branch, repository_dir, owner, repo, merge_right_now)
     
 
 if __name__ == "__main__":
-    working_branch = 'fixbug/can-not-login'
-    main_branch = 'dev'
-    # create_new_branch_spectre_dashboard_repo(working_branch, main_branch)
-    # create_new_branch_ablr_repo(working_branch, main_branch)
-    create_new_branch_castnet_repo(working_branch, main_branch)
+    working_branch = 'feature/update-settlements-api___fixtest'
+    main_branch = 'feature/update-settlements-api'
+    merge_right_now = True
+    # create_new_branch_spectre_dashboard_repo(working_branch, main_branch, merge_right_now)
+    create_new_branch_ablr_repo(working_branch, main_branch, merge_right_now)
+    # create_new_branch_castnet_repo(working_branch, main_branch, merge_right_now)
