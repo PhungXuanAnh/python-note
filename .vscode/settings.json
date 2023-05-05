@@ -40,12 +40,4 @@
         "!ImportValue sequence",
         "!Split sequence"
     ],
-    "python.formatting.provider": "black",
-    "python.formatting.blackPath": "${workspaceFolder}/.venv/bin/black",
-    "python.formatting.blackArgs": ["--line-length", "150"],  // default is 88 characters
-    "[python]": {
-        "editor.formatOnSave": true,
-        "editor.formatOnPaste": true, 
-        "editor.formatOnSaveMode": "file"   // modifications
-    }
 }
