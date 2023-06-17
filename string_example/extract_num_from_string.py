@@ -1,16 +1,13 @@
-str1 = "3158 reviews"
-# python2
-# num = int(filter(str.isdigit, str1)) 
 
-# python3
-num = int(''.join(list(filter(str.isdigit, str1))))
-print(num)
+def extract_number_from_string():
+    str1 = "3158 reviews"
 
-str = '27K lượt xem'
-print(str[:-9])
+    # python2
+    # num = int(filter(str.isdigit, str1)) 
 
-str = "https://facebook.com/officialdoda/"
-print(str.replace('https://', '').replace('www.', '').replace('facebook.com/', '').replace('/', ''))
+    # python3
+    num = int(''.join(list(filter(str.isdigit, str1))))
+    print("extract number from string using str.isdigit: ", num)
 
-print('0'.replace('.', ''))
-print('1111.2220'.replace('.', ''))
+
+extract_number_from_string()
