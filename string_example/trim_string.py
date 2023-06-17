@@ -1,0 +1,1 @@
+# reference: https://datagy.io/python-trim-string/
