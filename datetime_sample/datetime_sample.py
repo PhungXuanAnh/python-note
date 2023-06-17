@@ -117,7 +117,14 @@ def format_datetime_base_on_defined_string_format():
     my_time = datetime.datetime.now()
     print("my_time:          ", my_time)
     print("my_time formated: ", my_time.strftime("[%Y-%m-%d]-[%H:%M:%S]"))
-
+    
+    # reference: https://datagy.io/python-string-to-date/#Working_with_Milliseconds_Using_Python_strptime_Milliseconds
+    print('---> Example: Date and time with milliseconds in format "YYYY-MM-DD hh:mm:ss.fff"')
+    date_string = "2023-09-01 14:30:00.123"
+    date_format = "%Y-%m-%d %H:%M:%S.%f"
+    date_obj = datetime.datetime.strptime(date_string, date_format)
+    print("Date string with milliseconds:    ", date_string)
+    print("Datetime object with milliseconds:", date_obj)
 
 def parse_date_time_from_string():
     # see datetime format code here : https://docs.python.org/3/library/datetime.html#strftime-and-strptime-format-codes
@@ -248,7 +255,7 @@ if __name__ == "__main__":
     # list_all_timezones_string()
     # show_date_time_with_timezone()
 
-    # format_datetime_base_on_defined_string_format()
+    format_datetime_base_on_defined_string_format()
     # parse_date_time_from_string()
 
     # get_time_period()
@@ -257,7 +264,7 @@ if __name__ == "__main__":
     # time_around_a_moment()
 
     # extract_year_month_day_hour_minute_second()
-    convert_date_time__to__date_and_opposite()
+    # convert_date_time__to__date_and_opposite()
 
     # print_datetime_from_some_standards()
 
