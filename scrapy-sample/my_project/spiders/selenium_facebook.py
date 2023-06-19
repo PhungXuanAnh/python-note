@@ -16,8 +16,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
 
-from scraper.items import FacebookItem
-from scraper.selenium_middleware.request import SeleniumRequest
+from my_project.items import FacebookItem
+from my_project.selenium_middleware.request import SeleniumRequest
 from w3lib.html import remove_tags
 
 

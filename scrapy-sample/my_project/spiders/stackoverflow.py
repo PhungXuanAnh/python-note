@@ -1,7 +1,7 @@
 import scrapy
 from scrapy import Spider
 from scrapy.selector import Selector
-from scraper.items import StackItem, StackItemExtend
+from my_project.items import StackItem, StackItemExtend
 
 from scrapy.spiders import CrawlSpider, Rule
 from scrapy.linkextractors import LinkExtractor

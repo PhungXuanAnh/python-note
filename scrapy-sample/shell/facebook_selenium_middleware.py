@@ -8,7 +8,7 @@ from selenium.webdriver import ChromeOptions
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
-from scraper.selenium_middleware.request import SeleniumRequest
+from my_project.selenium_middleware.request import SeleniumRequest
 
 
 def get_timestamp_24h_ago():

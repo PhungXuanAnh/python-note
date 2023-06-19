@@ -16,7 +16,7 @@ import time
 import logging
 import datetime
 
-from scraper.items import FacebookItem
+from my_project.items import FacebookItem
 from w3lib.html import remove_tags
 
 urls = [

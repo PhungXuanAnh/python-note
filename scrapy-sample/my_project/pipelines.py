@@ -10,9 +10,9 @@ import pymongo
 import logging
 from scrapy.exceptions import DropItem
 from scrapy.settings import Settings
-from scraper import settings
+from my_project import settings
 
-from scraper.spiders.stackoverflow import StackOverFlowCom, StackOverFlowExtend
+from my_project.spiders.stackoverflow import StackOverFlowCom, StackOverFlowExtend
 
 
 class StackPipeline(object):
