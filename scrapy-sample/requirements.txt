@@ -7,3 +7,5 @@ pyOpenSSL
 Scrapy
 scrapy_splash
 selenium
+sqlalchemy
+pymongo

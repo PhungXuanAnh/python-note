@@ -58,14 +58,14 @@ class Other(object):
 
     
 if __name__ == "__main__":
-    # insert_sample_data()
+    insert_sample_data()
 
-    p = Paging()
+    # p = Paging()
     # p.skip_9800_record()
     # p.limit_100_record()
     # p.skip_5000_record_limit_50_record()
     # p.sort_by_age_skip_5000_record_limit_50_record()
 
-    q = Other()
-    q.find_item_have_age_equal_10_or_51_or_99()
+    # q = Other()
+    # q.find_item_have_age_equal_10_or_51_or_99()
     

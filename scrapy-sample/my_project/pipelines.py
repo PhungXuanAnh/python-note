@@ -10,6 +10,8 @@ import pymongo
 import logging
 from scrapy.exceptions import DropItem
 from scrapy.settings import Settings
+from itemadapter import ItemAdapter
+
 from my_project import settings
 
 from my_project.spiders.stackoverflow import StackOverFlowCom, StackOverFlowExtend
@@ -183,3 +185,30 @@ class FacebookPipeline(object):
             spider.logger.info("Ignore duplicate item: {}".format(item))
         return item
 
+
+class QuotesMongoPipeline:
+    collection_name = "quote_items"
+
+    def __init__(self, mongo_uri, mongo_db):
+        self.mongo_uri = mongo_uri
+        self.mongo_db = mongo_db
+
+    @classmethod
+    def from_crawler(cls, crawler):
+        return cls(
+            # mongo_uri=crawler.settings.get("MONGO_URI"),
+            # mongo_db=crawler.settings.get("MONGO_DATABASE", "items"),
+            mongo_uri="mongodb://mongoadmin:secret@localhost:27017",
+            mongo_db="my_database"
+        )
+
+    def open_spider(self, spider):
+        self.client = pymongo.MongoClient(self.mongo_uri)
+        self.db = self.client[self.mongo_db]
+
+    def close_spider(self, spider):
+        self.client.close()
+
+    def process_item(self, item, spider):
+        self.db[self.collection_name].insert_one(ItemAdapter(item).asdict())
+        return item
