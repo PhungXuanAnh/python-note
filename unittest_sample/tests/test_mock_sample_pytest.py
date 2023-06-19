@@ -3,7 +3,8 @@
 # pytest -v unittest_sample/tests/test_mock_sample_pytest.py
 from unittest import mock
 from unittest_sample.app import services
-
+# reference: https://docs.python.org/3/library/unittest.mock.html
+# why use unittest mock instead of pytest mock: https://github.com/pytest-dev/pytest/issues/4576#issuecomment-449864333
 
 USERNAME, PROPERTIES = "NGUYEN VAN C", "1000 billion USD"
 def user_context(arg):
