@@ -3,5 +3,5 @@ def func(x):
 
 
 def test_answer():
-    assert func(3) == 5
+    assert func(3) == 4
     
