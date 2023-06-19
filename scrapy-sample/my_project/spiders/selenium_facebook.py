@@ -73,10 +73,10 @@ class FacebookSpider(scrapy.Spider):
 
     custom_settings = {
         'ITEM_PIPELINES': {
-            'scraper.pipelines.FacebookPipeline': 300
+            'my_project.pipelines.FacebookPipeline': 300
         },
         'DOWNLOADER_MIDDLEWARES': {
-            'scraper.selenium_middleware.middleware.SeleniumMiddleware': 800
+            'my_project.selenium_middleware.middleware.SeleniumMiddleware': 800
         }
     }
 

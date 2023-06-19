@@ -11,8 +11,8 @@ class StackOverFlowCom(Spider):
     name = 'stack'
     custom_settings = {
         'ITEM_PIPELINES': {
-            # 'scraper.pipelines.StackPipeline': 300,
-            'scraper.pipelines.StackMongoPipeline': 300,
+            # 'my_project.pipelines.StackPipeline': 300,
+            'my_project.pipelines.StackMongoPipeline': 300,
         }
     }
     allowed_domains = ['stackoverflow.com']
@@ -36,8 +36,8 @@ class StackOverFlowExtend(CrawlSpider):
     name = 'stack1'
     custom_settings = {
         'ITEM_PIPELINES': {
-            # 'scraper.pipelines.StackPipelineExtend': 300
-            'scraper.pipelines.StackMongoPipelineExtend': 300
+            # 'my_project.pipelines.StackPipelineExtend': 300
+            'my_project.pipelines.StackMongoPipelineExtend': 300
         }
     }    
     allowed_domains = ['stackoverflow.com']

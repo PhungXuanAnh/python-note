@@ -44,10 +44,10 @@ class FacebookSpider(scrapy.Spider):
 
     custom_settings = {
         'ITEM_PIPELINES': {
-            'scraper.pipelines.FacebookPipeline': 300
+            'my_project.pipelines.FacebookPipeline': 300
         },
         'SPIDER_MIDDLEWARES': {
-            'scraper.middlewares.FacebookStatsUrlSpiderMiddleware': 49
+            'my_project.middlewares.FacebookStatsUrlSpiderMiddleware': 49
         },
         # 'LOG_FILE': 'logs/facebook-{}.log'.format(datetime.datetime.now().strftime("[%Y-%m-%d]-[%H:%M:%S]"))
     }
