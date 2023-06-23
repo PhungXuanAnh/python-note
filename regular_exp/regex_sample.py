@@ -1,6 +1,11 @@
 import re
 
-"""reference: https://docs.python.org/3/library/re.html 
+"""
+reference: 
+https://github.com/ziishaned/learn-regex 
+https://dev.to/awwsmm/20-small-steps-to-become-a-regex-master-mpc#step11 
+https://docs.python.org/3/library/re.html 
+https://regex101.com/ 
 """
 def re_match():
     line = "Cats are smarter than dogs"
