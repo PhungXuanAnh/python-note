@@ -1,4 +1,5 @@
 import time
+import traceback
 from selenium.webdriver import Chrome
 from selenium.webdriver import ChromeOptions
 from selenium.webdriver.chrome.service import Service
@@ -22,6 +23,7 @@ while True:
         voice_button = driver.find_element(By.XPATH, '//button[@aria-label="Translate by voice" and @aria-pressed="false"]')
         voice_button.click()
     except:
+        traceback.print_exc()
         time.sleep(1)
     
 
