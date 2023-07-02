@@ -14,7 +14,6 @@ menu = (item('Action 1', action), item('Action 2', action))
 ICON_MIC = {
     "wire": Image.open("icon/mic_headphone_wire.png"),
     "built_in": Image.open("icon/mic_built_in.png"),
-    "virtual": '',
     "headphone_blutooth1": Image.open("icon/mic_headphone_blutooth1.png"),
     "headphone_blutooth2": Image.open("icon/mic_headphone_blutooth2.png"),
     "red_flower": Image.open("icon/red_flower.jpeg"),
@@ -27,8 +26,7 @@ icon.run_detached()
 MICROPHONES = {
     "wire": "alsa_input.pci-0000_00_1f.3-platform-skl_hda_dsp_generic.HiFi__hw_sofhdadsp__source",
     "built_in": "alsa_input.pci-0000_00_1f.3-platform-skl_hda_dsp_generic.HiFi__hw_sofhdadsp_6__source",
-    "virtual": "VirtualMicrophone",
-    "headphone_blutooth1": "headphone_blutooth1",
+    "headphone_blutooth1": "bluez_source.74_45_CE_22_CC_55.handsfree_head_unit",
     "headphone_blutooth2": "headphone_blutooth2",
 }
 
