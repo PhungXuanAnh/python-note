@@ -56,4 +56,4 @@ while True:
         current_icon = [ICON_MIC["red_flower"]]
         
     icon.icon = current_icon[0]
-    time.sleep(1)
+    time.sleep(0.5)
