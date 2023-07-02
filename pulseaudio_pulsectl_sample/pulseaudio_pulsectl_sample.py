@@ -13,6 +13,7 @@ def source_list():
         print("source name:", source.name)
         print("volumes:", list(int(round(v*100)) for v in source.volume.values))
         print("volume.value_flat", source.volume.value_flat)
+        print("mute:", source.mute)
 
 def sink_list():
     print(pulse.sink_list())
