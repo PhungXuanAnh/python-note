@@ -38,5 +38,6 @@ while True:
         print("no button Translate by voice")
     except:
         traceback.print_exc()
-        time.sleep(1)
+    
+    time.sleep(1)
     

@@ -39,18 +39,17 @@ while True:
     for source in pulse.source_list():
         volumes = list(int(round(v*100)) for v in source.volume.values)
         
-        if source.volume.value_flat > 0.0:
-            if source.name == MICROPHONES["wire"]:
-                current_icon.append(ICON_MIC["wire"])
-            
-            if source.name == MICROPHONES["built_in"]:
-                current_icon.append(ICON_MIC["built_in"])
-            
-            if source.name == MICROPHONES["headphone_blutooth1"]:
-                current_icon.append(ICON_MIC["headphone_blutooth1"])
-            
-            if source.name == MICROPHONES["headphone_blutooth2"]:
-                current_icon.append(ICON_MIC["headphone_blutooth2"])
+        if source.name == MICROPHONES["wire"] and source.volume.value_flat > 0.05:
+            current_icon.append(ICON_MIC["wire"])
+        
+        if source.name == MICROPHONES["built_in"] and source.volume.value_flat > 0.0:
+            current_icon.append(ICON_MIC["built_in"])
+        
+        if source.name == MICROPHONES["headphone_blutooth1"] and source.volume.value_flat > 0.0:
+            current_icon.append(ICON_MIC["headphone_blutooth1"])
+        
+        if source.name == MICROPHONES["headphone_blutooth2"] and source.volume.value_flat > 0.0:
+            current_icon.append(ICON_MIC["headphone_blutooth2"])
     
     if len(current_icon) > 1:
         current_icon = [ICON_MIC["red_flower"]]
