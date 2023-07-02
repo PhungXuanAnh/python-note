@@ -9,7 +9,8 @@
         "selenium_sample",
     ],
     "cSpell.words": [
-        "pyexcelerate"
+        "pyexcelerate",
+        "pystray"
     ],
     "yaml.customTags": [
         "!And",
