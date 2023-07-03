@@ -12,11 +12,12 @@ def action():
 menu = (item('Action 1', action), item('Action 2', action)) 
 
 ICON_MIC = {
-    "wire": Image.open("icon/mic_headphone_wire.png"),
     "built_in": Image.open("icon/mic_built_in.png"),
+    "headphone_wire": Image.open("icon/mic_headphone_wire.png"),
     "headphone_blutooth1": Image.open("icon/mic_headphone_blutooth1.png"),
     "headphone_blutooth2": Image.open("icon/mic_headphone_blutooth2.png"),
-    "red_flower": Image.open("icon/red_flower.jpeg"),
+    "orange_warning": Image.open("icon/orange_warning.jpg"),
+    "all_muted": Image.open("icon/all_muted.png"),
 }
 
 icon = pystray.Icon("Test Icon 2", ICON_MIC["built_in"], "Test Icon 2", menu)
@@ -24,8 +25,8 @@ icon.run_detached()
 
 
 MICROPHONES = {
-    "wire": "alsa_input.pci-0000_00_1f.3-platform-skl_hda_dsp_generic.HiFi__hw_sofhdadsp__source",
     "built_in": "alsa_input.pci-0000_00_1f.3-platform-skl_hda_dsp_generic.HiFi__hw_sofhdadsp_6__source",
+    "headphone_wire": "alsa_input.pci-0000_00_1f.3-platform-skl_hda_dsp_generic.HiFi__hw_sofhdadsp__source",
     "headphone_blutooth1": "bluez_source.74_45_CE_22_CC_55.handsfree_head_unit",
     "headphone_blutooth2": "headphone_blutooth2",
 }
@@ -39,9 +40,9 @@ while True:
         volumes = list(int(round(v*100)) for v in source.volume.values)
         
         if source.mute == 0:
-            if source.name == MICROPHONES["wire"]:
-                current_icon.append(ICON_MIC["wire"])
-                opening_microphones.append('wire')
+            if source.name == MICROPHONES["headphone_wire"]:
+                current_icon.append(ICON_MIC["headphone_wire"])
+                opening_microphones.append('headphone_wire')
             
             if source.name == MICROPHONES["built_in"]:
                 current_icon.append(ICON_MIC["built_in"])
@@ -58,7 +59,9 @@ while True:
     print("unmute microphones:", opening_microphones)
     
     if len(current_icon) > 1:
-        current_icon = [ICON_MIC["red_flower"]]
+        current_icon = [ICON_MIC["orange_warning"]]
+    if len(current_icon) < 1:
+        current_icon = [ICON_MIC["all_muted"]]
         
     icon.icon = current_icon[0]
     time.sleep(0.5)
