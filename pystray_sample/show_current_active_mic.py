@@ -3,6 +3,7 @@ from pystray import MenuItem as item
 import pystray 
 from PIL import Image 
 import pulsectl
+from pulsectl import PulseVolumeInfo
 
 pulse = pulsectl.Pulse('my-client-name')
 
@@ -31,7 +32,21 @@ MICROPHONES = {
     "headphone_blutooth2": "headphone_blutooth2",
 }
 
-  
+def set_max_volume(source):
+    volume = source.volume
+    # print(volume.values) # list of per-channel values (floats)
+    # print(volume.value_flat) # average level across channels (float)
+
+    volume.value_flat = 1 # sets all volume.values to 1
+    pulse.volume_set(source, volume) # applies the change
+
+    n_channels = len(volume.values)
+    new_volume = PulseVolumeInfo(1, n_channels) # 1 across all n_channels
+    # new_volume = PulseVolumeInfo([0.15, 0.25]) # from a list of channel levels (stereo)
+    pulse.volume_set(source, new_volume)
+
+UNMUTE = 0
+
 while True:
     current_icon = []
     
@@ -39,7 +54,9 @@ while True:
     for source in pulse.source_list():
         volumes = list(int(round(v*100)) for v in source.volume.values)
         
-        if source.mute == 0:
+        if source.mute == UNMUTE:
+            set_max_volume(source)
+            
             if source.name == MICROPHONES["headphone_wire"]:
                 current_icon.append(ICON_MIC["headphone_wire"])
                 opening_microphones.append('headphone_wire')
@@ -55,7 +72,7 @@ while True:
             if source.name == MICROPHONES["headphone_blutooth2"]:
                 current_icon.append(ICON_MIC["headphone_blutooth2"])
                 opening_microphones.append('headphone_blutooth2')
-            
+                
     print("unmute microphones:", opening_microphones)
     
     if len(current_icon) > 1:

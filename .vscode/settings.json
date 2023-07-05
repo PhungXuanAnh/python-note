@@ -11,7 +11,8 @@
     "cSpell.words": [
         "pulsectl",
         "pyexcelerate",
-        "pystray"
+        "pystray",
+        "UNMUTE"
     ],
     "yaml.customTags": [
         "!And",
