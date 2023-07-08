@@ -42,20 +42,24 @@ while True:
         print("aaaaaaaaaaaa 2: no button Translate by voice")
     except:
         traceback.print_exc()
-    characters_used = driver.find_element(By.XPATH, '//span[text()="5,000"]/span').text
-    characters_used = int(''.join(filter(str.isdigit, characters_used)))
-    if characters_used > 650:
-        try:
-            # stop_voice_button = driver.find_element(By.XPATH, '//button[@aria-label="Stop translation by voice"]')
-            # stop_voice_button.click()
-            clear_source_text_button = driver.find_element(By.XPATH, '//button[@aria-label="Clear source text"]')
-            clear_source_text_button.click()
-        except NoSuchElementException:
-            # print("aaaaaaaaaaaa 3: no button Stop translate by voice")
-            print("aaaaaaaaaaaa 3: no button Clear source text")
-        except:
-            traceback.print_exc()
-        # time.sleep(1)
+    try:
+        characters_used = driver.find_element(By.XPATH, '//span[text()="5,000"]/span').text
+        characters_used = int(''.join(filter(str.isdigit, characters_used)))
+        if characters_used > 650:
+            try:
+                # stop_voice_button = driver.find_element(By.XPATH, '//button[@aria-label="Stop translation by voice"]')
+                # stop_voice_button.click()
+                clear_source_text_button = driver.find_element(By.XPATH, '//button[@aria-label="Clear source text"]')
+                clear_source_text_button.click()
+            except NoSuchElementException:
+                # print("aaaaaaaaaaaa 3: no button Stop translate by voice")
+                print("aaaaaaaaaaaa 3: no button Clear source text")
+            except:
+                traceback.print_exc()
+    except NoSuchElementException:
+        print("aaaaaaaaaaaa 4: characters used element")
+    except:
+        traceback.print_exc()
     # driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
     time.sleep(1)
 
