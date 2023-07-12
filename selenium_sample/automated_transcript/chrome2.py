@@ -23,7 +23,7 @@ chrome_options.add_argument("class=chrome2")    # NOTE: it must add this argumen
 
 service = Service(
     executable_path='webdriver/chromedriver',
-    service_args=["--verbose", "--log-path=/home/xuananh/Downloads/chromedriver.log"])
+    service_args=["--verbose", "--log-path=/tmp/chromdriver-2.log"])
 driver = Chrome(service=service,options=chrome_options)
 driver.get("https://translate.google.com/?sl=vi&tl=en")
 

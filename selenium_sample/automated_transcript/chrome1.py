@@ -4,7 +4,7 @@ from selenium.webdriver import Chrome
 from selenium.webdriver import ChromeOptions
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
-from selenium.common.exceptions import NoSuchElementException
+from selenium.common.exceptions import NoSuchElementException, ElementClickInterceptedException
 
 chrome_options = ChromeOptions()
 # chrome_options.add_experimental_option("detach", True)  # keep chrome and chromedriver to stay open after running all code
@@ -40,6 +40,9 @@ while True:
         driver.find_element(By.XPATH, '//button[@aria-label="Translate by voice" and @aria-pressed="false"]').click()
     except NoSuchElementException:
         print("aaaaaaaaaaaa 2: no button Translate by voice")
+    except ElementClickInterceptedException as e:
+        print("aaaaaaaaaaaa 21: can not click to button Translate by voice")
+        print(e.args)
     except:
         traceback.print_exc()
     try:
