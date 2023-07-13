@@ -38,6 +38,15 @@ driver.execute_script("$('#mirror').css('z-index', '100');")
 driver.execute_script("$('#mirror').css('background-color', 'black');")
 driver.execute_script("$('#mirror').css('color', 'white');")
 
+# $('#mirror_container').css('z-index', '100');
+# $('#mirror_container').css('background-color', 'black');
+# $('#mirror_container').css('color', 'white');
+
+# $('#mirror').css('opacity', '1');
+# $('#mirror').css('z-index', '100');
+# $('#mirror').css('background-color', 'black');
+# $('#mirror').css('color', 'white');
+
 # <div id="mirror_container" style="z-index:100; background-color: black; color: white;">
 # 			<div id="mirror" style="display: inline-block; opacity: 1; z-index: 100; background-color: black; color: white;"> it is my hope that you're leaving here today with some specific tactics and techniques you can use to help you be more memorable in your messages to be more memorable when you communicate</div>
 # 		</div>
