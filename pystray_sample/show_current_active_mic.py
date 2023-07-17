@@ -34,16 +34,17 @@ MICROPHONES = {
     "headphone_wire_echo_cancel": "WireHedset_mic_EchoCancel",
 }
 
-def set_max_volume(source):
-    volume = source.volume
+def set_volume(source, new_volume_number=1):
+    current_volume = source.volume
     # print(volume.values) # list of per-channel values (floats)
     # print(volume.value_flat) # average level across channels (float)
 
-    volume.value_flat = 1 # sets all volume.values to 1
-    pulse.volume_set(source, volume) # applies the change
+    current_volume.value_flat = 1 # sets all volume.values to 1
+    pulse.volume_set(source, current_volume) # applies the change
 
-    n_channels = len(volume.values)
-    new_volume = PulseVolumeInfo(1, n_channels) # 1 across all n_channels
+    n_channels = len(current_volume.values)
+    # new_volume = PulseVolumeInfo(new_volume, n_channels) # 1 across all n_channels, max volume
+    new_volume = PulseVolumeInfo(new_volume_number, n_channels)
     # new_volume = PulseVolumeInfo([0.15, 0.25]) # from a list of channel levels (stereo)
     pulse.volume_set(source, new_volume)
 
@@ -55,7 +56,7 @@ while True:
         volumes = list(int(round(v*100)) for v in source.volume.values)
         
         if source.mute == UNMUTE:
-            set_max_volume(source)
+            set_volume(source, 0.77)
             
             if source.name == MICROPHONES["headphone_wire"] or source.name == MICROPHONES["headphone_wire_echo_cancel"]:
                 opening_microphones.add('headphone_wire')
