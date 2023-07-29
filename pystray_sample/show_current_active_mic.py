@@ -15,6 +15,7 @@ menu = (item('Action 1', action), item('Action 2', action))
 ICON_MIC = {
     "built_in": Image.open("icon/mic_built_in.png"),
     "headphone_wire": Image.open("icon/mic_headphone_wire.png"),
+    "headphone_wire_analog": Image.open("icon/mic_headphone_wire.png"),
     "headphone_blutooth1": Image.open("icon/mic_headphone_blutooth1.png"),
     "headphone_blutooth2": Image.open("icon/mic_headphone_blutooth2.png"),
     "orange_warning": Image.open("icon/orange_warning.jpg"),
@@ -29,6 +30,7 @@ MICROPHONES = {
     "built_in": "alsa_input.pci-0000_00_1f.3-platform-skl_hda_dsp_generic.HiFi__hw_sofhdadsp_6__source",
     "built_in_echo_cancel": "BuitIn_mic_EchoCancel",
     "headphone_wire": "alsa_input.pci-0000_00_1f.3-platform-skl_hda_dsp_generic.HiFi__hw_sofhdadsp__source",
+    "headphone_wire_analog": "alsa_input.usb-Generic_USB_Audio_20210726905926-00.mono-fallback",
     "headphone_blutooth1": "bluez_source.74_45_CE_22_CC_55.handsfree_head_unit",
     "headphone_blutooth2": "headphone_blutooth2",
     "headphone_wire_echo_cancel": "WireHedset_mic_EchoCancel",
@@ -56,23 +58,31 @@ while True:
         volumes = list(int(round(v*100)) for v in source.volume.values)
         
         if source.mute == UNMUTE:
-            set_volume(source, 0.77)
-            
             if source.name == MICROPHONES["headphone_wire"] or source.name == MICROPHONES["headphone_wire_echo_cancel"]:
                 opening_microphones.add('headphone_wire')
+                set_volume(source, 0.77)
+                
+            if source.name == MICROPHONES["headphone_wire_analog"]:
+                opening_microphones.add('headphone_wire_analog')
+                set_volume(source, 1.53)
             
             if source.name == MICROPHONES["built_in"] or source.name == MICROPHONES["built_in_echo_cancel"]:
                 opening_microphones.add('built_in')
+                set_volume(source, 0.77)
             
             if source.name == MICROPHONES["headphone_blutooth1"]:
                 opening_microphones.add('headphone_blutooth1')
+                set_volume(source, 0.77)
             
             if source.name == MICROPHONES["headphone_blutooth2"]:
                 opening_microphones.add('headphone_blutooth2')
+                set_volume(source, 0.77)
                 
     print("unmute microphones:", opening_microphones)
     
-    if len(opening_microphones) > 1:
+    if len(opening_microphones) == 2 and 'headphone_wire' in opening_microphones and 'headphone_wire_analog' in opening_microphones:
+        icon.icon = ICON_MIC["headphone_wire"]
+    elif len(opening_microphones) > 1:
         icon.icon = ICON_MIC["orange_warning"]
     elif len(opening_microphones) < 1:
         icon.icon = ICON_MIC["all_muted"]

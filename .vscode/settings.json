@@ -9,6 +9,8 @@
         "selenium_sample",
     ],
     "cSpell.words": [
+        "alsa",
+        "bluez",
         "pulsectl",
         "pyexcelerate",
         "pystray",
