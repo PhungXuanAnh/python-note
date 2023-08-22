@@ -1,10 +1,9 @@
 import time
-import traceback
 from selenium.webdriver import Chrome
 from selenium.webdriver import ChromeOptions
 from selenium.webdriver.chrome.service import Service
-from selenium.webdriver.common.by import By
-from selenium.common.exceptions import NoSuchElementException
+from common import click_button_translate_by_voice
+
 
 chrome_options = ChromeOptions()
 # chrome_options.add_experimental_option("detach", True)  # keep chrome and chromedriver to stay open after running all code
@@ -27,17 +26,8 @@ service = Service(
 driver = Chrome(service=service,options=chrome_options)
 driver.get("https://translate.google.com/?sl=vi&tl=en")
 
-# enable translate by voice
-driver.find_element(By.XPATH, '//button[@aria-label="Translate by voice" and @aria-pressed="false"]').click()
-
 while True:
-    try:
-        voice_button = driver.find_element(By.XPATH, '//button[@aria-label="Translate by voice" and @aria-pressed="false"]')
-        voice_button.click()
-    except NoSuchElementException:
-        print("no button Translate by voice")
-    except:
-        traceback.print_exc()
+    click_button_translate_by_voice(driver)
     
     time.sleep(1)
     

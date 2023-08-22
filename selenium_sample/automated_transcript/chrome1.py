@@ -5,6 +5,7 @@ from selenium.webdriver import ChromeOptions
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException, ElementClickInterceptedException
+from common import click_button_translate_by_voice
 
 chrome_options = ChromeOptions()
 # chrome_options.add_experimental_option("detach", True)  # keep chrome and chromedriver to stay open after running all code
@@ -25,26 +26,11 @@ service = Service(executable_path='webdriver/chromedriver')
 driver = Chrome(service=service,options=chrome_options)
 driver.get("https://translate.google.com/?sl=en&tl=vi")
 
-# enable translate by voice
-try:
-    driver.find_element(By.XPATH, '//button[@aria-label="Translate by voice" and @aria-pressed="false"]').click()
-except NoSuchElementException:
-    print("aaaaaaaaaaaa 1: no button Translate by voice")
-except:
-    traceback.print_exc()
-
 # reset when characters used is more than 1000
 characters_used = 0
 while True:
-    try:
-        driver.find_element(By.XPATH, '//button[@aria-label="Translate by voice" and @aria-pressed="false"]').click()
-    except NoSuchElementException:
-        print("aaaaaaaaaaaa 2: no button Translate by voice")
-    except ElementClickInterceptedException as e:
-        print("aaaaaaaaaaaa 21: can not click to button Translate by voice")
-        print(e.args)
-    except:
-        traceback.print_exc()
+    click_button_translate_by_voice(driver)
+
     try:
         characters_used = driver.find_element(By.XPATH, '//span[text()="5,000"]/span').text
         characters_used = int(''.join(filter(str.isdigit, characters_used)))
