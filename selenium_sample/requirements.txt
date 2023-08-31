@@ -1,2 +1,2 @@
-selenium
+selenium==4.10.0 # NOTE: upper version faced this error https://stackoverflow.com/a/76799893/7639845
 undetected-chromedriver
