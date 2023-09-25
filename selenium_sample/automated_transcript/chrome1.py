@@ -1,13 +1,12 @@
 import time
 import traceback
-from selenium.webdriver import Chrome
-from selenium.webdriver import ChromeOptions
+from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
-from selenium.common.exceptions import NoSuchElementException, ElementClickInterceptedException
+from selenium.common.exceptions import NoSuchElementException
 from common import click_button_translate_by_voice
 
-chrome_options = ChromeOptions()
+chrome_options = webdriver.ChromeOptions()
 # chrome_options.add_experimental_option("detach", True)  # keep chrome and chromedriver to stay open after running all code
 # chrome_options.add_argument('--profile-directory=Profile 16')
 chrome_options.add_argument("user-data-dir=/home/xuananh/.config/google-chrome1") #Path to your chrome profile
@@ -23,7 +22,8 @@ chrome_options.add_argument("class=chrome1")    # NOTE: it must add this argumen
                                                 # reference: https://askubuntu.com/a/367851/1077704
 
 service = Service(executable_path='webdriver/chromedriver')
-driver = Chrome(service=service,options=chrome_options)
+# driver = Chrome(service=service,options=chrome_options)
+driver = webdriver.Chrome(options=chrome_options)
 driver.get("https://translate.google.com/?sl=en&tl=vi")
 
 # reset when characters used is more than 1000

@@ -1,12 +1,8 @@
-import time
-import traceback
-from selenium.webdriver import Chrome
-from selenium.webdriver import ChromeOptions
+from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
-from selenium.common.exceptions import NoSuchElementException
 
-chrome_options = ChromeOptions()
+chrome_options = webdriver.ChromeOptions()
 chrome_options.add_experimental_option("detach", True)  # keep chrome and chromedriver to stay open after running all code
 # chrome_options.add_argument('--profile-directory=Profile 16')
 chrome_options.add_argument("user-data-dir=/home/xuananh/.config/google-chrome3")
@@ -24,7 +20,9 @@ chrome_options.add_argument("class=chrome3")    # NOTE: it must add this argumen
 service = Service(
     executable_path='webdriver/chromedriver',
     service_args=["--verbose", "--log-path=/tmp/chromedriver-3.log"])
-driver = Chrome(service=service,options=chrome_options)
+# driver = Chrome(service=service,options=chrome_options)
+driver = webdriver.Chrome(options=chrome_options)
+
 driver.get("https://speechnotes.co/dictate/")
 
 driver.find_element(By.XPATH, '//img[@src="https://speechlogger.appspot.com/images/micoff2.png"]').click()
