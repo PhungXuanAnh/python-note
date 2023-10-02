@@ -38,7 +38,7 @@ s castnet-prod-ubuntu-user
 crontab -e
 # chay 5p 1 lan
 */30 * * * * /home/ubuntu/.Dropbox/test/run.sh
-# chay 1h 1 lan luc 0h
+# chay 1h 1 lan luc 0 phut
 0 * * * * /home/ubuntu/.Dropbox/test/run.sh
 
 crontab -l
