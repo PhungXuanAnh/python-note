@@ -26,13 +26,13 @@ xvfb-run --listen-tcp --server-num 44 \
 mkdir -p /home/ubuntu/.Dropbox/savvycom_logtime/video
 export DISPLAY=:44
 ffmpeg -f x11grab -video_size 1920x1080 -i :44 -codec:v libx264 -r 12 \
-    /home/ubuntu/.Dropbox/savvycom_logtime/video/$(date +'%Y-%m-%d__%H-%M-%S').mp4
+    /home/ubuntu/.Dropbox/savvycom_logtime/video/$(TZ='Asia/Ho_Chi_Minh' date +'%Y-%m-%d__%H-%M-%S').mp4
 
-s castnet-prod-frontend
+s castnet-dev
 
 crontab -e
 # chay 5p 1 lan
-*/30 * * * * /home/ubuntu/.Dropbox/savvycom_logtime/run.sh >> /tmp/savvycom_logtime.log
+*/5 * * * * /home/ubuntu/.Dropbox/savvycom_logtime/run.sh >> /tmp/savvycom_logtime.log
 # chay 1h 1 lan luc 0 phut
 0 * * * * /home/ubuntu/.Dropbox/savvycom_logtime/run.sh >> /tmp/savvycom_logtime.log
 
