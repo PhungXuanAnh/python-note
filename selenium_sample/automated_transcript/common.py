@@ -1,6 +1,6 @@
 import traceback
 from selenium.webdriver.common.by import By
-from selenium.common.exceptions import NoSuchElementException, ElementNotInteractableException
+from selenium.common.exceptions import NoSuchElementException, ElementNotInteractableException, ElementClickInterceptedException
 
 
 def click_button_translate_by_voice(driver):
@@ -10,6 +10,8 @@ def click_button_translate_by_voice(driver):
         try:
             buttons[0].click()
         except ElementNotInteractableException:
+            buttons[1].click()
+        except ElementClickInterceptedException:
             buttons[1].click()
         except NoSuchElementException:
             print("no button Translate by voice")
