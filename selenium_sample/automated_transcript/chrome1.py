@@ -29,9 +29,8 @@ driver.get("https://translate.google.com/?sl=en&tl=vi")
 # reset when characters used is more than 1000
 characters_used = 0
 while True:
-    click_button_translate_by_voice(driver)
-
     try:
+        click_button_translate_by_voice(driver)
         characters_used = driver.find_element(By.XPATH, '//span[text()="5,000"]/span').text
         characters_used = int(''.join(filter(str.isdigit, characters_used)))
         if characters_used > 650:

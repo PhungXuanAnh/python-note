@@ -1,4 +1,5 @@
 import time
+import traceback
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from common import click_button_translate_by_voice
@@ -27,7 +28,10 @@ driver = webdriver.Chrome(options=chrome_options)
 driver.get("https://translate.google.com/?sl=vi&tl=en")
 
 while True:
-    click_button_translate_by_voice(driver)
+    try:
+        click_button_translate_by_voice(driver)
+    except:
+        traceback.print_exc()
     
     time.sleep(1)
     
