@@ -2,6 +2,7 @@
 
 # crontab -e
 # 0 * * * * /home/xuananh/repo/python-note/selenium_sample/automated_transcript/savvycom_logtime.sh
+# NOTE: this script is running in castnet-dev
 
 xvfb-run --listen-tcp --server-num 44 \
     --auth-file /tmp/xvfb.auth \
