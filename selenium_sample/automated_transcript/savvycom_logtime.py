@@ -13,6 +13,7 @@ sudo apt install xvfb -y
 
 install ffmpeg version  4.4.2 or higher
 sudo apt install ffmpeg -y
+pip install selenium==4.15.2
 or higher version https://askubuntu.com/a/1360862/1077704
 
 ---------------- vim run.sh
