@@ -33,6 +33,7 @@ while True:
         click_button_translate_by_voice(driver)
         characters_used = driver.find_element(By.XPATH, '//span[text()="5,000"]/span').text
         characters_used = int(''.join(filter(str.isdigit, characters_used)))
+        print("current characters used: ", characters_used)
         if characters_used > 650:
             try:
                 # stop_voice_button = driver.find_element(By.XPATH, '//button[@aria-label="Stop translation by voice"]')
