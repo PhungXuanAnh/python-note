@@ -10,6 +10,7 @@ def connect_directly():
     print('--------------------')
     print(r0.set('set1', 'value', px=5000, nx=True))    # create key if not exists
     print(r0.get('set1'))
+    print(r0.get('not exist key'))
 
 def connect_using_pool():
     pool = redis.ConnectionPool(host='localhost', port=6379, db=2)
