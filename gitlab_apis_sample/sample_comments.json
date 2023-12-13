@@ -1,0 +1,891 @@
+[
+    {
+        "id": "612a96e7107cc72b5a46c63cba4240c3c4bb20f1",
+        "individual_note": true,
+        "notes": [
+            {
+                "attachment": null,
+                "author": {
+                    "avatar_url": "https://git.hk.asiaticketing.com/uploads/-/system/user/avatar/243/avatar.png",
+                    "id": 243,
+                    "name": "Anh",
+                    "state": "active",
+                    "username": "anh.phung",
+                    "web_url": "https://git.hk.asiaticketing.com/anh.phung"
+                },
+                "body": "requested review from @ranel.padon",
+                "commands_changes": {},
+                "confidential": false,
+                "created_at": "2023-12-04T02:15:56.684Z",
+                "id": 319648,
+                "noteable_id": 7572,
+                "noteable_iid": 2251,
+                "noteable_type": "MergeRequest",
+                "resolvable": false,
+                "system": true,
+                "type": null,
+                "updated_at": "2023-12-04T02:15:56.720Z"
+            }
+        ]
+    },
+    {
+        "id": "6f3d624170fbc67eb0719b43ceab35f73d6a7a2f",
+        "individual_note": true,
+        "notes": [
+            {
+                "attachment": null,
+                "author": {
+                    "avatar_url": "https://git.hk.asiaticketing.com/uploads/-/system/user/avatar/243/avatar.png",
+                    "id": 243,
+                    "name": "Anh",
+                    "state": "active",
+                    "username": "anh.phung",
+                    "web_url": "https://git.hk.asiaticketing.com/anh.phung"
+                },
+                "body": "assigned to @anh.phung",
+                "commands_changes": {},
+                "confidential": false,
+                "created_at": "2023-12-04T02:15:56.707Z",
+                "id": 319647,
+                "noteable_id": 7572,
+                "noteable_iid": 2251,
+                "noteable_type": "MergeRequest",
+                "resolvable": false,
+                "system": true,
+                "type": null,
+                "updated_at": "2023-12-04T02:15:56.709Z"
+            }
+        ]
+    },
+    {
+        "id": "e1935a37ef8e517c1490b85223241ab907f459c4",
+        "individual_note": true,
+        "notes": [
+            {
+                "attachment": null,
+                "author": {
+                    "avatar_url": "https://git.hk.asiaticketing.com/uploads/-/system/user/avatar/243/avatar.png",
+                    "id": 243,
+                    "name": "Anh",
+                    "state": "active",
+                    "username": "anh.phung",
+                    "web_url": "https://git.hk.asiaticketing.com/anh.phung"
+                },
+                "body": "mentioned in issue #2772",
+                "commands_changes": {},
+                "confidential": false,
+                "created_at": "2023-12-04T02:18:16.206Z",
+                "id": 319652,
+                "noteable_id": 7572,
+                "noteable_iid": 2251,
+                "noteable_type": "MergeRequest",
+                "resolvable": false,
+                "system": true,
+                "type": null,
+                "updated_at": "2023-12-04T02:18:16.208Z"
+            }
+        ]
+    },
+    {
+        "id": "ad9dceb618c49767c8573e88e15328c1a0ab79e0",
+        "individual_note": false,
+        "notes": [
+            {
+                "attachment": null,
+                "author": {
+                    "avatar_url": "https://git.hk.asiaticketing.com/uploads/-/system/user/avatar/75/avatar.png",
+                    "id": 75,
+                    "name": "Ranel Padon",
+                    "state": "active",
+                    "username": "ranel.padon",
+                    "web_url": "https://git.hk.asiaticketing.com/ranel.padon"
+                },
+                "body": "@anh.phung note that there are conflicts as per this warning above:\n> Merge blocked: merge conflicts must be resolved.\n\n> The source branch is 843 commits behind \n\nPlease update this branch first with latest `ets`, resolve the conflicts, and let me know once CI is green. Thanks",
+                "commands_changes": {},
+                "confidential": false,
+                "created_at": "2023-12-04T08:08:56.245Z",
+                "id": 319774,
+                "noteable_id": 7572,
+                "noteable_iid": 2251,
+                "noteable_type": "MergeRequest",
+                "resolvable": true,
+                "resolved": false,
+                "resolved_at": null,
+                "resolved_by": null,
+                "system": false,
+                "type": "DiscussionNote",
+                "updated_at": "2023-12-05T02:50:21.500Z"
+            },
+            {
+                "attachment": null,
+                "author": {
+                    "avatar_url": "https://git.hk.asiaticketing.com/uploads/-/system/user/avatar/243/avatar.png",
+                    "id": 243,
+                    "name": "Anh",
+                    "state": "active",
+                    "username": "anh.phung",
+                    "web_url": "https://git.hk.asiaticketing.com/anh.phung"
+                },
+                "body": "@ranel.padon I addressed your comment, please help me review again the MR",
+                "commands_changes": {},
+                "confidential": false,
+                "created_at": "2023-12-05T02:50:21.276Z",
+                "id": 319926,
+                "noteable_id": 7572,
+                "noteable_iid": 2251,
+                "noteable_type": "MergeRequest",
+                "resolvable": true,
+                "resolved": false,
+                "resolved_at": null,
+                "resolved_by": null,
+                "system": false,
+                "type": "DiscussionNote",
+                "updated_at": "2023-12-05T02:50:21.276Z"
+            }
+        ]
+    },
+    {
+        "id": "646283b147ad623a39c6b2201715f3f769434b2e",
+        "individual_note": true,
+        "notes": [
+            {
+                "attachment": null,
+                "author": {
+                    "avatar_url": "https://git.hk.asiaticketing.com/uploads/-/system/user/avatar/243/avatar.png",
+                    "id": 243,
+                    "name": "Anh",
+                    "state": "active",
+                    "username": "anh.phung",
+                    "web_url": "https://git.hk.asiaticketing.com/anh.phung"
+                },
+                "body": "added 1 commit\n\n<ul><li>6696d519 - Test commit 1</li></ul>\n\n[Compare with previous version](/ticketflap/ticketing-v2/-/merge_requests/2251/diffs?diff_id=72884&start_sha=980f3f12da9c27c04d6c5c31bbb34fac0cdb039c)",
+                "commands_changes": {},
+                "confidential": false,
+                "created_at": "2023-12-04T10:34:39.002Z",
+                "id": 319812,
+                "noteable_id": 7572,
+                "noteable_iid": 2251,
+                "noteable_type": "MergeRequest",
+                "resolvable": false,
+                "system": true,
+                "type": null,
+                "updated_at": "2023-12-04T10:34:39.004Z"
+            }
+        ]
+    },
+    {
+        "id": "0e63e67cbc56c040d1bb790be04daf0fcffbe000",
+        "individual_note": true,
+        "notes": [
+            {
+                "attachment": null,
+                "author": {
+                    "avatar_url": "https://git.hk.asiaticketing.com/uploads/-/system/user/avatar/243/avatar.png",
+                    "id": 243,
+                    "name": "Anh",
+                    "state": "active",
+                    "username": "anh.phung",
+                    "web_url": "https://git.hk.asiaticketing.com/anh.phung"
+                },
+                "body": "added 1 commit\n\n<ul><li>caec4e79 - Test commit 2</li></ul>\n\n[Compare with previous version](/ticketflap/ticketing-v2/-/merge_requests/2251/diffs?diff_id=72886&start_sha=6696d5190c95548d1aaa38a5d2eb6bc29087e058)",
+                "commands_changes": {},
+                "confidential": false,
+                "created_at": "2023-12-04T10:38:22.315Z",
+                "id": 319816,
+                "noteable_id": 7572,
+                "noteable_iid": 2251,
+                "noteable_type": "MergeRequest",
+                "resolvable": false,
+                "system": true,
+                "type": null,
+                "updated_at": "2023-12-04T10:38:22.317Z"
+            }
+        ]
+    },
+    {
+        "id": "02ac4f345702dfed1582277f14e2583fd0220ae1",
+        "individual_note": true,
+        "notes": [
+            {
+                "attachment": null,
+                "author": {
+                    "avatar_url": "https://git.hk.asiaticketing.com/uploads/-/system/user/avatar/243/avatar.png",
+                    "id": 243,
+                    "name": "Anh",
+                    "state": "active",
+                    "username": "anh.phung",
+                    "web_url": "https://git.hk.asiaticketing.com/anh.phung"
+                },
+                "body": "added 1 commit\n\n<ul><li>5c062bde - Test commit 3</li></ul>\n\n[Compare with previous version](/ticketflap/ticketing-v2/-/merge_requests/2251/diffs?diff_id=72887&start_sha=caec4e79876a5b5a0fc24aa935bbd4cae639a67d)",
+                "commands_changes": {},
+                "confidential": false,
+                "created_at": "2023-12-04T10:41:57.224Z",
+                "id": 319817,
+                "noteable_id": 7572,
+                "noteable_iid": 2251,
+                "noteable_type": "MergeRequest",
+                "resolvable": false,
+                "system": true,
+                "type": null,
+                "updated_at": "2023-12-04T10:41:57.226Z"
+            }
+        ]
+    },
+    {
+        "id": "10f882f85526cb7300bb76c4cd31ed94ed4b6289",
+        "individual_note": true,
+        "notes": [
+            {
+                "attachment": null,
+                "author": {
+                    "avatar_url": "https://git.hk.asiaticketing.com/uploads/-/system/user/avatar/243/avatar.png",
+                    "id": 243,
+                    "name": "Anh",
+                    "state": "active",
+                    "username": "anh.phung",
+                    "web_url": "https://git.hk.asiaticketing.com/anh.phung"
+                },
+                "body": "added 845 commits\n\n<ul><li>5c062bde...425bdc03 - 843 commits from branch <code>staging</code></li><li>b735e9b3 - resolve conflit</li><li>7888a8fc - Empty commit</li></ul>\n\n[Compare with previous version](/ticketflap/ticketing-v2/-/merge_requests/2251/diffs?diff_id=72930&start_sha=5c062bdef64b8b6f9083a522c1580c51d49853f6)",
+                "commands_changes": {},
+                "confidential": false,
+                "created_at": "2023-12-05T01:44:31.519Z",
+                "id": 319914,
+                "noteable_id": 7572,
+                "noteable_iid": 2251,
+                "noteable_type": "MergeRequest",
+                "resolvable": false,
+                "system": true,
+                "type": null,
+                "updated_at": "2023-12-05T01:44:31.521Z"
+            }
+        ]
+    },
+    {
+        "id": "757053e377583142c686ea5f75c28601d9497d1c",
+        "individual_note": true,
+        "notes": [
+            {
+                "attachment": null,
+                "author": {
+                    "avatar_url": "https://git.hk.asiaticketing.com/uploads/-/system/user/avatar/243/avatar.png",
+                    "id": 243,
+                    "name": "Anh",
+                    "state": "active",
+                    "username": "anh.phung",
+                    "web_url": "https://git.hk.asiaticketing.com/anh.phung"
+                },
+                "body": "added 15 commits\n\n<ul><li>7888a8fc...bba4e8be - 9 commits from branch <code>staging</code></li><li>d9f4da4c - Merge branch &#39;ets&#39; into feature/gl-2772-checker-reports</li><li>e82aa1dd - Update: comment</li><li>67f8ff3a - Update: comment</li><li>f624e586 - Empty commit</li><li>9069681e - Empty commit 1</li><li>f62338bb - Empty commit 2</li></ul>\n\n[Compare with previous version](/ticketflap/ticketing-v2/-/merge_requests/2251/diffs?diff_id=73102&start_sha=7888a8fcc95303b205bce9e1914518ac7b8c418b)",
+                "commands_changes": {},
+                "confidential": false,
+                "created_at": "2023-12-07T02:39:38.213Z",
+                "id": 320460,
+                "noteable_id": 7572,
+                "noteable_iid": 2251,
+                "noteable_type": "MergeRequest",
+                "resolvable": false,
+                "system": true,
+                "type": null,
+                "updated_at": "2023-12-07T02:39:38.216Z"
+            }
+        ]
+    },
+    {
+        "id": "677959ea315a8912f9a668322f75f617e83ecc0e",
+        "individual_note": true,
+        "notes": [
+            {
+                "attachment": null,
+                "author": {
+                    "avatar_url": "https://git.hk.asiaticketing.com/uploads/-/system/user/avatar/243/avatar.png",
+                    "id": 243,
+                    "name": "Anh",
+                    "state": "active",
+                    "username": "anh.phung",
+                    "web_url": "https://git.hk.asiaticketing.com/anh.phung"
+                },
+                "body": "added 2 commits\n\n<ul><li>a3baddc5 - Update: comment</li><li>99797adc - Merge branch &#39;feature/gl-2772-checker-reports&#39; of...</li></ul>\n\n[Compare with previous version](/ticketflap/ticketing-v2/-/merge_requests/2251/diffs?diff_id=73115&start_sha=f62338bb67ceb0e63abb1bddd115e49084475117)",
+                "commands_changes": {},
+                "confidential": false,
+                "created_at": "2023-12-07T06:13:28.657Z",
+                "id": 320536,
+                "noteable_id": 7572,
+                "noteable_iid": 2251,
+                "noteable_type": "MergeRequest",
+                "resolvable": false,
+                "system": true,
+                "type": null,
+                "updated_at": "2023-12-07T06:13:28.659Z"
+            }
+        ]
+    },
+    {
+        "id": "8fc4552808499b0c805202b2831c87442d8b0c00",
+        "individual_note": false,
+        "notes": [
+            {
+                "attachment": null,
+                "author": {
+                    "avatar_url": "https://git.hk.asiaticketing.com/uploads/-/system/user/avatar/75/avatar.png",
+                    "id": 75,
+                    "name": "Ranel Padon",
+                    "state": "active",
+                    "username": "ranel.padon",
+                    "web_url": "https://git.hk.asiaticketing.com/ranel.padon"
+                },
+                "body": "Please use these headers in new Python files you create to prepare for the Py3 upgrade later on.\n```python\n# -*- coding: utf-8 -*-\nfrom __future__ import unicode_literals\n```\nLikewise, Django auto-inserts these lines when creating migrations via `manage.py migrate` command.\n\nThen, insert 1 space before this line:\n```python\nfrom django.urls import reverse\n```\n\nAs per https://git.hk.asiaticketing.com/ticketflap/ticketing-v2/-/wikis/Python/Django-Linting.",
+                "commands_changes": {},
+                "commit_id": null,
+                "confidential": false,
+                "created_at": "2023-12-12T10:51:29.478Z",
+                "id": 321574,
+                "noteable_id": 7572,
+                "noteable_iid": 2251,
+                "noteable_type": "MergeRequest",
+                "position": {
+                    "base_sha": "0714b52646921952a91b75a139dd94b37e9566dc",
+                    "head_sha": "682cebe306ab228c82454a8e48ab494908a7918a",
+                    "line_range": {
+                        "end": {
+                            "line_code": "7fbf1210f09b27cd04c0c3a1fdbc379488493d27_0_2",
+                            "new_line": 2,
+                            "old_line": null,
+                            "type": "new"
+                        },
+                        "start": {
+                            "line_code": "7fbf1210f09b27cd04c0c3a1fdbc379488493d27_0_2",
+                            "new_line": 2,
+                            "old_line": null,
+                            "type": "new"
+                        }
+                    },
+                    "new_line": 2,
+                    "new_path": "apps/backoffice/event/summaries/price/tests/test_views.py",
+                    "old_line": null,
+                    "old_path": "apps/backoffice/event/summaries/price/tests/test_views.py",
+                    "position_type": "text",
+                    "start_sha": "64b7ffc4e1291c5e22830e8bd891b9deaec7d7d7"
+                },
+                "resolvable": true,
+                "resolved": false,
+                "resolved_at": null,
+                "resolved_by": null,
+                "system": false,
+                "type": "DiffNote",
+                "updated_at": "2023-12-12T10:51:29.478Z"
+            }
+        ]
+    },
+    {
+        "id": "ebf1626089db190a10d7c13ee9ebe43f5cea4d52",
+        "individual_note": false,
+        "notes": [
+            {
+                "attachment": null,
+                "author": {
+                    "avatar_url": "https://git.hk.asiaticketing.com/uploads/-/system/user/avatar/75/avatar.png",
+                    "id": 75,
+                    "name": "Ranel Padon",
+                    "state": "active",
+                    "username": "ranel.padon",
+                    "web_url": "https://git.hk.asiaticketing.com/ranel.padon"
+                },
+                "body": "Please use indentation for HTML/markups so that it would be easier to read/visualize compared to flat nesting:\n\n```html\nbody = u\"\"\"\n    <tbody>\n        <tr class=\"even\">\n            <td><a href=\"/hosts/1/event/1/price-models/1/\">{}</a></td>\n            <td>{} - {}</td>\n            <td>{}</td>\n            <td></td>\n            <td>all</td>\n            <td></td>\n            <td>{}</td>\n            <td>{}</td>\n            <td>{}</td>\n            <td></td>\n            <td>100.00</td>\n            <td>10.00</td>\n            <td>{}</td>\n        </tr>\n        <tr class=\"odd\">\n            <td><a href=\"/hosts/1/event/1/price-models/2/\">{}</a></td>\n            <td>{} - {}</td>\n            <td>{}</td>\n            <td></td>\n            <td>all</td>\n            <td></td>\n            <td>{}</td>\n            <td>{}</td>\n            <td>{}</td>\n            <td></td>\n            <td>100.00</td>\n            <td>15.00</td>\n            <td>{}</td>\n        </tr>\n    </tbody>\n\"\"\".format(\n```",
+                "commands_changes": {},
+                "commit_id": null,
+                "confidential": false,
+                "created_at": "2023-12-12T11:22:24.270Z",
+                "id": 321596,
+                "noteable_id": 7572,
+                "noteable_iid": 2251,
+                "noteable_type": "MergeRequest",
+                "position": {
+                    "base_sha": "0714b52646921952a91b75a139dd94b37e9566dc",
+                    "head_sha": "682cebe306ab228c82454a8e48ab494908a7918a",
+                    "line_range": {
+                        "end": {
+                            "line_code": "7fbf1210f09b27cd04c0c3a1fdbc379488493d27_0_82",
+                            "new_line": 82,
+                            "old_line": null,
+                            "type": "new"
+                        },
+                        "start": {
+                            "line_code": "7fbf1210f09b27cd04c0c3a1fdbc379488493d27_0_82",
+                            "new_line": 82,
+                            "old_line": null,
+                            "type": "new"
+                        }
+                    },
+                    "new_line": 82,
+                    "new_path": "apps/backoffice/event/summaries/price/tests/test_views.py",
+                    "old_line": null,
+                    "old_path": "apps/backoffice/event/summaries/price/tests/test_views.py",
+                    "position_type": "text",
+                    "start_sha": "64b7ffc4e1291c5e22830e8bd891b9deaec7d7d7"
+                },
+                "resolvable": true,
+                "resolved": false,
+                "resolved_at": null,
+                "resolved_by": null,
+                "system": false,
+                "type": "DiffNote",
+                "updated_at": "2023-12-12T11:22:24.270Z"
+            }
+        ]
+    },
+    {
+        "id": "0f18e8c97a862dc67f5cc3a35cfa8e2c6b9e768c",
+        "individual_note": false,
+        "notes": [
+            {
+                "attachment": null,
+                "author": {
+                    "avatar_url": "https://git.hk.asiaticketing.com/uploads/-/system/user/avatar/75/avatar.png",
+                    "id": 75,
+                    "name": "Ranel Padon",
+                    "state": "active",
+                    "username": "ranel.padon",
+                    "web_url": "https://git.hk.asiaticketing.com/ranel.padon"
+                },
+                "body": "Why is it named `NewPriceModelTable`? Could it be simply `PriceModelTable`?",
+                "commands_changes": {},
+                "commit_id": null,
+                "confidential": false,
+                "created_at": "2023-12-12T20:42:49.031Z",
+                "id": 321696,
+                "noteable_id": 7572,
+                "noteable_iid": 2251,
+                "noteable_type": "MergeRequest",
+                "position": {
+                    "base_sha": "0714b52646921952a91b75a139dd94b37e9566dc",
+                    "head_sha": "682cebe306ab228c82454a8e48ab494908a7918a",
+                    "line_range": {
+                        "end": {
+                            "line_code": "96d8081e8b90181288375e45b4355270eff2e014_0_32",
+                            "new_line": 32,
+                            "old_line": null,
+                            "type": "new"
+                        },
+                        "start": {
+                            "line_code": "96d8081e8b90181288375e45b4355270eff2e014_0_32",
+                            "new_line": 32,
+                            "old_line": null,
+                            "type": "new"
+                        }
+                    },
+                    "new_line": 32,
+                    "new_path": "apps/backoffice/event/summaries/price/tables.py",
+                    "old_line": null,
+                    "old_path": "apps/backoffice/event/summaries/price/tables.py",
+                    "position_type": "text",
+                    "start_sha": "64b7ffc4e1291c5e22830e8bd891b9deaec7d7d7"
+                },
+                "resolvable": true,
+                "resolved": false,
+                "resolved_at": null,
+                "resolved_by": null,
+                "system": false,
+                "type": "DiffNote",
+                "updated_at": "2023-12-12T20:42:49.031Z"
+            }
+        ]
+    },
+    {
+        "id": "0f4e3a84c078f4bc9c0bec9b0560fc8877f35e79",
+        "individual_note": false,
+        "notes": [
+            {
+                "attachment": null,
+                "author": {
+                    "avatar_url": "https://git.hk.asiaticketing.com/uploads/-/system/user/avatar/75/avatar.png",
+                    "id": 75,
+                    "name": "Ranel Padon",
+                    "state": "active",
+                    "username": "ranel.padon",
+                    "web_url": "https://git.hk.asiaticketing.com/ranel.padon"
+                },
+                "body": "typo:\n\n`availiable_dates` -> `available_dates`",
+                "commands_changes": {},
+                "commit_id": null,
+                "confidential": false,
+                "created_at": "2023-12-12T20:43:10.225Z",
+                "id": 321697,
+                "noteable_id": 7572,
+                "noteable_iid": 2251,
+                "noteable_type": "MergeRequest",
+                "position": {
+                    "base_sha": "0714b52646921952a91b75a139dd94b37e9566dc",
+                    "head_sha": "682cebe306ab228c82454a8e48ab494908a7918a",
+                    "line_range": {
+                        "end": {
+                            "line_code": "96d8081e8b90181288375e45b4355270eff2e014_0_33",
+                            "new_line": 33,
+                            "old_line": null,
+                            "type": "new"
+                        },
+                        "start": {
+                            "line_code": "96d8081e8b90181288375e45b4355270eff2e014_0_33",
+                            "new_line": 33,
+                            "old_line": null,
+                            "type": "new"
+                        }
+                    },
+                    "new_line": 33,
+                    "new_path": "apps/backoffice/event/summaries/price/tables.py",
+                    "old_line": null,
+                    "old_path": "apps/backoffice/event/summaries/price/tables.py",
+                    "position_type": "text",
+                    "start_sha": "64b7ffc4e1291c5e22830e8bd891b9deaec7d7d7"
+                },
+                "resolvable": true,
+                "resolved": false,
+                "resolved_at": null,
+                "resolved_by": null,
+                "system": false,
+                "type": "DiffNote",
+                "updated_at": "2023-12-12T20:43:10.225Z"
+            }
+        ]
+    },
+    {
+        "id": "90c743fe629e00c2fe85bd4e65fbed9e9af75553",
+        "individual_note": false,
+        "notes": [
+            {
+                "attachment": null,
+                "author": {
+                    "avatar_url": "https://git.hk.asiaticketing.com/uploads/-/system/user/avatar/75/avatar.png",
+                    "id": 75,
+                    "name": "Ranel Padon",
+                    "state": "active",
+                    "username": "ranel.padon",
+                    "web_url": "https://git.hk.asiaticketing.com/ranel.padon"
+                },
+                "body": "`price_model_sale_channel` is from filter queryset which could be zero or many. So, this should be plural (`price_model_sale_channels`).\nIt's also used in the FOR loop below, and we iterate every item from multiple items.",
+                "commands_changes": {},
+                "commit_id": null,
+                "confidential": false,
+                "created_at": "2023-12-12T20:48:29.369Z",
+                "id": 321698,
+                "noteable_id": 7572,
+                "noteable_iid": 2251,
+                "noteable_type": "MergeRequest",
+                "position": {
+                    "base_sha": "0714b52646921952a91b75a139dd94b37e9566dc",
+                    "head_sha": "682cebe306ab228c82454a8e48ab494908a7918a",
+                    "line_range": {
+                        "end": {
+                            "line_code": "96d8081e8b90181288375e45b4355270eff2e014_0_97",
+                            "new_line": 97,
+                            "old_line": null,
+                            "type": "new"
+                        },
+                        "start": {
+                            "line_code": "96d8081e8b90181288375e45b4355270eff2e014_0_97",
+                            "new_line": 97,
+                            "old_line": null,
+                            "type": "new"
+                        }
+                    },
+                    "new_line": 97,
+                    "new_path": "apps/backoffice/event/summaries/price/tables.py",
+                    "old_line": null,
+                    "old_path": "apps/backoffice/event/summaries/price/tables.py",
+                    "position_type": "text",
+                    "start_sha": "64b7ffc4e1291c5e22830e8bd891b9deaec7d7d7"
+                },
+                "resolvable": true,
+                "resolved": false,
+                "resolved_at": null,
+                "resolved_by": null,
+                "system": false,
+                "type": "DiffNote",
+                "updated_at": "2023-12-12T20:48:29.369Z"
+            }
+        ]
+    },
+    {
+        "id": "f50dfa67b711710cc8ccb846e787fb89af5f45f4",
+        "individual_note": false,
+        "notes": [
+            {
+                "attachment": null,
+                "author": {
+                    "avatar_url": "https://git.hk.asiaticketing.com/uploads/-/system/user/avatar/75/avatar.png",
+                    "id": 75,
+                    "name": "Ranel Padon",
+                    "state": "active",
+                    "username": "ranel.padon",
+                    "web_url": "https://git.hk.asiaticketing.com/ranel.padon"
+                },
+                "body": "typo:\n\n`render_availiable_dates` -> `render_available_dates`",
+                "commands_changes": {},
+                "commit_id": null,
+                "confidential": false,
+                "created_at": "2023-12-12T20:49:13.364Z",
+                "id": 321699,
+                "noteable_id": 7572,
+                "noteable_iid": 2251,
+                "noteable_type": "MergeRequest",
+                "position": {
+                    "base_sha": "0714b52646921952a91b75a139dd94b37e9566dc",
+                    "head_sha": "682cebe306ab228c82454a8e48ab494908a7918a",
+                    "line_range": {
+                        "end": {
+                            "line_code": "96d8081e8b90181288375e45b4355270eff2e014_0_125",
+                            "new_line": 125,
+                            "old_line": null,
+                            "type": "new"
+                        },
+                        "start": {
+                            "line_code": "96d8081e8b90181288375e45b4355270eff2e014_0_125",
+                            "new_line": 125,
+                            "old_line": null,
+                            "type": "new"
+                        }
+                    },
+                    "new_line": 125,
+                    "new_path": "apps/backoffice/event/summaries/price/tables.py",
+                    "old_line": null,
+                    "old_path": "apps/backoffice/event/summaries/price/tables.py",
+                    "position_type": "text",
+                    "start_sha": "64b7ffc4e1291c5e22830e8bd891b9deaec7d7d7"
+                },
+                "resolvable": true,
+                "resolved": false,
+                "resolved_at": null,
+                "resolved_by": null,
+                "system": false,
+                "type": "DiffNote",
+                "updated_at": "2023-12-12T20:49:13.364Z"
+            }
+        ]
+    },
+    {
+        "id": "0292f013491cc3fd8c67552451d0e953b9fdfa55",
+        "individual_note": false,
+        "notes": [
+            {
+                "attachment": null,
+                "author": {
+                    "avatar_url": "https://git.hk.asiaticketing.com/uploads/-/system/user/avatar/75/avatar.png",
+                    "id": 75,
+                    "name": "Ranel Padon",
+                    "state": "active",
+                    "username": "ranel.padon",
+                    "web_url": "https://git.hk.asiaticketing.com/ranel.padon"
+                },
+                "body": "As above this should be plural: `price_model_campaigns` since filter queryset returns multiple items.",
+                "commands_changes": {},
+                "commit_id": null,
+                "confidential": false,
+                "created_at": "2023-12-12T20:50:08.700Z",
+                "id": 321700,
+                "noteable_id": 7572,
+                "noteable_iid": 2251,
+                "noteable_type": "MergeRequest",
+                "position": {
+                    "base_sha": "0714b52646921952a91b75a139dd94b37e9566dc",
+                    "head_sha": "682cebe306ab228c82454a8e48ab494908a7918a",
+                    "line_range": {
+                        "end": {
+                            "line_code": "96d8081e8b90181288375e45b4355270eff2e014_0_133",
+                            "new_line": 133,
+                            "old_line": null,
+                            "type": "new"
+                        },
+                        "start": {
+                            "line_code": "96d8081e8b90181288375e45b4355270eff2e014_0_133",
+                            "new_line": 133,
+                            "old_line": null,
+                            "type": "new"
+                        }
+                    },
+                    "new_line": 133,
+                    "new_path": "apps/backoffice/event/summaries/price/tables.py",
+                    "old_line": null,
+                    "old_path": "apps/backoffice/event/summaries/price/tables.py",
+                    "position_type": "text",
+                    "start_sha": "64b7ffc4e1291c5e22830e8bd891b9deaec7d7d7"
+                },
+                "resolvable": true,
+                "resolved": false,
+                "resolved_at": null,
+                "resolved_by": null,
+                "system": false,
+                "type": "DiffNote",
+                "updated_at": "2023-12-12T20:50:08.700Z"
+            }
+        ]
+    },
+    {
+        "id": "62e1b73e769a1fe6a6efb29ac3b35f2480972898",
+        "individual_note": false,
+        "notes": [
+            {
+                "attachment": null,
+                "author": {
+                    "avatar_url": "https://git.hk.asiaticketing.com/uploads/-/system/user/avatar/75/avatar.png",
+                    "id": 75,
+                    "name": "Ranel Padon",
+                    "state": "active",
+                    "username": "ranel.padon",
+                    "web_url": "https://git.hk.asiaticketing.com/ranel.padon"
+                },
+                "body": "Could be simplified as `if campaign_list:` since an empty list evaluates to False. This is the case also even in JavaScript.",
+                "commands_changes": {},
+                "commit_id": null,
+                "confidential": false,
+                "created_at": "2023-12-12T20:51:13.452Z",
+                "id": 321701,
+                "noteable_id": 7572,
+                "noteable_iid": 2251,
+                "noteable_type": "MergeRequest",
+                "position": {
+                    "base_sha": "0714b52646921952a91b75a139dd94b37e9566dc",
+                    "head_sha": "682cebe306ab228c82454a8e48ab494908a7918a",
+                    "line_range": {
+                        "end": {
+                            "line_code": "96d8081e8b90181288375e45b4355270eff2e014_0_142",
+                            "new_line": 142,
+                            "old_line": null,
+                            "type": "new"
+                        },
+                        "start": {
+                            "line_code": "96d8081e8b90181288375e45b4355270eff2e014_0_142",
+                            "new_line": 142,
+                            "old_line": null,
+                            "type": "new"
+                        }
+                    },
+                    "new_line": 142,
+                    "new_path": "apps/backoffice/event/summaries/price/tables.py",
+                    "old_line": null,
+                    "old_path": "apps/backoffice/event/summaries/price/tables.py",
+                    "position_type": "text",
+                    "start_sha": "64b7ffc4e1291c5e22830e8bd891b9deaec7d7d7"
+                },
+                "resolvable": true,
+                "resolved": false,
+                "resolved_at": null,
+                "resolved_by": null,
+                "system": false,
+                "type": "DiffNote",
+                "updated_at": "2023-12-12T20:51:13.452Z"
+            }
+        ]
+    },
+    {
+        "id": "67b09008c22553064a5725b116b6d8954f66ffbe",
+        "individual_note": false,
+        "notes": [
+            {
+                "attachment": null,
+                "author": {
+                    "avatar_url": "https://git.hk.asiaticketing.com/uploads/-/system/user/avatar/75/avatar.png",
+                    "id": 75,
+                    "name": "Ranel Padon",
+                    "state": "active",
+                    "username": "ranel.padon",
+                    "web_url": "https://git.hk.asiaticketing.com/ranel.padon"
+                },
+                "body": "As above, should be plural: `price_model_bins`",
+                "commands_changes": {},
+                "commit_id": null,
+                "confidential": false,
+                "created_at": "2023-12-12T20:51:49.860Z",
+                "id": 321702,
+                "noteable_id": 7572,
+                "noteable_iid": 2251,
+                "noteable_type": "MergeRequest",
+                "position": {
+                    "base_sha": "0714b52646921952a91b75a139dd94b37e9566dc",
+                    "head_sha": "682cebe306ab228c82454a8e48ab494908a7918a",
+                    "line_range": {
+                        "end": {
+                            "line_code": "96d8081e8b90181288375e45b4355270eff2e014_0_148",
+                            "new_line": 148,
+                            "old_line": null,
+                            "type": "new"
+                        },
+                        "start": {
+                            "line_code": "96d8081e8b90181288375e45b4355270eff2e014_0_148",
+                            "new_line": 148,
+                            "old_line": null,
+                            "type": "new"
+                        }
+                    },
+                    "new_line": 148,
+                    "new_path": "apps/backoffice/event/summaries/price/tables.py",
+                    "old_line": null,
+                    "old_path": "apps/backoffice/event/summaries/price/tables.py",
+                    "position_type": "text",
+                    "start_sha": "64b7ffc4e1291c5e22830e8bd891b9deaec7d7d7"
+                },
+                "resolvable": true,
+                "resolved": false,
+                "resolved_at": null,
+                "resolved_by": null,
+                "system": false,
+                "type": "DiffNote",
+                "updated_at": "2023-12-12T20:51:49.860Z"
+            }
+        ]
+    },
+    {
+        "id": "ef0da638f860340fc2184273c0821e8e1fa0de58",
+        "individual_note": false,
+        "notes": [
+            {
+                "attachment": null,
+                "author": {
+                    "avatar_url": "https://git.hk.asiaticketing.com/uploads/-/system/user/avatar/75/avatar.png",
+                    "id": 75,
+                    "name": "Ranel Padon",
+                    "state": "active",
+                    "username": "ranel.padon",
+                    "web_url": "https://git.hk.asiaticketing.com/ranel.padon"
+                },
+                "body": "Could be simplified as `if bin_list:` since an empty list evaluates to False. This is the case also even in JavaScript.",
+                "commands_changes": {},
+                "commit_id": null,
+                "confidential": false,
+                "created_at": "2023-12-12T20:53:08.075Z",
+                "id": 321703,
+                "noteable_id": 7572,
+                "noteable_iid": 2251,
+                "noteable_type": "MergeRequest",
+                "position": {
+                    "base_sha": "0714b52646921952a91b75a139dd94b37e9566dc",
+                    "head_sha": "682cebe306ab228c82454a8e48ab494908a7918a",
+                    "line_range": {
+                        "end": {
+                            "line_code": "96d8081e8b90181288375e45b4355270eff2e014_0_157",
+                            "new_line": 157,
+                            "old_line": null,
+                            "type": "new"
+                        },
+                        "start": {
+                            "line_code": "96d8081e8b90181288375e45b4355270eff2e014_0_157",
+                            "new_line": 157,
+                            "old_line": null,
+                            "type": "new"
+                        }
+                    },
+                    "new_line": 157,
+                    "new_path": "apps/backoffice/event/summaries/price/tables.py",
+                    "old_line": null,
+                    "old_path": "apps/backoffice/event/summaries/price/tables.py",
+                    "position_type": "text",
+                    "start_sha": "64b7ffc4e1291c5e22830e8bd891b9deaec7d7d7"
+                },
+                "resolvable": true,
+                "resolved": false,
+                "resolved_at": null,
+                "resolved_by": null,
+                "system": false,
+                "type": "DiffNote",
+                "updated_at": "2023-12-12T20:53:08.075Z"
+            }
+        ]
+    }
+]

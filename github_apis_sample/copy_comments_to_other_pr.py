@@ -29,6 +29,8 @@ def get_pr_comments(pr_id):
     # print(c["start_side"])
     # print(c["line"])
     # print(c["side"])
+    
+    # remove mentioned name
     for c in resp.json():
         if c["html_url"] == "https://github.com/ablr-com/ablr_django/pull/1319#discussion_r1154053261":
             print(c["body"].replace("@", "_@_"))
