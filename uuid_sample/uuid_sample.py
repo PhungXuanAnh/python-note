@@ -8,9 +8,9 @@ print(uuid.uuid4())
 
 print(type(uuid.uuid4()))
 
-print(str(uuid.uuid4()))
+print("str(uuid.uuid4()):", str(uuid.uuid4()))
 
-print(uuid.uuid4().hex)
+print("uuid.uuid4().hex", uuid.uuid4().hex)
 
 print(type(uuid.uuid4().hex))
 

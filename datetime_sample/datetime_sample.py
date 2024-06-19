@@ -50,9 +50,7 @@ def show_date_time_with_timezone():
     )
     print(
         "aware datetime with given  timezone = hcm:            ",
-        datetime.datetime.now(datetime.timezone.utc).astimezone(
-            pytz.timezone("Asia/Ho_Chi_Minh")
-        ),
+        datetime.datetime.now(datetime.timezone.utc).astimezone(pytz.timezone("Asia/Ho_Chi_Minh")),
     )
     print(
         "current datetime in given  timezone = hcm:            ",
@@ -61,17 +59,19 @@ def show_date_time_with_timezone():
 
 
 def print_datetime_from_some_standards():
-    print(
-        "\n----------------------------print_datetime_from_some_standards-------------------"
-    )
+    print("\n----------------------------print_datetime_from_some_standards-------------------")
     print("time.time():                                               ", time.time())
     print(
-        "datetime.datetime.now().timestamp():                       ", datetime.datetime.now().timestamp()
+        "datetime.datetime.now().timestamp():                       ",
+        datetime.datetime.now().timestamp(),
     )  # it will return a float value
     print(
         "datetime.datetime.utcnow():                                ", datetime.datetime.utcnow()
     )  # it will return a datetime object
-    print("calendar.timegm(time.gmtime()):                            ", calendar.timegm(time.gmtime()))
+    print(
+        "calendar.timegm(time.gmtime()):                            ",
+        calendar.timegm(time.gmtime()),
+    )
     print(
         "datetime.datetime.fromtimestamp(1575963196) :                ",
         datetime.datetime.fromtimestamp(1575963196),
@@ -85,9 +85,12 @@ def print_datetime_from_some_standards():
         datetime.datetime.fromtimestamp(1575963196).hour,
     )
 
-    print("RFC 3339 format 2008-09-03T20:56:35.450686Z : ", dateutil.parser.parse("2008-09-03T20:56:35.450686Z"))
     print(
-          "                                              ",
+        "RFC 3339 format 2008-09-03T20:56:35.450686Z : ",
+        dateutil.parser.parse("2008-09-03T20:56:35.450686Z"),
+    )
+    print(
+        "                                              ",
         datetime.datetime(2008, 9, 3, 20, 56, 35, 450686, tzinfo=tzutc()),
     )
 
@@ -96,11 +99,18 @@ def print_datetime_from_some_standards():
         dateutil.parser.parse("2008-09-03T20:56:35.450686"),
     )
     print(
-        "                                                     ", datetime.datetime(2008, 9, 3, 20, 56, 35, 450686)
+        "                                                     ",
+        datetime.datetime(2008, 9, 3, 20, 56, 35, 450686),
     )
 
-    print("ISO 8601 basic format 20080903T205635.450686: ", dateutil.parser.parse("20080903T205635.450686"))
-    print("                                              ", datetime.datetime(2008, 9, 3, 20, 56, 35, 450686))
+    print(
+        "ISO 8601 basic format 20080903T205635.450686: ",
+        dateutil.parser.parse("20080903T205635.450686"),
+    )
+    print(
+        "                                              ",
+        datetime.datetime(2008, 9, 3, 20, 56, 35, 450686),
+    )
 
     print("ISO 8601 basic format 20080903 , date only: ", dateutil.parser.parse("20080903"))
     print("                                            ", datetime.datetime(2008, 9, 3, 0, 0))
@@ -108,16 +118,14 @@ def print_datetime_from_some_standards():
 
 def format_datetime_base_on_defined_string_format():
     # see datetime format code here : https://docs.python.org/3/library/datetime.html#strftime-and-strptime-format-codes
-    print(
-        "\n-------------- format_datetime_base_on_defined_string_format -----------------------"
-    )
+    print("\n-------------- format_datetime_base_on_defined_string_format -----------------------")
     my_time = dateutil.parser.parse("2018-06-06T08:01:53.420Z")
     print("my_time:          ", my_time)
     print("my_time formated: ", my_time.strftime("[%Y-%m-%d]-[%H:%M:%S]"))
     my_time = datetime.datetime.now()
     print("my_time:          ", my_time)
     print("my_time formated: ", my_time.strftime("[%Y-%m-%d]-[%H:%M:%S]"))
-    
+
     # reference: https://datagy.io/python-string-to-date/#Working_with_Milliseconds_Using_Python_strptime_Milliseconds
     print('---> Example: Date and time with milliseconds in format "YYYY-MM-DD hh:mm:ss.fff"')
     date_string = "2023-09-01 14:30:00.123"
@@ -126,13 +134,17 @@ def format_datetime_base_on_defined_string_format():
     print("Date string with milliseconds:    ", date_string)
     print("Datetime object with milliseconds:", date_obj)
 
+    datetime_string = "2023-07-28 07:25:03.274246+00:00"
+    datetime_format = "%Y-%m-%d %H:%M:%S.%f"
+    datetime_obj = datetime.datetime.strptime(datetime_string, datetime_format)
+    print(datetime_string, datetime_obj)
+
+
 def parse_date_time_from_string():
     # see datetime format code here : https://docs.python.org/3/library/datetime.html#strftime-and-strptime-format-codes
     print("\n-------------- parse_date_time_from_string -----------------------")
     string_contain_date_time = "Test string contain datetime Jun 1 2005  1:33PM"
-    define_format_code_of_string_contain_date_time = (
-        "Test string contain datetime %b %d %Y %I:%M%p"
-    )
+    define_format_code_of_string_contain_date_time = "Test string contain datetime %b %d %Y %I:%M%p"
     datetime_object = datetime.datetime.strptime(
         string_contain_date_time, define_format_code_of_string_contain_date_time
     )
@@ -144,9 +156,9 @@ def parse_date_time_from_string():
         string_contain_date_time1, define_format_code_of_string_contain_date_time1
     )
     print(datetime_object)
-    
-    time_str = '11::33::54'
-    time_obj = time.strptime(time_str, '%H::%M::%S')
+
+    time_str = "11::33::54"
+    time_obj = time.strptime(time_str, "%H::%M::%S")
     print("A time.struct_time object that uses the format provided: ", time_obj)
 
 
@@ -166,9 +178,7 @@ def get_time_period():
         return days, hours, minutes, seconds
 
     days, hours, minutes, seconds = convert_timedelta(duration)
-    print(
-        "NOTE: It should use total_seconds when t2 - t1 > 1 day, see the difference below:"
-    )
+    print("NOTE: It should use total_seconds when t2 - t1 > 1 day, see the difference below:")
     print("t2 - t1 = {} days".format(days))
     print("t2 - t1 = {} hours".format(hours))
     print("t2 - t1 = {} minutes".format(minutes))
@@ -209,9 +219,7 @@ def date_time_in_future():
 
 
 def time_around_a_moment():
-    print(
-        "\n--------------------------time_around_a_moment-------------------------------------"
-    )
+    print("\n--------------------------time_around_a_moment-------------------------------------")
     d = datetime.datetime.utcnow()
     for i in range(-2, 3):
         d1 = d + datetime.timedelta(minutes=i)
@@ -232,22 +240,29 @@ def extract_year_month_day_hour_minute_second():
 
 
 def convert_date_time__to__date_and_opposite():
-    print(
-        "\n----------------------convert_date_time__to__date_and_opposite-----------------------"
-    )
+    print("\n----------------------convert_date_time__to__date_and_opposite-----------------------")
     date_time = datetime.datetime.now()
     print("datetime to date: ", date_time.date())
 
     date = datetime.datetime.today()
     print("date to datetime: ", datetime.datetime(date.year, date.month, date.day))
-    
+
     my_date_obj = date.today()
     min_time_obj = datetime.datetime.min.time()
     max_time_obj = datetime.datetime.max.time()
     my_time = datetime.time(1, 30)
-    print("combine date and time to datetime object using datetime.combine: ", datetime.datetime.combine(my_date_obj, min_time_obj))
-    print("combine date and time to datetime object using datetime.combine: ", datetime.datetime.combine(my_date_obj, max_time_obj))
-    print("combine date and time to datetime object using datetime.combine: ", datetime.datetime.combine(my_date_obj, my_time))
+    print(
+        "combine date and time to datetime object using datetime.combine: ",
+        datetime.datetime.combine(my_date_obj, min_time_obj),
+    )
+    print(
+        "combine date and time to datetime object using datetime.combine: ",
+        datetime.datetime.combine(my_date_obj, max_time_obj),
+    )
+    print(
+        "combine date and time to datetime object using datetime.combine: ",
+        datetime.datetime.combine(my_date_obj, my_time),
+    )
 
 
 if __name__ == "__main__":
@@ -255,7 +270,7 @@ if __name__ == "__main__":
     # list_all_timezones_string()
     # show_date_time_with_timezone()
 
-    format_datetime_base_on_defined_string_format()
+    # format_datetime_base_on_defined_string_format()
     # parse_date_time_from_string()
 
     # get_time_period()
@@ -270,3 +285,5 @@ if __name__ == "__main__":
 
     # print(datetime.datetime.strptime("2022-08-31", "%Y-%m-%d"))
     # print(datetime.date(1991, 1, 1))
+
+    print(dateutil.parser.parse("2023-07-28 07:25:03.274246+00:00"))

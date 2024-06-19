@@ -1,3 +1,4 @@
+#!/home/xuananh/.pyenv/shims/python
 import requests
 import json
 
@@ -225,10 +226,10 @@ if __name__ == "__main__":
     # print(json.dumps(latest_version, indent=4, sort_keys=True))
     ## ================================== actual run ==============================================
 
-    src_project_id = 147
-    src_merge_request_id = 2251
-    des_project_id = 51890249
-    des_merge_request_id = 1
+    src_project_id = 147        # ttk gitlab
+    src_merge_request_id = 2456
+    des_project_id = 58408953   # XuanAnh gitlab
+    des_merge_request_id = 2
 
     move_comments_from_a_PR_to_other_PR(
         src_project_id, src_merge_request_id, des_project_id, des_merge_request_id
