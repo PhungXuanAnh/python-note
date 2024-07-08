@@ -156,11 +156,18 @@ def parse_date_time_from_string():
         string_contain_date_time1, define_format_code_of_string_contain_date_time1
     )
     print(datetime_object)
+    
+    string_contain_date_time_2 = "2024-07-08 11:13:13.663015"
+    define_format_code_of_string_contain_date_time_2 = "%Y-%m-%d %H:%M:%S.%f"
+    datetime_object = datetime.datetime.strptime(
+        string_contain_date_time_2, define_format_code_of_string_contain_date_time_2
+    )
+    print(datetime_object)
 
     time_str = "11::33::54"
     time_obj = time.strptime(time_str, "%H::%M::%S")
     print("A time.struct_time object that uses the format provided: ", time_obj)
-
+    
 
 def get_time_period():
     print(
@@ -270,8 +277,9 @@ if __name__ == "__main__":
     # list_all_timezones_string()
     # show_date_time_with_timezone()
 
+    # print_datetime_from_some_standards()
     # format_datetime_base_on_defined_string_format()
-    # parse_date_time_from_string()
+    parse_date_time_from_string()
 
     # get_time_period()
     # datetime_in_pass()
@@ -281,9 +289,8 @@ if __name__ == "__main__":
     # extract_year_month_day_hour_minute_second()
     # convert_date_time__to__date_and_opposite()
 
-    # print_datetime_from_some_standards()
 
     # print(datetime.datetime.strptime("2022-08-31", "%Y-%m-%d"))
     # print(datetime.date(1991, 1, 1))
 
-    print(dateutil.parser.parse("2023-07-28 07:25:03.274246+00:00"))
+    # print(dateutil.parser.parse("2023-07-28 07:25:03.274246+00:00"))
