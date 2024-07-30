@@ -1,3 +1,9 @@
+"""
+usage: 
+    python /home/xuananh/repo/python-note/cmd_line_args.py 8088 -d d -f f -n 1
+    or
+    python /home/xuananh/repo/python-note/cmd_line_args.py -d d -f f -n 1 8088
+"""
 import argparse
 
 
@@ -5,6 +11,8 @@ def parse_cmdline():
     parser = argparse.ArgumentParser(
         description="Sample parser command line argument in python")
 
+    parser.add_argument("port", nargs="?", type=int, default=8080)
+    
     parser.add_argument('-d', '--directory',
                         metavar='DIRECTORY',
                         dest='dir',
@@ -38,3 +46,5 @@ if __name__ == '__main__':
     print(args.file)
 
     print(args.number)
+    
+    print(args.port)
