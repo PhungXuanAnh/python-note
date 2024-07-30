@@ -1,3 +1,6 @@
+"""
+sudo apt install gnome-screensaver -y
+"""
 import subprocess
 import datetime
 import time
@@ -116,15 +119,20 @@ def break_time(time_to_break):
 
 
 def main():
+    """
+        work 30 mins
+        lock screen
+        break 1 second to allow unlock screen manually
+    """
     while True:        
-        working_time(20 * 60)
+        working_time(30 * 60)
         lock_screen()
-        break_time(1 * 60)
-        move_mouse()
+        break_time(1)
+        # move_mouse()
        
         # play_mp3_with_volume()
-        while not RELEASE_LOCK_SCREEN and is_screensaver_active():
-            move_mouse()
+        # while not RELEASE_LOCK_SCREEN and is_screensaver_active():
+        #     move_mouse()
 
 
 def get_domain():
@@ -186,9 +194,11 @@ if __name__ == "__main__":
     # move_mouse()
 
     # threading.Thread(target=run_command_return_results, args=["ngrok start --all"]).start()
-    threading.Thread(target=main, args=[]).start()
+    # threading.Thread(target=main, args=[]).start()
 
-    time.sleep(3)
-    update_ngrok_public_url()
+    # time.sleep(3)
+    # update_ngrok_public_url()
 
-    app.run(host="0.0.0.0", port=8100, debug=False)
+    # app.run(host="0.0.0.0", port=8100, debug=False)
+    
+    main()
