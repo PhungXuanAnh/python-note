@@ -1,6 +1,7 @@
 #!/home/xuananh/.pyenv/shims/python
-import requests
 import json
+
+import requests
 
 # pylint: disable=pointless-string-statement
 """
@@ -84,12 +85,12 @@ def get_latest_merge_request_version_des_MR(project_id, merge_request_id):
         # print(json.dumps(json.loads(resp.json()["message"]), indent=4, sort_keys=True))
     else:
         results = resp.json()
-        # print("created new comment with response: ", json.dumps(results, indent=4, sort_keys=True))
+        print("merge request version: ", json.dumps(results, indent=4, sort_keys=True))
         return results[0]
 
 
 def create_comments_in_destination_MR(
-    project_id, merge_request_id, comment_note, latest_MR_version
+    project_id, merge_request_id, latest_MR_version, **kargs
 ):
     """
         reference: https://docs.gitlab.com/ee/api/discussions.html#create-a-new-thread-in-the-merge-request-diff
@@ -127,19 +128,14 @@ def create_comments_in_destination_MR(
     # print("creating comment: ", json.dumps(comment_note, indent=4, sort_keys=True))
 
     data = {
-        "body": comment_note["body"].replace(
-            "@", "_@_"
-        ),  # NOTE: replace @ to avoid tag a github account
-        # "position[base_sha]": comment_note["position"]["base_sha"],
-        # "position[head_sha]": comment_note["position"]["head_sha"],
-        # "position[start_sha]": comment_note["position"]["start_sha"],
+        "body": kargs["body"].replace("@", "_@_"),  # NOTE: replace @ to avoid tag a github account
         "position[base_sha]": latest_MR_version["base_commit_sha"],
         "position[head_sha]": latest_MR_version["head_commit_sha"],
         "position[start_sha]": latest_MR_version["start_commit_sha"],
-        "position[new_path]": comment_note["position"]["new_path"],
-        "position[old_path]": comment_note["position"]["old_path"],
-        "position[position_type]": comment_note["position"]["position_type"],
-        "position[new_line]": comment_note["position"]["new_line"],
+        "position[new_path]": kargs["new_path"],
+        "position[old_path]": kargs["old_path"],
+        "position[position_type]": kargs["position_type"],
+        "position[new_line]": kargs["new_line"],
     }
     # print(json.dumps(data, indent=4, sort_keys=True))
     resp = requests.post(
@@ -159,6 +155,33 @@ def create_comments_in_destination_MR(
         print(
             "created new comment with response: ", json.dumps(resp.json(), indent=4, sort_keys=True)
         )
+    return resp
+
+
+def create_new_sonaqube_comment_in_MR(
+    sonaqube_data, des_project_id, des_merge_request_id
+):
+    count = 0
+    des_latest_version = get_latest_merge_request_version_des_MR(
+        des_project_id, des_merge_request_id
+    )
+    for value in sonaqube_data:
+        for line in value["lines"]:
+            resp = create_comments_in_destination_MR(
+                des_project_id,
+                des_merge_request_id,
+                des_latest_version,
+                body=value["message"],
+                new_path=value["file_path"],
+                old_path=value["file_path"],
+                position_type="text",
+                new_line=line,
+            )
+            # if resp.status_code == 201:
+            #     break
+        count = count + 1
+
+    print(f"created {count} comments in total {len(sonaqube_data)}")
 
 
 def move_comments_from_a_PR_to_other_PR(
@@ -175,7 +198,14 @@ def move_comments_from_a_PR_to_other_PR(
             comment_note["type"] == "DiffNote" and not comment_note["resolved"]
         ):  # TODO: handle "type": "DiscussionNote", see sample_comments.json for more detail
             create_comments_in_destination_MR(
-                des_project_id, des_merge_request_id, comment["notes"][0], des_latest_version
+                des_project_id,
+                des_merge_request_id,
+                des_latest_version,
+                body=comment_note["body"],
+                new_path=comment_note["position"]["new_path"],
+                old_path=comment_note["position"]["old_path"],
+                position_type=comment_note["position"]["position_type"],
+                new_line=comment_note["position"]["new_line"],
             )
             count = count + 1
 
@@ -227,9 +257,9 @@ if __name__ == "__main__":
     ## ================================== actual run ==============================================
 
     src_project_id = 147        # ttk gitlab
-    src_merge_request_id = 2456
+    src_merge_request_id = 2757
     des_project_id = 58408953   # XuanAnh gitlab
-    des_merge_request_id = 2
+    des_merge_request_id = 4
 
     move_comments_from_a_PR_to_other_PR(
         src_project_id, src_merge_request_id, des_project_id, des_merge_request_id
