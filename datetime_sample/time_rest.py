@@ -1,3 +1,4 @@
+#! /home/xuananh/repo/python-note/.venv/bin/python
 """
 sudo apt install gnome-screensaver -y
 """
@@ -19,6 +20,8 @@ from ngrok_sample.ngrok_client_api import list_tunnel
 
 RELEASE_LOCK_SCREEN = True
 app = Flask(__name__)
+
+log_file = open("/tmp/time_rest.log", "w")
 
 
 def run_cmd(command):
@@ -86,7 +89,13 @@ def working_time(times):
     start = datetime.datetime.now()
     now = datetime.datetime.now()
     while (now - start).seconds < times:
-        print("working time: {} of {}".format((now - start).seconds, times))
+        
+        # NOTE: if using stdout, you have to run command like this: ./time_rest.py >> time_rest.log
+        # sys.stdout.write("working time: {} of {}".format((now - start).seconds, times))
+        # sys.stdout.flush()
+        
+        log_file.write("working time: {} of {}\n".format((now - start).seconds, times))
+        log_file.flush()
 
         if RELEASE_LOCK_SCREEN:
             start = datetime.datetime.now()
