@@ -30,7 +30,7 @@ def list_merge_request_diff(domain, project_id, merge_request_id):
         NOTE: By default, GET requests return 20 results at a time because the API results are paginated
             
         Example:
-        curl --header "PRIVATE-TOKEN: glpat-qSCLkv6JyFVs4V8BBMZV" \
+        curl --header "PRIVATE-TOKEN: you-token" \
             --url "https://gitlab.com/api/v4/projects/58408953/merge_requests/4/diffs?page=1&per_page=20" | jq
             
     """
