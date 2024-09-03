@@ -133,6 +133,8 @@ def get_duplicated_blocks(project_key, file_path) -> list:
         return file_path, duplicated_range
 
     result = show_duplications(project_key, file_path)
+    if not result:
+        return []
     duplications = result["duplications"]
     files = result['files']
     duplicated_data = []

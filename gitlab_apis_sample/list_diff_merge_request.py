@@ -69,13 +69,10 @@ def get_list_changed_files_in_merge_request(domain, project_id, merge_request_id
 
 if __name__ == '__main__':
     des_project_id = 58408953  # XuanAnh gitlab
-    des_merge_request_id = 6
+    des_merge_request_id = 4
 
-    result = list_merge_request_diff(DESTINATION_DOMAIN, des_project_id, des_merge_request_id)
+    # result = list_merge_request_diff(DESTINATION_DOMAIN, des_project_id, des_merge_request_id)
+    result = get_list_changed_files_in_merge_request(
+        DESTINATION_DOMAIN, des_project_id, des_merge_request_id
+    )
     print(json.dumps(result, indent=4, sort_keys=True))
-
-    # changed_files = get_list_changed_files_in_merge_request(
-    #     DESTINATION_DOMAIN, des_project_id, des_merge_request_id
-    # )
-    # print(json.dumps(changed_files, indent=4, sort_keys=True))
-    # print(','.join(changed_files))

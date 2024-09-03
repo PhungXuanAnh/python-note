@@ -1,18 +1,25 @@
 import json
+import sys
 
 from copy_comments_from_a_merge_request_to_another import (
     create_new_comment_from_sonaqube_duplication,
     create_new_comment_from_sonaqube_issue,
 )
-from sonaqube import extract_issue_data, get_duplicated_blocks, search_issues_by_severity
+from list_diff_merge_request import get_list_changed_files_in_merge_request
+from sonaqube import (
+    extract_issue_data,
+    get_duplicated_blocks,
+    search_issues_by_severity,
+)
 
 
-def comment_from_issue(project_id, merge_request_id):
+def comment_from_issue(project_id, merge_request_id, changed_files):
     data = search_issues_by_severity()
+    if not data:
+        return
     # print(json.dumps(data, indent=4, sort_keys=True))
     result = extract_issue_data(data)
-    print(json.dumps(result, indent=4, sort_keys=True))
-
+    # print(json.dumps(result, indent=4, sort_keys=True))
     # result = [
     #     {
     #         "file_path": "apps/backoffice/transfer/tables.py",
@@ -20,12 +27,19 @@ def comment_from_issue(project_id, merge_request_id):
     #         "message": "Define a constant instead of duplicating this literal `<a href=`{}`>{}</a>` 3 times.",
     #     }
     # ]
+    error_files = []
+    for _file in result:
+        if _file["file_path"] in changed_files:
+            error_files.append(_file)
+    if not error_files:
+        return
+
     create_new_comment_from_sonaqube_issue(
-        sonaqube_data=result, des_project_id=project_id, des_merge_request_id=merge_request_id
+        sonaqube_data=error_files, des_project_id=project_id, des_merge_request_id=merge_request_id
     )
 
 
-def comment_from_duplications(project_id, merge_request_id):
+def comment_from_duplications(project_id, merge_request_id, changed_files):
     result = get_duplicated_blocks(
         project_key="ticketing-v2", file_path="backoffice/transfer/tables.py"
     )
@@ -41,15 +55,31 @@ def comment_from_duplications(project_id, merge_request_id):
     #     #     "message": "Duplicated in file: backoffice/refund/tables.py, lines: [355, 382]",
     #     # },
     # ]
+    duplicated_files = []
+    for _file in result:
+        if _file["file_path"] in changed_files:
+            duplicated_files.append(_file)
+
+    if not duplicated_files:
+        return
+
     create_new_comment_from_sonaqube_duplication(
-        sonaqube_duplications=result,
+        sonaqube_duplications=duplicated_files,
         des_project_id=project_id,
         des_merge_request_id=merge_request_id,
     )
 
 
 if __name__ == '__main__':
-    project_id = 58408953
-    merge_request_id = 6
-    comment_from_issue(project_id, merge_request_id)
-    comment_from_duplications(project_id, merge_request_id)
+    # project_id = 58408953
+    # merge_request_id = 6
+    project_id, merge_request_id = sys.argv[1:]
+    print(
+        f"Copy sona error message to project_id: {project_id} and merge_request_id: {merge_request_id}"
+    )
+    # changed_files = get_list_changed_files_in_merge_request(
+    #     "https://gitlab.com", project_id, merge_request_id
+    # )
+    changed_files = ["apps/backoffice/box_office/views.py"]
+    comment_from_issue(project_id, merge_request_id, changed_files)
+    comment_from_duplications(project_id, merge_request_id, changed_files)

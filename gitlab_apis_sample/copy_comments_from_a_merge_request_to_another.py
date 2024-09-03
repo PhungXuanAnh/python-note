@@ -164,9 +164,10 @@ def create_comments_in_multiple_lines(project_id, merge_request_id, latest_MR_ve
         print(resp.json())
         # print(json.dumps(json.loads(resp.json()["message"]), indent=4, sort_keys=True))
     else:
-        print(
-            "created new comment with response: ", json.dumps(resp.json(), indent=4, sort_keys=True)
-        )
+        # print(
+        #     "created new comment with response: ", json.dumps(resp.json(), indent=4, sort_keys=True)
+        # )
+        pass
     return resp
 
 
@@ -216,7 +217,7 @@ def create_comments_in_single_line(project_id, merge_request_id, latest_MR_versi
         "position[position_type]": kargs["position_type"],
         "position[new_line]": kargs["new_line"],
     }
-    print('Creating comment with payload', json.dumps(data, indent=4, sort_keys=True))
+    # print('Creating comment with payload', json.dumps(data, indent=4, sort_keys=True))
     resp = requests.post(
         url=f"{DESTINATION_DOMAIN}/api/v4/projects/{project_id}/merge_requests/{merge_request_id}/discussions",
         headers={
@@ -231,9 +232,10 @@ def create_comments_in_single_line(project_id, merge_request_id, latest_MR_versi
         print(resp.json())
         # print(json.dumps(json.loads(resp.json()["message"]), indent=4, sort_keys=True))
     else:
-        print(
-            "created new comment with response: ", json.dumps(resp.json(), indent=4, sort_keys=True)
-        )
+        # print(
+        #     "created new comment with response: ", json.dumps(resp.json(), indent=4, sort_keys=True)
+        # )
+        pass
     return resp
 
 
