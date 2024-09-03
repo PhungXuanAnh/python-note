@@ -95,7 +95,9 @@ def get_latest_merge_request_version_des_MR(project_id, merge_request_id):
 
 def create_comments_in_multiple_lines(project_id, merge_request_id, latest_MR_version, **kargs):
     """
-        reference: https://docs.gitlab.com/ee/api/discussions.html#create-a-new-thread-in-the-merge-request-diff
+        reference: 
+            https://docs.gitlab.com/ee/api/discussions.html#create-a-new-thread-in-the-merge-request-diff
+            https://forum.gitlab.com/t/api-request-to-create-a-discussion-on-a-line-range/79157/3
         
         step 1: get latest merge request version: NOTE: this information is got outside of this function to avoid calling api multiple times
             curl --header "PRIVATE-TOKEN: my_token_1234" \
