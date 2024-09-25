@@ -372,15 +372,15 @@ if __name__ == "__main__":
 
     # print(sha1_hash("apps/backoffice/box_office/views.py"))
 
-    get_merget_request_comments(DESTINATION_DOMAIN, DESTINATION_GL_TOKEN, 58408953, 6)
+    # get_merget_request_comments(DESTINATION_DOMAIN, DESTINATION_GL_TOKEN, 58408953, 6)
 
     ## ================================== actual run ==============================================
 
     src_project_id = 147  # ttk gitlab
-    src_merge_request_id = 2757
+    src_merge_request_id = 2844
     des_project_id = 58408953  # XuanAnh gitlab
-    des_merge_request_id = 4
+    des_merge_request_id = 5
 
-    # move_comments_from_a_PR_to_other_PR(
-    #     src_project_id, src_merge_request_id, des_project_id, des_merge_request_id
-    # )
+    move_comments_from_a_PR_to_other_PR(
+        src_project_id, src_merge_request_id, des_project_id, des_merge_request_id
+    )
