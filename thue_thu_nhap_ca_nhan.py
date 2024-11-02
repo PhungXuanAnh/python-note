@@ -276,16 +276,18 @@ def bảng_lương_năm(
     )
 
 
-def bảng_lương_thang(luong_gross: int, số_người_phụ_thuộc: int):
+def bảng_lương_thang(luong_gross: int, luong_dong_bhxh: int = None, số_người_phụ_thuộc: int = 0):
     """
     Hàm tính thuế thu nhập cá nhân bằng Python
     """
-    thuế = 0
     luong_gross = eval("".join(luong_gross.split(".")))
-    #    số_người_phụ_thuộc = eval(số_người_phụ_thuộc)
-    bhxh, bhxh1 = (round(v) for v in bảo_hiểm_xã_hội(luong_gross))
-    bhyt, bhyt1 = (round(v) for v in bảo_hiểm_y_tế(luong_gross))
-    bhtn, bhtn1 = (round(v) for v in bảo_hiểm_thất_nghiệp(luong_gross))
+    if luong_dong_bhxh:
+        _luong_dong_bhxh = eval("".join(luong_dong_bhxh.split(".")))
+    else:
+        _luong_dong_bhxh = luong_gross
+    bhxh, bhxh1 = (round(v) for v in bảo_hiểm_xã_hội(_luong_dong_bhxh))
+    bhyt, bhyt1 = (round(v) for v in bảo_hiểm_y_tế(_luong_dong_bhxh))
+    bhtn, bhtn1 = (round(v) for v in bảo_hiểm_thất_nghiệp(_luong_dong_bhxh))
 
     bh_tổng = bhxh + bhyt + bhtn
 
@@ -324,7 +326,8 @@ def bảng_lương_thang(luong_gross: int, số_người_phụ_thuộc: int):
     lương_net = luong_gross - bh_tổng - thuế
 
     # Người sử dụng lao động trả
-    bh_tai_nan_ld = round(bh_tnld_benh_nn(luong_gross))
+    bh_tai_nan_ld = round(bh_tnld_benh_nn(_luong_dong_bhxh))
+    tong_bhxh1 = bhxh1 + bh_tai_nan_ld + bhyt1 + bhtn1
     tong1 = bhxh1 + bh_tai_nan_ld + bhyt1 + bhtn1 + luong_gross
 
     width = [26, 11]
@@ -348,13 +351,19 @@ def bảng_lương_thang(luong_gross: int, số_người_phụ_thuộc: int):
         f"{'Thuế tổng:':<{width[0]}}{fm(thuế):>{width[1]}}",
         "---------------------------------------------",
         f"{'Lương net:':<{width[0]}}{fm(lương_net):>{width[1]}}",
-        "---------------------------------------------",
+        "=============================================",
         "Nguời sử dụng lao động trả:",
         f"{'Bảo hiểm xã hội:':<{width[0]}}{fm(bhxh1):>{width[1]}}",
         f"{'Bảo hiểm tai nạn lao động:':<{width[0]}}{fm(bh_tai_nan_ld):>{width[1]}}",
         f"{'Bảo hiểm y tế:':<{width[0]}}{fm(bhyt1):>{width[1]}}",
         f"{'Bảo hiểm thất nghiệp:':<{width[0]}}{fm(bhtn1):>{width[1]}}",
+        "---------------------------------------------",
+        f"{'Tổng bhxh:':<{width[0]}}{fm(tong_bhxh1):>{width[1]}}",
+        "---------------------------------------------",
         f"{'Tổng:':<{width[0]}}{fm(tong1):>{width[1]}}",
+        "=============================================",
+        f"{'Tổng BHXH:':<{width[0]}}{fm(tong_bhxh1 + bh_tổng):>{width[1]}}",
+        f"{'Tổng BHXH + thue:':<{width[0]}}{fm(tong_bhxh1 + bh_tổng + thuế):>{width[1]}}",
         sep="\n",
     )
 
@@ -387,8 +396,9 @@ if __name__ == "__main__":
     #    lương = input_lương()
     #    số_người_phụ_thuộc = input_số_người_phụ_thuộc()
 
-    bảng_lương_thang(luong_gross="79.662.000", số_người_phụ_thuộc=4)
-    
+    # bảng_lương_thang(luong_gross="79.662.000", số_người_phụ_thuộc=4)
+    bảng_lương_thang(luong_gross="30.000.000", luong_dong_bhxh="4.960.000")
+
     # bảng_lương_năm(
     #     tong_tnct="1.500.000.000",
     #     so_nguoi_phu_thuoc=4,
