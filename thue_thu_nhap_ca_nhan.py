@@ -6,10 +6,12 @@
 """
 Tham khảo: https://www.meinvoice.vn/tin-tuc/18211/cach-tinh-thue-thu-nhap-ca-nhan/#3_Cach_tu_tinh_thue_thu_nhap_ca_nhan
 Code Python dùng để tính thuế thu nhập cá nhân, nhập vào lương chưa khấu trừ + số người phụ thuộc
+Ket qua tra ve giong voi ket qua tu trang nay: https://www.topcv.vn/tinh-luong-gross-net
 """
 import re
-from babel.numbers import format_decimal
 from functools import partial
+
+from babel.numbers import format_decimal
 
 fm = partial(format_decimal, locale="vi_VN")
 
