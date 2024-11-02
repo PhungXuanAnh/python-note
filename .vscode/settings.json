@@ -8,4 +8,10 @@
         "scrapy-sample",
         "selenium_sample",
     ],
+    "[python]": {
+        "editor.formatOnSave": true,
+        "editor.formatOnPaste": true,
+        "editor.formatOnSaveMode": "modifications",
+        "editor.defaultFormatter": "ms-python.black-formatter", // modifications
+    },
 }

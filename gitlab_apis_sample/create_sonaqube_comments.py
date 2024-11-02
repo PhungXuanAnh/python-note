@@ -83,3 +83,14 @@ if __name__ == '__main__':
     changed_files = ["apps/backoffice/box_office/views.py"]
     comment_from_issue(project_id, merge_request_id, changed_files)
     comment_from_duplications(project_id, merge_request_id, changed_files)
+
+    # using selenium to comment automatically
+    # create new user-profile, login to gitlab/github account
+    # open selenium re-use the user-profile
+    # gitlab, find the line number error from sonaqube, if there's no line number, then ignore the error else
+    #    hover the mouse over that line number to show comment button
+    #    click to comment button to add new comment
+    #   choose the line number in the comment box
+    #   add new comment content to the comment box
+    #   click to button: Add comment now
+    #   in the right column and and comment to it
