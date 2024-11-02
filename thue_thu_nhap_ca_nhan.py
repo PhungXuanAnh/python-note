@@ -14,27 +14,47 @@ from functools import partial
 fm = partial(format_decimal, locale="vi_VN")
 
 
-def bảo_hiểm_xã_hội(lương_gross: int):
+def bh_tnld_benh_nn(luong_gross: int):
     lương_đóng_bhxh_cao_nhất = 46800000
-    if lương_gross > lương_đóng_bhxh_cao_nhất:
-        return lương_đóng_bhxh_cao_nhất * 8 / 100
-    return lương_gross * 8 / 100
+    if luong_gross > lương_đóng_bhxh_cao_nhất:
+        luong_dong = lương_đóng_bhxh_cao_nhất
+    else:
+        luong_dong = luong_gross
+    return luong_dong * 0.5 / 100
+
+def bảo_hiểm_xã_hội(luong_gross: int):
+    lương_đóng_bhxh_cao_nhất = 46800000
+    if luong_gross > lương_đóng_bhxh_cao_nhất:
+        luong_dong_bhxh = lương_đóng_bhxh_cao_nhất
+    else:
+        luong_dong_bhxh = luong_gross
+    nguoi_ld_tra = luong_dong_bhxh * 8 / 100
+    nguoi_sd_ld_tra = luong_dong_bhxh * 17 / 100
+    return nguoi_ld_tra, nguoi_sd_ld_tra
 
 
-def bảo_hiểm_y_tế(lương_gross: int):
+def bảo_hiểm_y_tế(luong_gross: int):
     lương_đóng_bhyt_cao_nhất = 46800000
-    if lương_gross > lương_đóng_bhyt_cao_nhất:
-        return lương_đóng_bhyt_cao_nhất * 1.5 / 100
-    return lương_gross * 1.5 / 100
+    if luong_gross > lương_đóng_bhyt_cao_nhất:
+        luong_dong_bhyt = lương_đóng_bhyt_cao_nhất
+    else:
+        luong_dong_bhyt = luong_gross
+    nguoi_ld_tra = luong_dong_bhyt * 1.5 / 100
+    nguoi_sd_ld_tra = luong_dong_bhyt * 3 / 100
+    return nguoi_ld_tra, nguoi_sd_ld_tra
 
 
-def bảo_hiểm_thất_nghiệp(lương_gross: int):
+def bảo_hiểm_thất_nghiệp(luong_gross: int):
     # https://thuvienphapluat.vn/cong-dong-dan-luat/chi-tiet-muc-dong-va-huong-bao-hiem-that-nghiep-cao-nhat-theo-tien-luong-moi-215326.aspx
     # https://thuvienphapluat.vn/hoi-dap-phap-luat/83A281A-hd-muc-dong-bao-hiem-that-nghiep-moi-nhat-nam-2024-la-bao-nhieu.html#:~:text=M%E1%BB%A9c%20l%C6%B0%C6%A1ng%20c%C6%A1%20s%E1%BB%9F%20t%E1%BB%AB,t%E1%BB%91i%20%C4%91a%20l%C3%A0%20468.000%20%C4%91%E1%BB%93ng.
     lương_đóng_bhtn_cao_nhất = 99200000
-    if lương_gross > lương_đóng_bhtn_cao_nhất:
-        return lương_đóng_bhtn_cao_nhất * 1 / 100
-    return lương_gross * 1 / 100
+    if luong_gross > lương_đóng_bhtn_cao_nhất:
+        luong_dong_bhtn = lương_đóng_bhtn_cao_nhất
+    else:
+        luong_dong_bhtn = luong_gross
+    nguoi_ld_tra = luong_dong_bhtn * 1 / 100
+    nguoi_sd_ld_tra = luong_dong_bhtn * 1 / 100
+    return nguoi_ld_tra, nguoi_sd_ld_tra
 
 
 def tinh_thue_theo_thang(thu_nhập_tính_thuế: int):
@@ -254,23 +274,24 @@ def bảng_lương_năm(
     )
 
 
-def bảng_lương_thang(lương_gross: int, số_người_phụ_thuộc: int):
+def bảng_lương_thang(luong_gross: int, số_người_phụ_thuộc: int):
     """
     Hàm tính thuế thu nhập cá nhân bằng Python
     """
     thuế = 0
-    lương_gross = eval("".join(lương_gross.split(".")))
+    luong_gross = eval("".join(luong_gross.split(".")))
     #    số_người_phụ_thuộc = eval(số_người_phụ_thuộc)
-    bhxh = round(bảo_hiểm_xã_hội(lương_gross))
-    bhyt = round(bảo_hiểm_y_tế(lương_gross))
-    bhtn = round(bảo_hiểm_thất_nghiệp(lương_gross))
+    bhxh, bhxh1 = (round(v) for v in bảo_hiểm_xã_hội(luong_gross))
+    bhyt, bhyt1 = (round(v) for v in bảo_hiểm_y_tế(luong_gross))
+    bhtn, bhtn1 = (round(v) for v in bảo_hiểm_thất_nghiệp(luong_gross))
+
     bh_tổng = bhxh + bhyt + bhtn
 
     GIAM_TRU_BAN_THAN = 11000000
     GIAM_TRU_NGUOI_PHU_THUOC = 4400000
     giảm_trừ_gia_cảnh = GIAM_TRU_BAN_THAN + GIAM_TRU_NGUOI_PHU_THUOC * số_người_phụ_thuộc
 
-    thu_nhập_tính_thuế = lương_gross - bh_tổng - giảm_trừ_gia_cảnh
+    thu_nhập_tính_thuế = luong_gross - bh_tổng - giảm_trừ_gia_cảnh
     thu_nhập_tính_thuế = thu_nhập_tính_thuế if thu_nhập_tính_thuế > 0 else 0
 
     if thu_nhập_tính_thuế == 0:
@@ -298,12 +319,16 @@ def bảng_lương_thang(lương_gross: int, số_người_phụ_thuộc: int):
             + thuế_bậc_35
         )
 
-    lương_net = lương_gross - bh_tổng - thuế
+    lương_net = luong_gross - bh_tổng - thuế
 
-    width = [25, 11]
+    # Người sử dụng lao động trả
+    bh_tai_nan_ld = round(bh_tnld_benh_nn(luong_gross))
+    tong1 = bhxh1 + bh_tai_nan_ld + bhyt1 + bhtn1 + luong_gross
+
+    width = [26, 11]
 
     print(
-        f"{'Lương Gross:':<{width[0]}}{fm(lương_gross):>{width[1]}}",
+        f"{'Lương Gross:':<{width[0]}}{fm(luong_gross):>{width[1]}}",
         "---------------------------------------------",
         f"{'Bảo hiểm xã hội:':<{width[0]}}{fm(bhxh):>{width[1]}}",
         f"{'Bảo hiểm y tế:':<{width[0]}}{fm(bhyt):>{width[1]}}",
@@ -321,6 +346,13 @@ def bảng_lương_thang(lương_gross: int, số_người_phụ_thuộc: int):
         f"{'Thuế tổng:':<{width[0]}}{fm(thuế):>{width[1]}}",
         "---------------------------------------------",
         f"{'Lương net:':<{width[0]}}{fm(lương_net):>{width[1]}}",
+        "---------------------------------------------",
+        "Nguời sử dụng lao động trả:",
+        f"{'Bảo hiểm xã hội:':<{width[0]}}{fm(bhxh1):>{width[1]}}",
+        f"{'Bảo hiểm tai nạn lao động:':<{width[0]}}{fm(bh_tai_nan_ld):>{width[1]}}",
+        f"{'Bảo hiểm y tế:':<{width[0]}}{fm(bhyt1):>{width[1]}}",
+        f"{'Bảo hiểm thất nghiệp:':<{width[0]}}{fm(bhtn1):>{width[1]}}",
+        f"{'Tổng:':<{width[0]}}{fm(tong1):>{width[1]}}",
         sep="\n",
     )
 
@@ -353,15 +385,13 @@ if __name__ == "__main__":
     #    lương = input_lương()
     #    số_người_phụ_thuộc = input_số_người_phụ_thuộc()
 
-    lương = "79.662.000"
-    # lương = "170.000.000"
-    số_người_phụ_thuộc = 4
-    # bảng_lương_thang(lương, số_người_phụ_thuộc)
-    bảng_lương_năm(
-        tong_tnct="1.500.000.000",
-        so_nguoi_phu_thuoc=4,
-        tong_so_thang_phu_thuoc=12,
-        bao_hiem_duoc_tru="30.000.000",
-        so_thue_tncn_da_khau_tru="50.000.000",
-        so_thue_tncn_da_tam_nop="20.000.000",
-    )
+    bảng_lương_thang(luong_gross="79.662.000", số_người_phụ_thuộc=4)
+    
+    # bảng_lương_năm(
+    #     tong_tnct="1.500.000.000",
+    #     so_nguoi_phu_thuoc=4,
+    #     tong_so_thang_phu_thuoc=12,
+    #     bao_hiem_duoc_tru="30.000.000",
+    #     so_thue_tncn_da_khau_tru="50.000.000",
+    #     so_thue_tncn_da_tam_nop="20.000.000",
+    # )
