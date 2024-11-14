@@ -366,6 +366,7 @@ def bảng_lương_thang(luong_gross: int, luong_dong_bhxh: int = None, số_ng�
         f"{'Tổng BHXH + thue:':<{width[0]}}{fm(tong_bhxh1 + bh_tổng + thuế):>{width[1]}}",
         sep="\n",
     )
+    return tong_bhxh1 + bh_tổng + thuế
 
 
 def input_lương():
@@ -397,7 +398,8 @@ if __name__ == "__main__":
     #    số_người_phụ_thuộc = input_số_người_phụ_thuộc()
 
     # bảng_lương_thang(luong_gross="79.662.000", số_người_phụ_thuộc=4)
-    bảng_lương_thang(luong_gross="30.000.000", luong_dong_bhxh="4.960.000")
+    # bảng_lương_thang(luong_gross="30.000.000", luong_dong_bhxh="4.960.000")
+    bảng_lương_thang(luong_gross="80.000.000")
 
     # bảng_lương_năm(
     #     tong_tnct="1.500.000.000",
