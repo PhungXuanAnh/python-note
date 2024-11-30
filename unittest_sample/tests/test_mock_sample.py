@@ -1,9 +1,15 @@
-# to run test:
-# cd python-note
-# make unittest-sample-test-all
-from unittest import mock, TestCase
-from unittest_sample.app import services
+"""
+test all case:
+    cd python-note
+    .venv/bin/python -m unittest -vv unittest_sample.tests.test_mock_sample
+test a case:
+    cd python-note
+    .venv/bin/python -m unittest unittest_sample.tests.test_mock_sample.TestSampleMock.test_get_a_user
+"""
 
+from unittest import TestCase, mock
+
+from unittest_sample.app import services
 
 USERNAME, PROPERTIES = "NGUYEN VAN C", "1000 billion USD"
 def user_context(arg):

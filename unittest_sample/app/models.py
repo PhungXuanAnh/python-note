@@ -21,13 +21,18 @@ class BaseUser(object):
         return "count of base user: 123"
 
 
+class Utility(object):
+    def add(self, x, y):
+        return x + y
 
 class User:
+    Utility = Utility
     objects = BaseUser
     context = {
         "properties": "1 billion usd",
         "another_base_user": BaseUser("nguyen van b", "b@gmail.com")
     }
+    
 
     def get_name(self):
         return self.username

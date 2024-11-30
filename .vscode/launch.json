@@ -5,8 +5,8 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Python: Remote Attach",
-            "type": "python",
+            "name": "debugpy-sample",
+            "type": "debugpy",
             "request": "attach",
             "justMyCode": false, // set bang false de co the jump den system lib khi debug
             "port": 5678,
@@ -21,8 +21,22 @@
             ]
         },
         {
+            "name": "unit-test-sample",
+            "type": "debugpy",
+            "request": "attach",
+            "justMyCode": false, // set bang false de co the jump den system lib khi debug
+            "port": 5678,
+            "host": "localhost",
+            "pathMappings": [
+                {
+                    "localRoot": "${workspaceFolder}",
+                    "remoteRoot": "${workspaceFolder}",
+                }
+            ]
+        },
+        {
             "name": "Python: Current File",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "${file}",
             "console": "integratedTerminal",

@@ -19,3 +19,6 @@ def get_another_base_user_name_and_his_properties():
     properties = user.context.get("properties")
     name = user.context.get("another_base_user").username
     return name, properties
+
+def add(x, y):
+    return User.Utility().add(x, y)
