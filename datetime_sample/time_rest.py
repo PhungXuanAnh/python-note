@@ -17,6 +17,7 @@ sys.path.append(current_dir + "/..")
 from mp3.play import play_mp3_with_volume
 from subprocess_sample.subprocess_sample import run_command_print_output, run_command_return_results
 from ngrok_sample.ngrok_client_api import list_tunnel
+from pystray_sample.pystray_sample_icon_from_created_image import create_image_with_text, icon
 
 RELEASE_LOCK_SCREEN = True
 app = Flask(__name__)
@@ -96,6 +97,7 @@ def working_time(times):
         
         log_file.write("working time: {} of {}\n".format((now - start).seconds, times))
         log_file.flush()
+        icon.icon = create_image_with_text(2000, 1100, 'black', str((now - start).seconds))
 
         if RELEASE_LOCK_SCREEN:
             start = datetime.datetime.now()
@@ -209,5 +211,6 @@ if __name__ == "__main__":
     # update_ngrok_public_url()
 
     # app.run(host="0.0.0.0", port=8100, debug=False)
+    icon.run_detached()
     
     main()
