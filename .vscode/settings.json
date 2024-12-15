@@ -7,6 +7,10 @@
         "flask_sample",
         "scrapy-sample",
         "selenium_sample",
+        // "${workspaceFolder}/kafka_sample"
+    ],
+    "python.autoComplete.extraPaths": [
+        // "${workspaceFolder}/kafka_sample"
     ],
     "[python]": {
         "editor.formatOnSave": true,

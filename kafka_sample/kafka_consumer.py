@@ -1,8 +1,8 @@
 import json
+
 from kafka import KafkaConsumer
 
 topic = 'my-topic'
-# topic = 'facebook-items'
 group_id = 'my-group'
 kafka_servers = ['localhost:9092']
 

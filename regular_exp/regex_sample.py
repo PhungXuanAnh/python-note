@@ -22,7 +22,7 @@ def re_match():
 
     print('--------------------------------------------------------')
 
-def re_search_and_findall():
+def re_search_and_find_all():
     str1 = """
     https://www.facebook.com/permalink.php?story_fbid=10155920035801729&id=20531316728
     https://www.facebook.com/vtvgiaitri/videos/279319469574649/?__xts__[0]=68.ARCQ67ZrgbOi3NKv6Tzvey1rez0f7ssLZDtUsrkHXJVgEwzizmUbj9HOb3Nx0ulDlLJb_9dqDxJfWPcdBZns-WuvWsAyw6W7-NmgCRX-Gx3ubPTxkax9fD6i6KRVsGUl1XdCM7hxe0snewh8e5ScY9plBGSxn5IPGxvq1x-80ZM8XRtwK3QL&__tn__=-R
@@ -48,7 +48,7 @@ def find_and_replace_with_replace_func():
             return b
     print(re.sub('\[\[:(.+?):\]\]', repl, text)) # desired output: find a replacement for me foo and bar
 
-# re_match()
+re_match()
 # re_search_and_findall()
-find_and_replace()
+# find_and_replace()
 # find_and_replace_with_replace_func()

@@ -1,14 +1,9 @@
 import json
-import traceback
+
 from kafka import KafkaProducer
-from kafka.errors import KafkaError
 
-# topic = 'my-topic'
-# topic = 'facebook-items'
-topic = '135_tommy'
-
-# kafka_servers = ['localhost:9092']
-kafka_servers = ['167.71.198.165:9092']
+topic = 'my-topic'
+kafka_servers = ['localhost:9092']
 
 # # -----------------------------------------------------
 # # # asynchronous by default

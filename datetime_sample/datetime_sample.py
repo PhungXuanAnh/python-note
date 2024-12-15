@@ -164,6 +164,13 @@ def parse_date_time_from_string():
     )
     print(datetime_object)
 
+    string_contain_date_time_2 = "2022-05-06T13:45:36.991497Z"
+    define_format_code_of_string_contain_date_time_2 = "%Y-%m-%dT%H:%M:%S.%fZ"
+    datetime_object = datetime.datetime.strptime(
+        string_contain_date_time_2, define_format_code_of_string_contain_date_time_2
+    )
+    print(datetime_object)
+
     time_str = "11::33::54"
     time_obj = time.strptime(time_str, "%H::%M::%S")
     print("A time.struct_time object that uses the format provided: ", time_obj)
