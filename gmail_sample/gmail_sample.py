@@ -39,7 +39,7 @@ def send_gmail(sent_subject, sent_text):
             "",
             sent_text,
         ]
-    )
+    ).encode("utf-8")
 
     try:
         server = smtplib.SMTP_SSL("smtp.gmail.com", 465)
