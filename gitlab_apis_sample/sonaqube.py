@@ -1,4 +1,51 @@
 #!/home/xuananh/.pyenv/shims/python
+"""
+Start sonarqube server:
+    docker run --name sonarqube-custom -p 9000:9000 sonarqube:community
+    
+    Access sonarqube server: http://localhost:9000/
+    Default username/password: admin/admin
+    Access sonarqube server API: http://localhost:9000/api/
+
+How to scan a project:
+
+    ~/Downloads/sonar-scanner-6.2.1.4610-linux-x64/bin/sonar-scanner \
+        -Dsonar.projectKey=ticketing-v2 \
+        -Dsonar.sources=apps \
+        -Dsonar.inclusions="**/*.py" \
+        -Dsonar.exclusions="**/tests/**, **/migrations/**,  **/whitelabels/**, **/.*/**, **/*.css, **/*.js" \
+        -Dsonar.host.url=http://localhost:9000 \
+        -Dsonar.token=sqp_c60b98cf6f2095f6a3f35095d834550e78284dc2 \
+        -Dsonar.python.version=2.7
+ 
+How to scan and debug a project:
+    ~/Downloads/sonar-scanner-6.2.1.4610-linux-x64/bin/sonar-scanner \
+        -Dsonar.projectKey=ticketing-v2 \
+        -Dsonar.sources=apps \
+        -Dsonar.inclusions="**/*.py" \
+        -Dsonar.exclusions="**/tests/**, **/migrations/**,  **/whitelabels/**, **/.*/**, **/*.css, **/*.js" \
+        -Dsonar.host.url=http://localhost:9000 \
+        -Dsonar.token=sqp_c60b98cf6f2095f6a3f35095d834550e78284dc2 \
+        -Dsonar.python.version=2.7 \
+        -X
+        
+How to get token and download client:
+    Get already exist token for each project in this link: http://localhost:9000/account/security/
+    Or create token for a project:
+        Go to project -> Locally -> Generate a project token -> Generate
+        Click Continue -> Other (for JS, TS, Go, Python, PHP, ...) -> Linux -> Click to the link to download client
+        
+Step to use sonarqube:
+    1. Checkout to master branch or target branch in the PR. Then scan the project
+    2. Checkout to the working branch. Then scan the project
+    3. Open sonarqube dashboard -> Overview -> Failed -> New Code -> New issues
+    
+How to get api token:
+    http://localhost:9000/account/security/
+    Create new token type User token -> Generate -> copy token
+"""
+
+
 import json
 
 import requests
