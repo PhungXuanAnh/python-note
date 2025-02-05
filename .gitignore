@@ -10,3 +10,4 @@ test
 
 celerybeat*
 tmp.*
+env.sh

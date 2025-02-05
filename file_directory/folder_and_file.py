@@ -1,6 +1,19 @@
-import time
+"""
+Summarize the I/O behaviors: https://stackoverflow.com/a/58925279/7639845
+
+Mode	                r	r+	w	w+	a	a+
+Read	                +	+		+		+
+Write		                +	+	+	+	+
+Create			                +	+	+	+
+Cover			                +	+		
+Point in the beginning	+	+	+	+		
+Point in the end					+	+
+
+"""
+
 import os
 import shutil
+import time
 
 # Find out current working directory #
 current_dir = os.path.dirname(__file__)
@@ -57,3 +70,17 @@ print("get file path: ", os.path.dirname('/users/system1/student1/homework-1.py'
 # expand the tilde manually
 my_dir = '~/some_dir'
 print("{} -----------> {}".format(my_dir, os.path.expanduser(my_dir)))
+
+
+def read_file_then_write_to_it():
+    # https://stackoverflow.com/a/15976014/7639845
+    with open(
+        "file_directory/sample_files/test_read_file_then_write_to_it.txt", "r+"
+    ) as f:
+        content = f.read()
+        f.seek(0)
+        f.write(content + "new content")
+        f.truncate()
+
+
+read_file_then_write_to_it()

@@ -1,0 +1,22 @@
+<html>
+  <head>
+    <style>
+      table, th, td {
+        border: 1px solid black;
+        border-collapse: collapse;
+        padding: 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <p>Hi {{name}},</p>
+    <p>Test Reports:</p>
+    <table>
+      <tr>
+        <th>Class Name</th>
+        <th>Error Stack Trace</th>
+      </tr>
+      {{report_rows}}
+    </table>
+  </body>
+</html>

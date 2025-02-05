@@ -1,0 +1,145 @@
+{
+  "_class": "org.jenkinsci.plugins.workflow.job.WorkflowRun",
+  "actions": [
+    {
+      "_class": "hudson.model.CauseAction",
+      "causes": [
+        {
+          "_class": "jenkins.branch.BranchEventCause",
+          "shortDescription": "Pull request #5273 updated"
+        }
+      ]
+    },
+    {
+      "_class": "jenkins.metrics.impl.TimeInQueueAction",
+      "blockedDurationMillis": 0,
+      "blockedTimeMillis": 0,
+      "buildableDurationMillis": 0,
+      "buildableTimeMillis": 189278,
+      "buildingDurationMillis": 880160,
+      "executingTimeMillis": 3835435,
+      "executorUtilization": 4.36,
+      "subTaskCount": 9,
+      "waitingDurationMillis": 0,
+      "waitingTimeMillis": 0
+    },
+    {
+      "_class": "jenkins.scm.api.SCMRevisionAction"
+    },
+    {},
+    {},
+    {},
+    {
+      "_class": "hudson.plugins.git.util.BuildData",
+      "buildsByBranchName": {
+        "PR-5273": {
+          "_class": "hudson.plugins.git.util.Build",
+          "buildNumber": 9,
+          "buildResult": null,
+          "marked": {
+            "SHA1": "94c08bd441a78be30c5f3e0a9aecd54d5d8eae75",
+            "branch": [
+              {
+                "SHA1": "94c08bd441a78be30c5f3e0a9aecd54d5d8eae75",
+                "name": "PR-5273"
+              }
+            ]
+          },
+          "revision": {
+            "SHA1": "94c08bd441a78be30c5f3e0a9aecd54d5d8eae75",
+            "branch": [
+              {
+                "SHA1": "94c08bd441a78be30c5f3e0a9aecd54d5d8eae75",
+                "name": "PR-5273"
+              }
+            ]
+          }
+        }
+      },
+      "lastBuiltRevision": {
+        "SHA1": "94c08bd441a78be30c5f3e0a9aecd54d5d8eae75",
+        "branch": [
+          {
+            "SHA1": "94c08bd441a78be30c5f3e0a9aecd54d5d8eae75",
+            "name": "PR-5273"
+          }
+        ]
+      },
+      "remoteUrls": [
+        "git@github.com:showheroes/viralize-web.git"
+      ],
+      "scmName": ""
+    },
+    {
+      "_class": "hudson.plugins.git.GitTagAction"
+    },
+    {},
+    {
+      "_class": "org.jenkinsci.plugins.workflow.cps.EnvActionImpl"
+    },
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {
+      "_class": "hudson.tasks.junit.TestResultAction",
+      "failCount": 1,
+      "skipCount": 62,
+      "totalCount": 7858,
+      "urlName": "testReport"
+    },
+    {},
+    {},
+    {},
+    {},
+    {},
+    {
+      "_class": "org.jenkinsci.plugins.displayurlapi.actions.RunDisplayAction"
+    },
+    {
+      "_class": "org.jenkinsci.plugins.pipeline.modeldefinition.actions.RestartDeclarativePipelineAction"
+    },
+    {},
+    {
+      "_class": "org.jenkinsci.plugins.workflow.job.views.FlowGraphAction"
+    },
+    {},
+    {},
+    {}
+  ],
+  "artifacts": [],
+  "building": false,
+  "description": null,
+  "displayName": "#9",
+  "duration": 880160,
+  "estimatedDuration": 963035,
+  "executor": null,
+  "fullDisplayName": "Viralize Web » PR-5273 #9",
+  "id": "9",
+  "keepLog": false,
+  "number": 9,
+  "queueId": 485368,
+  "result": "FAILURE",
+  "timestamp": 1738634765161,
+  "url": "https://jenkins.showheroes.com/job/pipeline-multibranch-viralize-web/job/PR-5273/9/",
+  "changeSets": [],
+  "culprits": [],
+  "nextBuild": null,
+  "previousBuild": {
+    "number": 8,
+    "url": "https://jenkins.showheroes.com/job/pipeline-multibranch-viralize-web/job/PR-5273/8/"
+  }
+}

@@ -18,4 +18,25 @@
         "editor.formatOnSaveMode": "modifications",
         "editor.defaultFormatter": "ms-python.black-formatter", // modifications
     },
+    // these configures to run python in terminal
+    "python.terminal.executeInFileDir": false,
+    // "terminal.integrated.env.linux": {
+    //     "PYTHONPATH": "/home/xuananh/repo/python-note"  // this env to run python in terminal
+    // },
+
+    // define a terminal profile with env vars to run python in terminal
+    // refer: https://code.visualstudio.com/docs/terminal/profiles
+    // add your env files in this file: generate_env_sh_file.py
+    // and then run it again to generate env.sh file
+    "terminal.integrated.profiles.linux": {
+    "zsh-with-env-vars": {
+        "path": "zsh",
+        "args": [
+            "-i",
+            "-c",
+            "source env.sh; exec zsh"
+        ]
+    }
+    },
+    "terminal.integrated.defaultProfile.linux": "zsh-with-env-vars"
 }

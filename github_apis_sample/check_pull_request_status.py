@@ -1,0 +1,224 @@
+import json
+import os
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+
+from github_apis_sample.common import (
+    get_commit_status,
+    get_latest_commit,
+    list_pull_requests,
+)
+from jenkins_utils.jenkins_utils import get_jenkins_job_test_report
+from json_sample.json_with_comment import JSONWithCommentsDecoder
+
+
+def send_html_email(subject, test_reports: list):
+    """
+    test_reports = [
+        {
+            "className": "viralize_web.api_adsources.tests.test_serializers.AdSourceSerializerSaveBOTC",
+            "errorStackTrace": 'Traceback (most recent call last):\n  File "/app/viralize_web/api_adsources/tests/test_serializers.py", line 108, in test_prebid_warnings_schain\n    self.assertTrue(ser.is_valid())\n  File "/usr/local/lib/python3.9/site-packages/rest_framework/serializers.py", line 227, in is_valid\n    self._validated_data = self.run_validation(self.initial_data)\n  File "/usr/local/lib/python3.9/site-packages/rest_framework/serializers.py", line 430, in run_validation\n    assert value is not None, \'.validate() should return the validated data\'\nAssertionError: .validate() should return the validated data\n',
+        },
+        {
+            "className": "viralize_web.api_sites.tests.test_website_api.SitesCheckNotActive",
+            "errorStackTrace": 'Traceback (most recent call last):\n  File "/app/viralize_web/api_sites/tests/test_website_api.py", line 143, in test_check_suspend_sites_with_valid_input\n    self.assertEqual(response.json(), [2, 3, 4])\nAssertionError: Lists differ: [1, 2, 3, 4] != [2, 3, 4]\n\nFirst differing element 0:\n1\n2\n\nFirst list contains 1 additional elements.\nFirst extra element 3:\n4\n\n- [1, 2, 3, 4]\n?  ---\n\n+ [2, 3, 4]\n',
+        },
+        {
+            "className": "VideoAdSource/VideoAdSourceClone renders the adsource info from api and suggested name",
+            "errorStackTrace": "FetchError: invalid json response body at  reason: Unexpected end of JSON input\n    at /app/components/node_modules/node-fetch/lib/index.js:272:32\n    at processTicksAndRejections (node:internal/process/task_queues:95:5)",
+        },
+    ]
+    """
+    gmail_user = os.environ.get("GMAIL_USER")
+    gmail_app_password = os.environ.get("GMAIL_APP_PW")
+    sent_from = gmail_user
+    sent_to = ["phungxuananh1991+python_app@gmail.com"]
+
+    # Load the HTML template from an external file.
+    with open("github_apis_sample/email_template.html", "r") as template_file:
+        html_template = template_file.read()
+
+    # Define the recipient's name and format it in bold with red color.
+    recipient_name = "guys"
+    formatted_name = f'<strong style="color:red;">{recipient_name}</strong>'
+
+    # Generate table rows for each test report
+    report_rows = ""
+    for report in test_reports:
+        row = f"""
+        <tr>
+            <td>{report['className']}</td>
+            <td><pre>{report['errorStackTrace']}</pre></td>
+        </tr>
+        """
+        report_rows += row
+
+    # Replace placeholders in the HTML template with generated content.
+    html_content = html_template.replace("{{name}}", formatted_name)
+    html_content = html_content.replace("{{report_rows}}", report_rows)
+
+    # Create a plain text version for clients that don't support HTML.
+    plain_text = f"Hi {recipient_name},\n\n"
+    plain_text += subject + ":\n"
+    for report in test_reports:
+        plain_text += (
+            f"Class Name: {report['className']}\nError: {report['errorStackTrace']}\n\n"
+        )
+
+    # Create the MIME message container with multipart/alternative.
+    msg = MIMEMultipart("alternative")
+    msg["Subject"] = subject
+    msg["From"] = sent_from
+    msg["To"] = ", ".join(sent_to)
+
+    # Attach both plain text and HTML parts.
+    # Including part1, the plain text alternative, is not strictly required
+    # if all your recipients support HTML emails. However, it is a good practice
+    # to include a plain text version to ensure maximum compatibility with email
+    # clients that may not render HTML properly.
+    part1 = MIMEText(plain_text, "plain")
+    part2 = MIMEText(html_content, "html")
+    msg.attach(part1)
+    msg.attach(part2)
+
+    # Connect securely to Gmail's SMTP server and send the email.
+    server = smtplib.SMTP_SSL("smtp.gmail.com", 465)
+    server.ehlo()
+    server.login(gmail_user, gmail_app_password)
+    server.sendmail(sent_from, sent_to, msg.as_string())
+    server.close()
+    print("Email sent with subject:", subject)
+
+
+def check_to_send_email(
+    owner, repo, pr, lastest_commit_id, commit_status_updated_at, failed_tests_report
+):
+    """
+    Get all failed pull requests from a json file
+        path: /tmp/github-failed-pull-requests.json
+        sample content:
+            {
+                "showheroes/viralize-web/pull/5262": {
+                    "last_commit_id": "status updated at",
+                },
+            }
+    if the pull request is not in the file, add it to the file and send an email to report failed tests
+    if the pull request is in the file, check if the last_commit_id is different from the one in the file
+        if different, update the last_commit_id and commit_status_updated_at in the file and send an email to report failed tests
+        if the same, check if the commit_status_updated_at is different from the one in the file,
+            if different, send an email to report failed tests and update the commit_status_updated_at in the file
+    """
+    pr_url = f"{owner}/{repo}/pull/{pr['number']}"
+    subject = f"Failed tests branch: {pr['source_branch']}"
+    with open("/tmp/github-failed-pull-requests.json", "r+") as f:
+        failed_pull_requests = json.loads(f.read())
+        failed_pr = failed_pull_requests.get(pr_url, {})
+        if (
+            not failed_pr
+            or failed_pr.get("last_commit_id") != lastest_commit_id
+            or failed_pr.get("commit_status_updated_at") != commit_status_updated_at
+        ):
+            failed_pull_requests[pr_url] = {
+                "last_commit_id": lastest_commit_id,
+                "commit_status_updated_at": commit_status_updated_at,
+            }
+            f.seek(0)
+            f.write(json.dumps(failed_pull_requests, indent=4, sort_keys=True))
+            f.truncate()
+            send_html_email(subject, failed_tests_report)
+
+
+def check_pull_request_status(owner, repo, pr, gh_token):
+    latest_commit = get_latest_commit(owner, repo, pr["number"], gh_token)
+    if not latest_commit:
+        return None
+    commit_sha = latest_commit["sha"]
+    status = get_commit_status(owner, repo, commit_sha, gh_token)
+    state = status.get("state", "")
+
+    jenkins_job_url = ""
+    if state == "failure":
+        for status in status["statuses"]:
+            if status["state"] == "error":
+                jenkins_job_url = status["target_url"].removesuffix("display/redirect")
+
+    failed_tests_report = []
+    if jenkins_job_url:
+        test_report = get_jenkins_job_test_report(
+            jenkins_job_url, jenkins_user, jenkins_token
+        )
+        # NOTE: refer to sample test report response in jenkins_utils/sample_response/test-report.json
+        for report in test_report["suites"]:
+            for case in report["cases"]:
+                if case["status"] == "FAILED":
+                    failed_tests_report.append(
+                        {
+                            "className": case["className"],
+                            "errorStackTrace": case["errorStackTrace"],
+                        }
+                    )
+
+    # print(f"Failed tests report: {failed_tests_report}")
+    if failed_tests_report:
+        check_to_send_email(
+            owner,
+            repo,
+            pr,
+            commit_sha,
+            status["updated_at"],
+            failed_tests_report,
+        )
+
+
+def get_pull_requests_of_user(owner, repo, gh_token, user):
+    pull_requests = []
+    for pr in list_pull_requests(owner, repo, gh_token):
+        if pr["user"]["login"] == user:
+            pull_requests.append(
+                {
+                    "number": pr["number"],
+                    "source_branch": pr["head"]["ref"],
+                }
+            )
+    return pull_requests
+
+
+def remove_unused_pull_request(owner, repo, pull_requests):
+    currrent_pull_requests = [
+        f"{owner}/{repo}/pull/{pr['number']}" for pr in pull_requests
+    ]
+    with open("/tmp/github-failed-pull-requests.json", "r+") as f:
+        failed_pull_requests = {}
+        data = f.read()
+        failed_pull_requests = json.loads(data) if data else {}
+        for pr_url in list(failed_pull_requests.keys()):
+            if pr_url not in currrent_pull_requests:
+                del failed_pull_requests[pr_url]
+        f.seek(0)
+        f.write(json.dumps(failed_pull_requests, indent=4, sort_keys=True))
+        f.truncate()
+
+
+if __name__ == "__main__":
+    GH_TOKEN = os.environ.get("GH_TOKEN_PhungXuanAnh")
+    jenkins_user = os.environ.get("SH_JENKINS_EMAIL")
+    jenkins_token = os.environ.get("SH_JENKINS_TOKEN")
+
+    file_name = "/tmp/github-failed-pull-requests.json"
+
+    if not os.path.exists(file_name):
+        # Create the file and write some initial content
+        with open(file_name, "w") as file:
+            file.write("{}")
+
+    owner = "showheroes"
+    repo = "viralize-web"
+    user = "PhungXuanAnh"
+
+    pull_requests = get_pull_requests_of_user(owner, repo, GH_TOKEN, user)
+    for pr in pull_requests:
+        print("Checking PR:", pr["number"])
+        check_pull_request_status(owner, repo, pr, GH_TOKEN)
+
+    remove_unused_pull_request(owner, repo, pull_requests)
