@@ -171,6 +171,8 @@ def check_pull_request_status(owner, repo, pr, gh_token):
         test_report = get_jenkins_job_test_report(
             jenkins_job_url, jenkins_user, jenkins_token
         )
+        if not test_report:
+            return None
         # NOTE: refer to sample test report response in jenkins_utils/sample_response/test-report.json
         for report in test_report["suites"]:
             for case in report["cases"]:
