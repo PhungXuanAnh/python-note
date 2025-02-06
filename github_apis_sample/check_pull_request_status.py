@@ -11,11 +11,13 @@
         export GH_TOKEN_PhungXuanAnh="ghp_fakeGitHubToken1234567890"
         export PYTHONPATH="/home/ubuntu/.tmp/python-note"
 
-    5. create a script file named: vim check_pull_request_status.sh with this content:
-        #!/bin/bash
-        source /home/ubuntu/.tmp/python-note/env_file
-        /home/ubuntu/.tmp/python-note/.venv/bin/python \
-            /home/ubuntu/.tmp/python-note/github_apis_sample/check_pull_request_status.py
+    5. create a script file named: 
+        vim check_pull_request_status.sh 
+        with this content:
+            #!/bin/bash
+            source /home/ubuntu/.tmp/python-note/env_file
+            cd /home/ubuntu/.tmp/python-note/
+            .venv/bin/python github_apis_sample/check_pull_request_status.py
     6. make the script executable: chmod +x check_pull_request_status.sh
     7. create a cron job to run this script every 10 minutes:
         crontab -e
