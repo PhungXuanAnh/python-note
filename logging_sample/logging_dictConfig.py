@@ -45,7 +45,11 @@ class MyFilter(logging.Filter):
             allow = self.param not in record.msg
 
         if allow:
-            record.msg = "changed: " + record.msg + "\n---------------------------------"
+            record.msg = (
+                "\n------------------------\n"
+                + record.msg
+                + "\n=============================\n"
+            )
 
         return allow
 
