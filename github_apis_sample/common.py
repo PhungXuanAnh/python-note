@@ -54,7 +54,7 @@ def get_commit_status(owner, repo, commit_sha, gh_token) -> dict:
     return resp.json()
 
 
-def list_pull_requests(owner, repo, gh_token) -> list:
+def list_pull_requests(owner, repo, gh_token, state=None) -> list:
     """
         Reference: https://docs.github.com/en/rest/pulls/pulls?apiVersion=2022-11-28#list-pull-requests
         curl -L \
@@ -63,6 +63,12 @@ def list_pull_requests(owner, repo, gh_token) -> list:
             -H "X-GitHub-Api-Version: 2022-11-28" \
             https://api.github.com/repos/OWNER/REPO/pulls
     """
+    url = (f"https://api.github.com/repos/{owner}/{repo}/pulls",)
+    if state == "open" or state == "closed" or state == "all":
+        # by default, the GitHub API lists only open pull requests if no state parameter is specified. 
+        # To list all pull requests regardless of their state, you need to add the state parameter 
+        # with the value `all`.
+        url += f"?state={state}"
     resp = requests.get(
         url=f"https://api.github.com/repos/{owner}/{repo}/pulls",
         headers={
@@ -79,10 +85,8 @@ def list_pull_requests(owner, repo, gh_token) -> list:
 
 if __name__ == "__main__":
     import json
+    import os
 
-    GH_TOKEN = open(
-        "/home/xuananh/Dropbox/Work/Other/credentials_bk/github_basic-token-PhungXuanAnh.txt",
-        "r",
-    ).read()
+    GH_TOKEN = os.environ.get("GH_TOKEN_PhungXuanAnh")
     resp = list_pull_requests("showheroes", "viralize-web", GH_TOKEN)
     print(json.dumps(resp, indent=4))
