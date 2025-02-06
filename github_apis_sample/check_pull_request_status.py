@@ -1,3 +1,27 @@
+"""
+    to run this script in the server
+    1. clone project
+    2. create a virtual environment
+    3. install requirements: make install-all-requirements
+    4. create a env_file with this content: (refer their values in the env.sh file in this repo)
+        export SH_JENKINS_EMAIL="fake.email@email.com"
+        export SH_JENKINS_TOKEN="fakejenkinstoken1234567890"
+        export GMAIL_USER="fakeemail@gmail.com"
+        export GMAIL_APP_PW="fakeapppassword123456"
+        export GH_TOKEN_PhungXuanAnh="ghp_fakeGitHubToken1234567890"
+        export PYTHONPATH="/home/ubuntu/.tmp/python-note"
+
+    5. create a script file named: vim check_pull_request_status.sh with this content:
+        #!/bin/bash
+        source /home/ubuntu/.tmp/python-note/env_file
+        /home/ubuntu/.tmp/python-note/.venv/bin/python \
+            /home/ubuntu/.tmp/python-note/github_apis_sample/check_pull_request_status.py
+    6. make the script executable: chmod +x check_pull_request_status.sh
+    7. create a cron job to run this script every 10 minutes:
+        crontab -e
+        */10 * * * * /home/ubuntu/.tmp/python-note/check_pull_request_status.sh > /tmp/check_pull_request_status.log 2>&1
+"""
+
 import json
 import os
 import smtplib
@@ -10,12 +34,11 @@ from github_apis_sample.common import (
     list_pull_requests,
 )
 from jenkins_utils.jenkins_utils import get_jenkins_job_test_report
-from json_sample.json_with_comment import JSONWithCommentsDecoder
 
 
 def send_html_email(subject, test_reports: list):
     """
-    test_reports = [
+    sample test_reports = [
         {
             "className": "viralize_web.api_adsources.tests.test_serializers.AdSourceSerializerSaveBOTC",
             "errorStackTrace": 'Traceback (most recent call last):\n  File "/app/viralize_web/api_adsources/tests/test_serializers.py", line 108, in test_prebid_warnings_schain\n    self.assertTrue(ser.is_valid())\n  File "/usr/local/lib/python3.9/site-packages/rest_framework/serializers.py", line 227, in is_valid\n    self._validated_data = self.run_validation(self.initial_data)\n  File "/usr/local/lib/python3.9/site-packages/rest_framework/serializers.py", line 430, in run_validation\n    assert value is not None, \'.validate() should return the validated data\'\nAssertionError: .validate() should return the validated data\n',

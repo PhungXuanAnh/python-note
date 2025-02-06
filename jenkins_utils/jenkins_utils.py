@@ -36,7 +36,7 @@ def get_jenkins_job_test_report(job_url, jenkins_user, jenkins_token) -> dict:
         auth=(jenkins_user, jenkins_token),
     )
     if resp.status_code != 200:
-        print(resp.json())
+        print(resp.text)
         return {}
     return resp.json()
 
