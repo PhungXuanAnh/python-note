@@ -4,6 +4,8 @@
 
 import requests
 
+from logging_sample.logging_dictConfig import console_logger
+
 
 def get_jenkins_job_info(job_url, jenkins_user, jenkins_token) -> dict:
     """
@@ -18,7 +20,7 @@ def get_jenkins_job_info(job_url, jenkins_user, jenkins_token) -> dict:
         auth=(jenkins_user, jenkins_token),
     )
     if resp.status_code != 200:
-        print(resp.json())
+        console_logger.debug(resp.json())
         return {}
     return resp.json()
 
@@ -31,12 +33,15 @@ def get_jenkins_job_test_report(job_url, jenkins_user, jenkins_token) -> dict:
         Sample job url: https://jenkins.showheroes.com/job/pipeline-multibranch-viralize-web/job/PR-5273/9
     """
 
+    test_report_url = job_url + "/testReport/api/json"
     resp = requests.get(
-        url=job_url + "/testReport/api/json",
+        url=test_report_url,
         auth=(jenkins_user, jenkins_token),
     )
     if resp.status_code != 200:
-        print(resp.text)
+        console_logger.debug(
+            "Response status %s : %s", resp.status_code, test_report_url
+        )
         return {}
     return resp.json()
 
@@ -49,6 +54,6 @@ if __name__ == "__main__":
         .splitlines()
     )
     job_url = "https://jenkins.showheroes.com/job/pipeline-multibranch-viralize-web/job/PR-5273/5"
-    # print(get_jenkins_job_info(job_url, jenkins_user, jenkins_token))
+    # console_logger.debug(get_jenkins_job_info(job_url, jenkins_user, jenkins_token))
     resp = get_jenkins_job_test_report(job_url, jenkins_user, jenkins_token)
-    print(json.dumps(resp, indent=4))
+    console_logger.debug(json.dumps(resp, indent=4))

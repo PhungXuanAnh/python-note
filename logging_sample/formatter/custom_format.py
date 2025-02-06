@@ -21,7 +21,7 @@ def the_first_way():
 
 class MyCustomFormatAttributes(logging.Filter):
     def filter(self, record):
-        record.custom_format = 'this is custom format added by Filter'
+        record.custom_format = 'custom_format'
         return True
 
 def the_second_way():

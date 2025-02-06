@@ -20,7 +20,7 @@ current_dir = os.path.dirname(__file__)
 print(current_dir)
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
-print(dir_path)
+print("directory path of the current file: ", dir_path)
 
 current_working_dir = os.getcwd()
 print(current_working_dir)

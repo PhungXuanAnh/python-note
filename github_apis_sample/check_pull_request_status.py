@@ -34,6 +34,7 @@ from github_apis_sample.common import (
     list_pull_requests,
 )
 from jenkins_utils.jenkins_utils import get_jenkins_job_test_report
+from logging_sample.logging_dictConfig import console_logger
 
 
 def send_html_email(subject, test_reports: list):
@@ -111,7 +112,7 @@ def send_html_email(subject, test_reports: list):
     server.login(gmail_user, gmail_app_password)
     server.sendmail(sent_from, sent_to, msg.as_string())
     server.close()
-    print("Email sent with subject:", subject)
+    console_logger.debug("Email sent with subject: %s", subject)
 
 
 def check_to_send_email(
@@ -133,7 +134,9 @@ def check_to_send_email(
             if different, send an email to report failed tests and update the commit_status_updated_at in the file
     """
     pr_url = f"{owner}/{repo}/pull/{pr['number']}"
-    subject = f"Failed tests branch: {pr['source_branch']}"
+    subject = f"Branch failed unknown reason: {pr['source_branch']}"
+    if failed_tests_report:
+        subject = f"Branch failed tests: {pr['source_branch']}"
     with open("/tmp/github-failed-pull-requests.json", "r+") as f:
         failed_pull_requests = json.loads(f.read())
         failed_pr = failed_pull_requests.get(pr_url, {})
@@ -160,40 +163,45 @@ def check_pull_request_status(owner, repo, pr, gh_token):
     status = get_commit_status(owner, repo, commit_sha, gh_token)
     state = status.get("state", "")
 
-    jenkins_job_url = ""
+    jenkins_failed_job_url = ""
     if state == "failure":
         for status in status["statuses"]:
             if status["state"] == "error":
-                jenkins_job_url = status["target_url"].removesuffix("display/redirect")
+                jenkins_failed_job_url = status["target_url"].removesuffix(
+                    "display/redirect"
+                )
+                break
 
     failed_tests_report = []
-    if jenkins_job_url:
+    if jenkins_failed_job_url:
         test_report = get_jenkins_job_test_report(
-            jenkins_job_url, jenkins_user, jenkins_token
+            jenkins_failed_job_url, jenkins_user, jenkins_token
         )
-        if not test_report:
-            return None
-        # NOTE: refer to sample test report response in jenkins_utils/sample_response/test-report.json
-        for report in test_report["suites"]:
-            for case in report["cases"]:
-                if case["status"] == "FAILED":
-                    failed_tests_report.append(
-                        {
-                            "className": case["className"],
-                            "errorStackTrace": case["errorStackTrace"],
-                        }
-                    )
+        if test_report:
+            # NOTE: refer to sample test report response in jenkins_utils/sample_response/test-report.json
+            for report in test_report["suites"]:
+                for case in report["cases"]:
+                    if case["status"] == "FAILED":
+                        failed_tests_report.append(
+                            {
+                                "className": case["className"],
+                                "errorStackTrace": case["errorStackTrace"],
+                            }
+                        )
 
-    # print(f"Failed tests report: {failed_tests_report}")
-    if failed_tests_report:
-        check_to_send_email(
-            owner,
-            repo,
-            pr,
-            commit_sha,
-            status["updated_at"],
-            failed_tests_report,
-        )
+    # console_logger.debug(f"Failed tests report: {failed_tests_report}")
+    if status.get("updated_at"):
+        last_commit_updated_at = status["updated_at"]
+    else:
+        last_commit_updated_at = status["statuses"][0]["updated_at"]
+    check_to_send_email(
+        owner,
+        repo,
+        pr,
+        commit_sha,
+        last_commit_updated_at,
+        failed_tests_report,
+    )
 
 
 def get_pull_requests_of_user(owner, repo, gh_token, user):
@@ -243,7 +251,7 @@ if __name__ == "__main__":
 
     pull_requests = get_pull_requests_of_user(owner, repo, GH_TOKEN, user)
     for pr in pull_requests:
-        print("Checking PR:", pr["number"])
+        console_logger.debug("Checking PR: %s", pr["number"])
         check_pull_request_status(owner, repo, pr, GH_TOKEN)
 
     remove_unused_pull_request(owner, repo, pull_requests)

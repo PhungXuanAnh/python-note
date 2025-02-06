@@ -23,10 +23,10 @@ thread             %(thread)d    Thread ID (if available).
 threadName         %(threadName)s    Thread name (if available).
 '''
 
-from logging.config import dictConfig
+import json
 import logging
 import os
-import json
+from logging.config import dictConfig
 
 # with open('/home/xuananh/Dropbox/Work/Other/slack-token-api-key.json', "r") as in_file:
 #     SLACK_API_KEY = json.load(in_file)['phungxuananh']
@@ -43,57 +43,58 @@ class MyFilter(logging.Filter):
             allow = True
         else:
             allow = self.param not in record.msg
-        
+
         if allow:
-            record.msg = 'changed: ' + record.msg
-        
+            record.msg = "changed: " + record.msg + "\n---------------------------------"
+
         return allow
 
-LOG_DIR = 'logs'
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'filters': {
-        'add_my_custom_attribute': {
-            '()': 'formatter.custom_format.MyCustomFormatAttributes',
+
+LOG_DIR = os.path.dirname(os.path.realpath(__file__)) + "/logs"
+os.makedirs(LOG_DIR) if not os.path.exists(LOG_DIR) else None
+
+LOGGING_CONFIG = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "filters": {
+        "add_my_custom_attribute": {
+            "()": "logging_sample.formatter.custom_format.MyCustomFormatAttributes",
         },
-        'myfilter': {
-            '()': MyFilter,
-            'param': 'noshow',
-        }
-    },
-    'formatters': {
-        'verbose': {
-            'format': "[%(asctime)s] [%(custom_format)s] [%(funcName)s] [%(pathname)s:%(lineno)d] %(levelname)s: %(message)s"
-        },
-        'simple': {
-            'format': '%(levelname)s %(message)s'
+        "myfilter": {
+            "()": MyFilter,
+            "param": "noshow",
         },
     },
-    'handlers': {
-        'console': {
-            'level': 'DEBUG',
-            'class': 'logging.StreamHandler',
-            'formatter': 'verbose',
-            'filters': ['add_my_custom_attribute', 'myfilter']
+    "formatters": {
+        "verbose": {
+            "format": "[%(asctime)s] [%(custom_format)s] [%(pathname)s:%(lineno)d] [%(funcName)s] %(levelname)s: %(message)s"
         },
-        'app.DEBUG': {
-            'level': 'DEBUG',
-            'class': 'logging.handlers.RotatingFileHandler',
-            'formatter': 'verbose',
-            'filename': LOG_DIR + '/app.log',
-            'maxBytes': 1 * 1024,  # 1Kb       #100 * 1024 * 1024,  # 100Mb
-            'backupCount': 3,
-            'filters': ['add_my_custom_attribute']
+        "simple": {"format": "%(levelname)s %(message)s"},
+    },
+    "handlers": {
+        "console": {
+            "level": "DEBUG",
+            "class": "logging.StreamHandler",
+            "formatter": "verbose",
+            "filters": ["add_my_custom_attribute", "myfilter"],
         },
-        'app.ERROR': {
-            'level': 'ERROR',
-            'class': 'logging.handlers.RotatingFileHandler',
-            'formatter': 'verbose',
-            'filename': LOG_DIR + '/app.ERROR.log',
-            'maxBytes': 1 * 1024,  # 1Kb       #100 * 1024 * 1024,  # 100Mb
-            'backupCount': 3,
-            'filters': ['add_my_custom_attribute']
+        "app.DEBUG": {
+            "level": "DEBUG",
+            "class": "logging.handlers.RotatingFileHandler",
+            "formatter": "verbose",
+            "filename": LOG_DIR + "/app.log",
+            "maxBytes": 1 * 1024,  # 1Kb       #100 * 1024 * 1024,  # 100Mb
+            "backupCount": 3,
+            "filters": ["add_my_custom_attribute"],
+        },
+        "app.ERROR": {
+            "level": "ERROR",
+            "class": "logging.handlers.RotatingFileHandler",
+            "formatter": "verbose",
+            "filename": LOG_DIR + "/app.ERROR.log",
+            "maxBytes": 1 * 1024,  # 1Kb       #100 * 1024 * 1024,  # 100Mb
+            "backupCount": 3,
+            "filters": ["add_my_custom_attribute"],
         },
         # 'slack.ERROR': {
         #     'level': 'ERROR',
@@ -102,29 +103,33 @@ LOGGING = {
         #     'channel': LOGGING_SLACK_CHANNEL
         # },
     },
-    'loggers': {
-        'app': {
-            'handlers': ['console', 'app.DEBUG', 'app.ERROR'],
-            'propagate': False,
-            'level': 'INFO',
+    "loggers": {
+        "console": {
+            "handlers": ["console"],
+            "level": "DEBUG",
+            "propagate": False,
         },
-    }
+        "all-handlers": {
+            "handlers": ["console", "app.DEBUG", "app.ERROR"],
+            "propagate": False,
+            "level": "INFO",
+        },
+    },
 }
 
-if not os.path.exists(LOG_DIR):
-    os.makedirs(LOG_DIR)
+dictConfig(LOGGING_CONFIG)
+all_handlers_logger = logging.getLogger("all-handlers")
+console_logger = logging.getLogger("console")
 
-dictConfig(LOGGING)
+if __name__ == "__main__":
 
-# list all logger
-print('--------------------------------------------------------')
-print(logging.Logger.manager.loggerDict)
-print('--------------------------------------------------------')
+    # list all logger
+    print("--------------------------------------------------------")
+    print(logging.Logger.manager.loggerDict)
+    print("--------------------------------------------------------")
 
-logger = logging.getLogger('app')
+    all_handlers_logger.error("aaaaaaaaaaaaaaaaaaa")
+    all_handlers_logger.info("aaaaaaaaaaaaaaaaaaa")
 
-logger.error('aaaaaaaaaaaaaaaaaaa')
-logger.info('aaaaaaaaaaaaaaaaaaa')
-
-logger.error('hello')
-logger.error('hello - noshow')
+    all_handlers_logger.error("hello")
+    all_handlers_logger.error("hello - noshow")

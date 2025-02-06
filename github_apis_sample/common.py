@@ -1,5 +1,7 @@
 import requests
 
+from logging_sample.logging_dictConfig import console_logger
+
 
 def list_commits_on_pull_request(owner, repo, pr_id, gh_token) -> list:
     """
@@ -19,7 +21,7 @@ def list_commits_on_pull_request(owner, repo, pr_id, gh_token) -> list:
         },
     )
     if resp.status_code != 200:
-        print(resp.json())
+        console_logger.debug(resp.json())
         return []
     return resp.json()
 
@@ -49,7 +51,7 @@ def get_commit_status(owner, repo, commit_sha, gh_token) -> dict:
         },
     )
     if resp.status_code != 200:
-        print(resp.json())
+        console_logger.debug(resp.json())
         return {}
     return resp.json()
 
@@ -78,7 +80,7 @@ def list_pull_requests(owner, repo, gh_token, state=None) -> list:
         },
     )
     if resp.status_code != 200:
-        print(resp.json())
+        console_logger.debug(resp.json())
         return []
     return resp.json()
 
@@ -89,4 +91,4 @@ if __name__ == "__main__":
 
     GH_TOKEN = os.environ.get("GH_TOKEN_PhungXuanAnh")
     resp = list_pull_requests("showheroes", "viralize-web", GH_TOKEN)
-    print(json.dumps(resp, indent=4))
+    console_logger.debug(json.dumps(resp, indent=4))
