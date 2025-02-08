@@ -166,6 +166,12 @@ def check_pull_request_status(owner, repo, pr, gh_token):
     state = status.get("state", "")
 
     jenkins_failed_job_url = ""
+    if state == "pending":
+        return
+    if state == "success":
+        # TODO: check if the PR failed before and send an email to report PR is fixed
+        return
+        
     if state == "failure":
         for status in status["statuses"]:
             if status["state"] == "error":

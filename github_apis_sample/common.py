@@ -90,5 +90,11 @@ if __name__ == "__main__":
     import os
 
     GH_TOKEN = os.environ.get("GH_TOKEN_PhungXuanAnh")
-    resp = list_pull_requests("showheroes", "viralize-web", GH_TOKEN)
+    # resp = list_pull_requests("showheroes", "viralize-web", GH_TOKEN)
+    resp = get_commit_status(
+        "showheroes",
+        "viralize-web",
+        "1ebcc0417f23426d44dee06106ccf271e243f43c",
+        GH_TOKEN,
+    )
     console_logger.debug(json.dumps(resp, indent=4))
