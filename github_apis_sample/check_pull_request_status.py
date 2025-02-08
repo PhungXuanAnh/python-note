@@ -175,28 +175,16 @@ def handle_fixed_pull_request(ower, repo, pr):
             send_html_email(subject, [])
 
 
-def check_pull_request_status(owner, repo, pr, gh_token):
-    latest_commit = get_latest_commit(owner, repo, pr["number"], gh_token)
-    if not latest_commit:
-        return None
-    commit_sha = latest_commit["sha"]
-    status = get_commit_status(owner, repo, commit_sha, gh_token)
-    state = status.get("state", "")
-
+def handle_failed_pull_request(
+    owner, repo, pr, status, jenkins_user, jenkins_token, commit_sha
+):
     jenkins_failed_job_url = ""
-    if state == "pending":
-        return
-    if state == "success":
-        handle_fixed_pull_request(owner, repo, pr)
-        return
-        
-    if state == "failure":
-        for status in status["statuses"]:
-            if status["state"] == "error":
-                jenkins_failed_job_url = status["target_url"].removesuffix(
-                    "display/redirect"
-                )
-                break
+    for status in status["statuses"]:
+        if status["state"] == "error":
+            jenkins_failed_job_url = status["target_url"].removesuffix(
+                "display/redirect"
+            )
+            break
 
     failed_tests_report = []
     if jenkins_failed_job_url:
@@ -215,7 +203,6 @@ def check_pull_request_status(owner, repo, pr, gh_token):
                             }
                         )
 
-    # console_logger.debug(f"Failed tests report: {failed_tests_report}")
     if status.get("updated_at"):
         last_commit_updated_at = status["updated_at"]
     else:
@@ -228,6 +215,25 @@ def check_pull_request_status(owner, repo, pr, gh_token):
         last_commit_updated_at,
         failed_tests_report,
     )
+
+
+def check_pull_request_status(owner, repo, pr, gh_token):
+    latest_commit = get_latest_commit(owner, repo, pr["number"], gh_token)
+    if not latest_commit:
+        return None
+    commit_sha = latest_commit["sha"]
+    status = get_commit_status(owner, repo, commit_sha, gh_token)
+    state = status.get("state", "")
+
+    if state == "pending":
+        return
+    if state == "success":
+        handle_fixed_pull_request(owner, repo, pr)
+        return
+    if state == "failure":
+        handle_failed_pull_request(
+            owner, repo, pr, status, jenkins_user, jenkins_token, commit_sha
+        )
 
 
 def get_pull_requests_of_user(owner, repo, gh_token, user):
