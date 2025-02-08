@@ -157,6 +157,24 @@ def check_to_send_email(
             send_html_email(subject, failed_tests_report)
 
 
+def handle_fixed_pull_request(ower, repo, pr):
+    """
+    Get all failed pull requests from a json file: /tmp/github-failed-pull-requests.json
+        if the pull request is not in the file, return
+        if the pull request is in the file, remove it from the file and then send an email to report the PR is fixed
+    """
+    with open("/tmp/github-failed-pull-requests.json", "r+") as f:
+        failed_pull_requests = json.loads(f.read())
+        pr_url = f"{owner}/{repo}/pull/{pr['number']}"
+        if pr_url in failed_pull_requests:
+            del failed_pull_requests[pr_url]
+            f.seek(0)
+            f.write(json.dumps(failed_pull_requests, indent=4, sort_keys=True))
+            f.truncate()
+            subject = f"Branch fixed: {pr['source_branch']}"
+            send_html_email(subject, [])
+
+
 def check_pull_request_status(owner, repo, pr, gh_token):
     latest_commit = get_latest_commit(owner, repo, pr["number"], gh_token)
     if not latest_commit:
@@ -169,7 +187,7 @@ def check_pull_request_status(owner, repo, pr, gh_token):
     if state == "pending":
         return
     if state == "success":
-        # TODO: check if the PR failed before and send an email to report PR is fixed
+        handle_fixed_pull_request(owner, repo, pr)
         return
         
     if state == "failure":
