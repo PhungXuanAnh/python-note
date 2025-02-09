@@ -8,7 +8,7 @@
         export SH_JENKINS_TOKEN="fakejenkinstoken1234567890"
         export GMAIL_USER="fakeemail@gmail.com"
         export GMAIL_APP_PW="fakeapppassword123456"
-        export GH_TOKEN_PXA="ghp_fakeGitHubToken1234567890"
+        export GH_TOKEN_MAIN="ghp_fakeGitHubToken1234567890"
         export PYTHONPATH="/home/ubuntu/.tmp/python-note"
 
     5. create a script file named: 
@@ -308,7 +308,7 @@ def main():
 
 
 if __name__ == "__main__":
-    GH_TOKEN = os.environ.get("GH_TOKEN_PXA")
+    GH_TOKEN = os.environ.get("GH_TOKEN_MAIN")
     JENKINS_USER = os.environ.get("SH_JENKINS_EMAIL")
     JENKINS_TOKEN = os.environ.get("SH_JENKINS_TOKEN")
 

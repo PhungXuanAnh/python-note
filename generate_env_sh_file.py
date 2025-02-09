@@ -99,7 +99,7 @@ if __name__ == "__main__":
         "env.json",  # a JSON file
         TREASURE_BOX_PATH + "/Work/showheroes/jenkins_account.env",
         TREASURE_BOX_PATH
-        + "/Work/Other/credentials_bk/github_basic-token-PhungXuanAnh.env",
+        + "/Work/Other/credentials_bk/github_basic-token-main.env",
     ]
 
     output_script = "env.sh"
