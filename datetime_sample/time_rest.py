@@ -2,22 +2,25 @@
 """
 sudo apt install gnome-screensaver -y
 """
-import subprocess
 import datetime
-import time
-import sys
 import os
+import subprocess
+import sys
 import threading
-from flask import Flask
+import time
 from sys import platform
 
+from flask import Flask
 
 current_dir = os.path.dirname(__file__)
 sys.path.append(current_dir + "/..")
 from mp3.play import play_mp3_with_volume
-from subprocess_sample.subprocess_sample import run_command_print_output, run_command_return_results
 from ngrok_sample.ngrok_client_api import list_tunnel
-from pystray_sample.pystray_sample_icon_from_created_image import create_image_with_text, icon
+from pystray_sample.pystray_sample_icon_from_created_image import (
+    create_image_with_text,
+    icon,
+)
+from subprocess_sample.subprocess_sample import run_command, run_command_return_results
 
 RELEASE_LOCK_SCREEN = True
 app = Flask(__name__)
@@ -154,7 +157,9 @@ def get_domain():
 
 
 def update_screen_url(unlock_screen_url):
-    import requests, json
+    import json
+
+    import requests
 
     resp = requests.put(
         url="https://52.220.204.132:444/api/v1/unlock-screen-url/1",

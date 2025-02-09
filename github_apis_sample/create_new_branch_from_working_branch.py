@@ -4,7 +4,7 @@ import json
 import sys
 
 sys.path.append("/home/xuananh/repo/python-note")
-from subprocess_sample.subprocess_sample import run_command_print_output
+from subprocess_sample.subprocess_sample import run_command
 
 gh_token = open("/home/xuananh/Dropbox/Work/Other/credentials_bk/github_basic-token-PhungXuanAnh.txt", "r").read()
 
@@ -57,7 +57,7 @@ def create_new_branch(repository_dir, base_branch, working_branch):
         f"git checkout -b {new_branch_name} && "
         f"git push xuananh {new_branch_name}"
     )
-    return_code = run_command_print_output(command)
+    return_code, _ = run_command(command)
     if return_code != 0:
         print("Error while creating new branch")
         sys.exit()
@@ -127,7 +127,7 @@ def pull_new_branch_after_merge(repository_dir, new_branch_name):
         f"git checkout {new_branch_name} && "
         f"git pull xuananh {new_branch_name}"
     )
-    return_code = run_command_print_output(command)
+    return_code, _ = run_command(command)
     if return_code != 0:
         print("EEEEEEEEEEEEEEEError while pull branch")
         sys.exit()
