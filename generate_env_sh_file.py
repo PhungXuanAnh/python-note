@@ -8,7 +8,7 @@ from json_sample.json_with_comment import JSONWithCommentsDecoder
 def gg_account():
     # Load credentials from a JSON file
     with open(
-        "/home/xuananh/Dropbox/Work/Other/credentials_bk/google-account.json", "r"
+        TREASURE_BOX_PATH + "/Work/Other/credentials_bk/google-account.json", "r"
     ) as f:
         account = json.loads(f.read(), cls=JSONWithCommentsDecoder)[0]
         return {
@@ -91,18 +91,20 @@ def load_environment_files(file_list):
 
 
 if __name__ == "__main__":
+    TREASURE_BOX_PATH = os.environ["TREASURE_BOX_PATH"]
     # List your environment files here. Order matters: later files override earlier ones.
     env_files = [
         ".env",  # .env file in the workspace root
         "env.ini",  # an INI file
         "env.json",  # a JSON file
-        "/home/xuananh/Dropbox/Work/showheroes/jenkins_account.env",
-        "/home/xuananh/Dropbox/Work/Other/credentials_bk/github_basic-token-PhungXuanAnh.env",
+        TREASURE_BOX_PATH + "/Work/showheroes/jenkins_account.env",
+        TREASURE_BOX_PATH
+        + "/Work/Other/credentials_bk/github_basic-token-PhungXuanAnh.env",
     ]
 
     output_script = "env.sh"
     env_vars = load_environment_files(env_files)
-    env_vars["PYTHONPATH"] = "/home/xuananh/repo/python-note"
+    env_vars["PYTHONPATH"] = f"/home/{os.environ.get('USER')}/repo/python-note"
 
     if not env_vars:
         print("No environment variables loaded. Please check your environment files.")

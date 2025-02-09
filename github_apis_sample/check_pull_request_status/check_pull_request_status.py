@@ -8,7 +8,7 @@
         export SH_JENKINS_TOKEN="fakejenkinstoken1234567890"
         export GMAIL_USER="fakeemail@gmail.com"
         export GMAIL_APP_PW="fakeapppassword123456"
-        export GH_TOKEN_PhungXuanAnh="ghp_fakeGitHubToken1234567890"
+        export GH_TOKEN_PXA="ghp_fakeGitHubToken1234567890"
         export PYTHONPATH="/home/ubuntu/.tmp/python-note"
 
     5. create a script file named: 
@@ -19,7 +19,19 @@
             cd /home/ubuntu/.tmp/python-note/
             .venv/bin/python github_apis_sample/check_pull_request_status.py
     6. make the script executable: chmod +x check_pull_request_status.sh
-    7. create a cron job to run this script every 10 minutes:
+    7. Create a JSON file named repositories.json with the list of repositories:
+        See the the below sample or copy from this file: 
+        ln -sf Work/Other/backuped-files/list_repositories_to_check_status.json \
+            github_apis_sample/check_pull_request_status/list_repositories_to_check_status.json
+        [
+            {
+                "owner": "another_owner",
+                "repo": "another_repo",
+                "user": "AnotherUser"
+            }
+            // Add more repositories as needed
+        ]
+    8. create a cron job to run this script every 10 minutes:
         crontab -e
         */10 * * * * /home/ubuntu/.tmp/python-note/check_pull_request_status.sh > /tmp/check_pull_request_status.log 2>&1
 """
@@ -62,7 +74,9 @@ def send_html_email(subject, test_reports: list):
     sent_to = ["phungxuananh1991+python_app@gmail.com"]
 
     # Load the HTML template from an external file.
-    with open("github_apis_sample/email_template.html", "r") as template_file:
+    with open(
+        "github_apis_sample/check_pull_request_status/email_template.html", "r"
+    ) as template_file:
         html_template = template_file.read()
 
     # Define the recipient's name and format it in bold with red color.
@@ -157,7 +171,7 @@ def check_to_send_email(
             send_html_email(subject, failed_tests_report)
 
 
-def handle_fixed_pull_request(ower, repo, pr):
+def handle_fixed_pull_request(owner, repo, pr):
     """
     Get all failed pull requests from a json file: /tmp/github-failed-pull-requests.json
         if the pull request is not in the file, return
@@ -232,7 +246,7 @@ def check_pull_request_status(owner, repo, pr, gh_token):
         return
     if state == "failure":
         handle_failed_pull_request(
-            owner, repo, pr, status, jenkins_user, jenkins_token, commit_sha
+            owner, repo, pr, status, JENKINS_USER, JENKINS_TOKEN, commit_sha
         )
 
 
@@ -265,11 +279,7 @@ def remove_unused_pull_request(owner, repo, pull_requests):
         f.truncate()
 
 
-if __name__ == "__main__":
-    GH_TOKEN = os.environ.get("GH_TOKEN_PhungXuanAnh")
-    jenkins_user = os.environ.get("SH_JENKINS_EMAIL")
-    jenkins_token = os.environ.get("SH_JENKINS_TOKEN")
-
+def main():
     file_name = "/tmp/github-failed-pull-requests.json"
 
     if not os.path.exists(file_name):
@@ -277,13 +287,29 @@ if __name__ == "__main__":
         with open(file_name, "w") as file:
             file.write("{}")
 
-    owner = "showheroes"
-    repo = "viralize-web"
-    user = "PhungXuanAnh"
+    # Load the list of repositories from the JSON file
+    with open(
+        "github_apis_sample/check_pull_request_status/list_repositories_to_check_status.json",
+        "r",
+    ) as file:
+        repositories = json.load(file)
 
-    pull_requests = get_pull_requests_of_user(owner, repo, GH_TOKEN, user)
-    for pr in pull_requests:
-        console_logger.debug("Checking PR: %s", pr["number"])
-        check_pull_request_status(owner, repo, pr, GH_TOKEN)
+    for repo_info in repositories:
+        owner = repo_info["owner"]
+        repo = repo_info["repo"]
+        user = repo_info["user"]
 
-    remove_unused_pull_request(owner, repo, pull_requests)
+        pull_requests = get_pull_requests_of_user(owner, repo, GH_TOKEN, user)
+        for pr in pull_requests:
+            console_logger.debug("Checking PR: %s", pr["number"])
+            check_pull_request_status(owner, repo, pr, GH_TOKEN)
+
+        remove_unused_pull_request(owner, repo, pull_requests)
+
+
+if __name__ == "__main__":
+    GH_TOKEN = os.environ.get("GH_TOKEN_PXA")
+    JENKINS_USER = os.environ.get("SH_JENKINS_EMAIL")
+    JENKINS_TOKEN = os.environ.get("SH_JENKINS_TOKEN")
+
+    main()

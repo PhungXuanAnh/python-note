@@ -80,7 +80,7 @@ def list_pull_requests(owner, repo, gh_token, state=None) -> list:
         },
     )
     if resp.status_code != 200:
-        console_logger.debug(resp.json())
+        console_logger.debug(f"List pull requests for repo {owner}/{repo} failed: {resp.json()}")
         return []
     return resp.json()
 
@@ -89,7 +89,7 @@ if __name__ == "__main__":
     import json
     import os
 
-    GH_TOKEN = os.environ.get("GH_TOKEN_PhungXuanAnh")
+    GH_TOKEN = os.environ.get("GH_TOKEN_PXA")
     # resp = list_pull_requests("showheroes", "viralize-web", GH_TOKEN)
     resp = get_commit_status(
         "showheroes",

@@ -23,7 +23,6 @@ thread             %(thread)d    Thread ID (if available).
 threadName         %(threadName)s    Thread name (if available).
 '''
 
-import json
 import logging
 import os
 from logging.config import dictConfig
@@ -47,7 +46,7 @@ class MyFilter(logging.Filter):
         if allow:
             record.msg = (
                 "\n------------------------\n"
-                + record.msg
+                + str(record.msg)
                 + "\n=============================\n"
             )
 
