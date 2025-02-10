@@ -47,13 +47,12 @@ def get_jenkins_job_test_report(job_url, jenkins_user, jenkins_token) -> dict:
 
 
 if __name__ == "__main__":
+    import os
     import json
-    jenkins_user, jenkins_token = (
-        open("/home/xuananh/Dropbox/Work/showheroes/jenkins_account.txt", "r")
-        .read()
-        .splitlines()
-    )
-    job_url = "https://jenkins.showheroes.com/job/pipeline-multibranch-viralize-web/job/PR-5273/5"
+    JENKINS_USER = os.environ.get("SH_JENKINS_EMAIL")
+    JENKINS_TOKEN = os.environ.get("SH_JENKINS_TOKEN")
+    jenkins_user, jenkins_token = JENKINS_USER, JENKINS_TOKEN
+    job_url = "https://jenkins.showheroes.com/job/pipeline-multibranch-viralize-web/job/PR-5283/13"
     # console_logger.debug(get_jenkins_job_info(job_url, jenkins_user, jenkins_token))
     resp = get_jenkins_job_test_report(job_url, jenkins_user, jenkins_token)
     console_logger.debug(json.dumps(resp, indent=4))

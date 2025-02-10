@@ -1,13 +1,12 @@
-import subprocess
-import shlex
-import sys
-import select
-import logging
-import signal
-import os
-import time
 import datetime
+import logging
+import os
+import shlex
+import signal
+import subprocess
+import sys
 import threading
+
 import psutil
 
 """
