@@ -5,15 +5,14 @@ Send gmail using  App password.
     Active 2 Step Verification. 
     After this new option under "Signing in to Google" the "App passwords" option will be activated. 
     Just create one app password and use as password to authenticate
+Turn off Tùy chọn cài đặt về quyền truy cập cho các ứng dụng kém an toàn tai link:
+https://myaccount.google.com/lesssecureapps
 References: https://stackoverflow.com/questions/72478573/sending-and-email-using-python-problem-causes-by-last-google-policy-update-on
 """
-import json
 import os
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-
-from json_sample.json_with_comment import JSONWithCommentsDecoder
 
 
 def send(sent_subject, sent_text):

@@ -1,6 +1,10 @@
+"""
+NOTE: DON'T recommended to use slackclient
+"""
 import json
 import traceback
 from io import BytesIO
+
 from slack import WebClient
 from slack.errors import SlackApiError
 
