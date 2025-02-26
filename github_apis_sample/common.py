@@ -1,9 +1,13 @@
+import time
+
 import requests
 
 from logging_sample.logging_dictConfig import console_logger
 
 
-def list_commits_on_pull_request(owner, repo, pr_id, gh_token) -> list:
+def list_commits_on_pull_request(
+    owner, repo, pr_id, gh_token, page=1, per_page=100
+) -> list:
     """
         Reference: https://docs.github.com/en/rest/pulls/pulls?apiVersion=2022-11-28#list-commits-on-a-pull-request
         curl -L \
@@ -13,7 +17,7 @@ def list_commits_on_pull_request(owner, repo, pr_id, gh_token) -> list:
             https://api.github.com/repos/OWNER/REPO/pulls/PULL_NUMBER/commits
     """
     resp = requests.get(
-        url=f"https://api.github.com/repos/{owner}/{repo}/pulls/{pr_id}/commits",
+        url=f"https://api.github.com/repos/{owner}/{repo}/pulls/{pr_id}/commits?page={page}&per_page={per_page}",
         headers={
             "Authorization": f"Bearer {gh_token}",
             "Accept": "application/vnd.github+json",
@@ -28,9 +32,19 @@ def list_commits_on_pull_request(owner, repo, pr_id, gh_token) -> list:
 
 def get_latest_commit(owner, repo, pr_id, gh_token):
     commits = list_commits_on_pull_request(owner, repo, pr_id, gh_token)
-    if not commits:
-        return None
-    return commits[-1]
+    lastest_commit = None
+    page = 1
+    while commits:
+        lastest_commit = commits[-1]
+        commits = list_commits_on_pull_request(
+            owner, repo, pr_id, gh_token, page=page + 1
+        )
+        time.sleep(0.5)
+        if page > 10:
+            raise Exception(
+                "You have more than 10 pages of 1000 commits. It's strange!!!"
+            )
+    return lastest_commit
 
 
 def get_commit_status(owner, repo, commit_sha, gh_token) -> dict:
@@ -89,12 +103,19 @@ if __name__ == "__main__":
     import json
     import os
 
-    GH_TOKEN = os.environ.get("GH_TOKEN_PXA")
+    GH_TOKEN = os.environ.get("GH_TOKEN_MAIN")
     # resp = list_pull_requests("showheroes", "viralize-web", GH_TOKEN)
-    resp = get_commit_status(
-        "showheroes",
-        "viralize-web",
-        "1ebcc0417f23426d44dee06106ccf271e243f43c",
-        GH_TOKEN,
+    # resp = get_commit_status(
+    #     "showheroes",
+    #     "viralize-web",
+    #     "1ebcc0417f23426d44dee06106ccf271e243f43c",
+    #     GH_TOKEN,
+    # )
+    # console_logger.debug(json.dumps(resp, indent=4))
+    # resp = list_commits_on_pull_request(
+    #     "showheroes", "viralize-web", 5283, GH_TOKEN, page=1, per_page=100
+    # )
+    # console_logger.debug(json.dumps(resp, indent=4, sort_keys=True))
+    console_logger.debug(
+        get_latest_commit("showheroes", "viralize-web", 5283, GH_TOKEN)
     )
-    console_logger.debug(json.dumps(resp, indent=4))
