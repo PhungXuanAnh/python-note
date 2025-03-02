@@ -15,6 +15,15 @@ class ImageWindow(Gtk.Window):
         self.set_border_width(10)
         self.permanent = permanent
 
+        # Make the window appear on top of other windows
+        self.set_keep_above(True)
+
+        # Optional: Set window to appear in all workspaces
+        self.set_skip_taskbar_hint(True)  # Hide from taskbar
+        self.set_skip_pager_hint(True)  # Hide from pager/workspace switcher
+        self.set_urgency_hint(True)  # Add urgency hint (flashing in taskbar)
+        self.set_focus_on_map(True)  # Focus window when mapped
+
         # Create a scrolled window to handle large images
         scrolled_window = Gtk.ScrolledWindow()
         scrolled_window.set_hexpand(True)
@@ -69,70 +78,102 @@ class ImageDisplayManager:
         self.file_path = "/home/xuananh/Downloads/warning-sitting-a-long-time.jpg"
         self.on_finish_callback = on_finish_callback
         
-        # Define display and pause durations for each cycle (in milliseconds)
-        self.display_durations = [500, 1000, 1000, -1]  # -1 means permanent
-        self.pause_durations = [1500, 1500, 1500]  # time between cycles
+        # Define constant display and pause durations (in milliseconds)
+        self.display_duration = 1500  # 1.5 seconds to show image
+        self.pause_duration = 1000  # 1 second between images
+        self.running = True  # Flag to control the cycle
+        self.programmatic_close = False  # Flag to track programmatic window closures
 
     def open_image_window(self):
+        print("Attempting to open image window...")
+        # Skip if we're no longer running
+        if not self.running:
+            print("Not running anymore, stopping cycle")
+            return False  # Don't schedule again
+
         # Open the image in a new window
         try:
-            # Check if we're on the last cycle (permanent window)
-            permanent = (self.cycle_count == len(self.display_durations) - 1)
-            self.image_window = ImageWindow(self.file_path, permanent)
+            self.image_window = ImageWindow(self.file_path)
             
-            # Connect destroy signal to our handler, not directly to Gtk.main_quit
-            if permanent:
-                self.image_window.connect("destroy", self.on_final_window_closed)
+            # Connect destroy signal to stop cycling when user closes window
+            self.image_window.connect("destroy", self.on_window_closed)
                 
             self.image_window.show_all()
-            
             print(f"Window opened (cycle {self.cycle_count + 1})")
             
-            # If not permanent, set timer to close window after specified duration
-            if not permanent:
-                # Get the display duration for this cycle in milliseconds
-                display_duration = self.display_durations[self.cycle_count]
-                # Convert to milliseconds for timeout_add
-                GLib.timeout_add(display_duration, self.close_image_window)
-            
+            # Set timer to close window after display duration
+            GLib.timeout_add(self.display_duration, self.close_image_window)
             self.cycle_count += 1
             
         except Exception as e:
             print(f"Error loading image: {e}")
             self.finish_display_cycle()
             
-        return False  # Important to return False to stop the timer from repeating
-    
+        return False
+
     def close_image_window(self):
+        print("Attempting to close image window...")
+        if not self.running:
+            print("Not running anymore, stopping cycle")
+            return False
+
         if self.image_window:
-            self.image_window.destroy()
-            print(f"Window closed (after cycle {self.cycle_count})")
-            
-            # If there are more cycles to go
-            if self.cycle_count < len(self.display_durations):
-                # Schedule the next opening with the corresponding pause duration
-                pause_duration = self.pause_durations[self.cycle_count - 1]
-                print(f"Scheduling next opening in {pause_duration}ms")
-                GLib.timeout_add(pause_duration, self.open_image_window)
-            else:
-                self.finish_display_cycle()
-            
-        return False  # Important to return False to stop the timer from repeating
+            try:
+                # Set flag to indicate programmatic closure
+                self.programmatic_close = True
+
+                self.image_window.destroy()
+                self.image_window = None
+                print(f"Window closed (after cycle {self.cycle_count})")
+
+                # Reset flag after window is destroyed
+                self.programmatic_close = False
+
+                # Schedule the next opening after pause duration
+                print(f"Scheduling next window in {self.pause_duration}ms")
+                GLib.timeout_add(self.pause_duration, self.open_image_window)
+            except Exception as e:
+                print(f"Error closing window: {e}")
+                self.programmatic_close = False
+                self.running = False
+        else:
+            print("No window to close")
+
+        return False
     
-    def on_final_window_closed(self, window):
-        """Handler for the destroy signal of the final window"""
-        self.finish_display_cycle()
+    def on_window_closed(self, window):
+        """Handler for when user closes the window"""
+        print("Window closed signal received")
+
+        # Only stop the cycle if this wasn't a programmatic close
+        if not self.programmatic_close:
+            print("User closed the window, stopping cycle")
+            self.running = False
+            self.finish_display_cycle()
         
     def finish_display_cycle(self):
-        """Call the finish callback if provided instead of quitting"""
+        """Call the finish callback if provided"""
+        self.running = False
         if self.on_finish_callback:
             self.on_finish_callback()
+
+        # Don't call Gtk.main_quit() here - let the parent application control that
+        # Only call it when running this script directly
+        if __name__ == "__main__":
+            Gtk.main_quit()
+
+    def start_cycle(self):
+        """Start the display cycle"""
+        print("Starting display cycle")
+        self.running = True
+        # Use timeout_add to start first window
+        GLib.timeout_add(0, self.open_image_window)
 
 
 def main():
     manager = ImageDisplayManager()
-    # Start the cycle
-    manager.open_image_window()
+    # Start the cycle with the new method
+    manager.start_cycle()
     Gtk.main()
 
 
