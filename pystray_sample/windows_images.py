@@ -75,7 +75,7 @@ class ImageDisplayManager:
     def __init__(self, on_finish_callback=None):
         self.image_window = None
         self.cycle_count = 0
-        self.file_path = "/home/xuananh/Downloads/warning-sitting-a-long-time.jpg"
+        self.file_path = "/home/xuananh/repo/python-note/pystray_sample/warning-sitting-a-long-time.jpg"
         self.on_finish_callback = on_finish_callback
         
         # Define constant display and pause durations (in milliseconds)
