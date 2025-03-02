@@ -8,6 +8,7 @@ from PIL import Image, ImageDraw, ImageFont
 os.environ["PYSTRAY_BACKEND"] = "xorg"
 
 # NOTE: it must install these packages to work with below backends: pip install pycairo PyGObject
+# NOTE: In these backends, the icon is larger
 # os.environ['PYSTRAY_BACKEND'] = 'appindicator'
 # os.environ["PYSTRAY_BACKEND"] = "gtk"
 
