@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
 import os
+
 import gi
 
 gi.require_version("Gtk", "3.0")
-from gi.repository import GdkPixbuf, Gtk, Gdk, GLib
+gi.require_version("Gdk", "3.0")  # Changed this to match GTK version
+gi.require_version("GdkPixbuf", "2.0")
+from gi.repository import Gdk, GdkPixbuf, GLib, Gtk
 
 
 class ImageWindow(Gtk.Window):
@@ -27,10 +30,27 @@ class ImageWindow(Gtk.Window):
         img_width = pixbuf.get_width()
         img_height = pixbuf.get_height()
         
-        # Get screen dimensions
-        screen = Gdk.Screen.get_default()
-        screen_width = screen.get_width() * 0.9  # Use 90% of screen width max
-        screen_height = screen.get_height() * 0.8  # Use 80% of screen height max
+        # Get screen dimensions using non-deprecated methods
+        display = Gdk.Display.get_default()
+        # For different GTK versions
+        screen_width = 0
+        screen_height = 0
+
+        # Try the modern approach first
+        try:
+            if hasattr(display, "get_primary_monitor"):
+                monitor = display.get_primary_monitor()
+            else:
+                monitor = display.get_monitor(0)
+
+            geometry = monitor.get_geometry()
+            screen_width = geometry.width * 0.9
+            screen_height = geometry.height * 0.8
+        except (AttributeError, TypeError):
+            # Fall back to the old method if needed
+            screen = Gdk.Screen.get_default()
+            screen_width = screen.get_width() * 0.9
+            screen_height = screen.get_height() * 0.8
         
         # Calculate window size (with padding)
         window_width = min(img_width + 30, screen_width)
