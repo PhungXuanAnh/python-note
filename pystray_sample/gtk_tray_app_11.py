@@ -1,12 +1,17 @@
+#! /home/xuananh/repo/python-note/.venv/bin/python
+
 """
 sudo apt install gir1.2-appindicator3-0.1  # If not already installed
 """
 
 import os
 import signal
-import time
+import sys
 
 import gi
+
+current_dir = os.path.dirname(__file__)
+sys.path.append(current_dir + "/..")
 
 from pystray_sample.pystray_sample_icon_from_created_image import icon, create_image_with_text
 from pystray_sample.windows_images import ImageDisplayManager
