@@ -52,7 +52,7 @@ def update_counter():
     icon.icon = new_image
     
     # Check if counter exceeds 5
-    if counter > 5:
+    if counter > 1200:
         is_showing_image = True
         
         # Define a callback for when ImageDisplayManager finishes

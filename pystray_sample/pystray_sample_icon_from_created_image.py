@@ -5,11 +5,11 @@ import pystray
 from PIL import Image, ImageDraw, ImageFont
 
 # NOTE: it must remove these packages else the backend `xorg` doesn't work: pip uninstall pycairo PyGObject
-os.environ["PYSTRAY_BACKEND"] = "xorg"
+# os.environ["PYSTRAY_BACKEND"] = "xorg"
 
 # NOTE: it must install these packages to work with below backends: pip install pycairo PyGObject
 # NOTE: In these backends, the icon is larger
-# os.environ['PYSTRAY_BACKEND'] = 'appindicator'
+os.environ['PYSTRAY_BACKEND'] = 'appindicator'
 # os.environ["PYSTRAY_BACKEND"] = "gtk"
 
 
@@ -55,5 +55,5 @@ icon = pystray.Icon(
 
 if __name__ == '__main__':
     # To finally show you icon, call run
-    # icon.run()
-    icon.run_detached()
+    icon.run()
+    # icon.run_detached()
