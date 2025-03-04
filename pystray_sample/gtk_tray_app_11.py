@@ -1,6 +1,7 @@
 #! /home/xuananh/repo/python-note/.venv/bin/python
 
 """
+NOTE: this app spawn some processes and sometime it causes laptop to freeze
 sudo apt install gir1.2-appindicator3-0.1  # If not already installed
 """
 
