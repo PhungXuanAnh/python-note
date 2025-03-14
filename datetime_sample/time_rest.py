@@ -139,7 +139,12 @@ def main():
         break 1 second to allow unlock screen manually
     """
     while True:        
-        working_time(30 * 60)
+        working_time(0.1 * 60)
+
+        # Start image warning cycle
+        show_warning_image_until_closed()
+
+        # The code reaches here only after user closes the image
         lock_screen()
         break_time(1)
         # move_mouse()
@@ -147,6 +152,76 @@ def main():
         # play_mp3_with_volume()
         # while not RELEASE_LOCK_SCREEN and is_screensaver_active():
         #     move_mouse()
+
+
+def show_warning_image_until_closed():
+    """Show warning image in a cycle until user manually closes it"""
+    # Flag to track if the user manually closed the image
+    user_closed_image = False
+
+    while not user_closed_image:
+        # Flag to track if we're in programmatic close phase
+        programmatic_close = False
+
+        # Open the warning image based on platform
+        if platform == "linux" or platform == "linux2":
+            process = subprocess.Popen(
+                ["xdg-open", "pystray_sample/warning-sitting-a-long-time.jpg"],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+            )
+        elif platform == "darwin":
+            process = subprocess.Popen(
+                ["open", "pystray_sample/warning-sitting-a-long-time.jpg"],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+            )
+
+        # Give the image viewer a moment to start up properly
+        time.sleep(0.5)
+
+        # Display the image for 1.5 seconds, checking if user closes it
+        start_time = time.time()
+        while time.time() - start_time < 1.5:
+            # Check if image is still displayed
+            if platform == "linux" or platform == "linux2":
+                image_status = subprocess.call(
+                    ["pgrep", "-f", "warning-sitting-a-long-time.jpg"],
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
+                )
+            elif platform == "darwin":
+                image_status = subprocess.call(
+                    ["pgrep", "-f", "warning-sitting-a-long-time.jpg"],
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
+                )
+
+            # If the image is no longer displayed and we're not in programmatic close phase,
+            # the user must have closed it manually
+            if image_status != 0 and not programmatic_close:
+                user_closed_image = True
+                return  # Exit function, which will trigger lock_screen()
+
+            time.sleep(0.1)
+
+        # Mark that we're entering programmatic close phase
+        programmatic_close = True
+
+        # After display time, close the image programmatically
+        if platform == "linux" or platform == "linux2":
+            run_cmd("pkill -f 'warning-sitting-a-long-time.jpg'")
+        elif platform == "darwin":
+            run_cmd("pkill -f 'warning-sitting-a-long-time.jpg'")
+
+        # Wait to ensure programmatic close is complete
+        time.sleep(0.5)
+
+        # Reset flag for next cycle
+        programmatic_close = False
+
+        # Wait for 1 second before reopening
+        time.sleep(1)
 
 
 def get_domain():
