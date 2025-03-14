@@ -163,16 +163,40 @@ def show_warning_image_until_closed():
         # Flag to track if we're in programmatic close phase
         programmatic_close = False
 
-        # Open the warning image based on platform
+        # Get current mouse position for placing the image
         if platform == "linux" or platform == "linux2":
+            mouse_pos = subprocess.check_output(
+                "xdotool getmouselocation", shell=True
+            ).decode("utf-8")
+            x = mouse_pos.split()[0].split(":")[1]
+            y = mouse_pos.split()[1].split(":")[1]
+
+            # Open the warning image at mouse position using feh (install if needed: sudo apt install feh)
             process = subprocess.Popen(
-                ["xdg-open", "pystray_sample/warning-sitting-a-long-time.jpg"],
+                [
+                    "feh",
+                    "--title=warning",
+                    "--geometry=+" + x + "+" + y,
+                    "--auto-zoom",
+                    "--borderless",
+                    "--draw-tinted",
+                    "--no-menus",
+                    "--on-top",
+                    "pystray_sample/warning-sitting-a-long-time.jpg",
+                ],
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
             )
         elif platform == "darwin":
+            # For macOS, use AppleScript to open and position the image
+            osascript_cmd = (
+                """osascript -e 'tell application "Preview" to open POSIX file """
+                """"$(pwd)/pystray_sample/warning-sitting-a-long-time.jpg"' -e """
+                """"tell application "Preview" to activate" """
+            )
             process = subprocess.Popen(
-                ["open", "pystray_sample/warning-sitting-a-long-time.jpg"],
+                osascript_cmd,
+                shell=True,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
             )
@@ -186,13 +210,13 @@ def show_warning_image_until_closed():
             # Check if image is still displayed
             if platform == "linux" or platform == "linux2":
                 image_status = subprocess.call(
-                    ["pgrep", "-f", "warning-sitting-a-long-time.jpg"],
+                    ["pgrep", "-f", "feh --title=warning"],
                     stdout=subprocess.PIPE,
                     stderr=subprocess.PIPE,
                 )
             elif platform == "darwin":
                 image_status = subprocess.call(
-                    ["pgrep", "-f", "warning-sitting-a-long-time.jpg"],
+                    ["pgrep", "-f", "Preview"],
                     stdout=subprocess.PIPE,
                     stderr=subprocess.PIPE,
                 )
@@ -210,9 +234,9 @@ def show_warning_image_until_closed():
 
         # After display time, close the image programmatically
         if platform == "linux" or platform == "linux2":
-            run_cmd("pkill -f 'warning-sitting-a-long-time.jpg'")
+            run_cmd("pkill -f 'feh --title=warning'")
         elif platform == "darwin":
-            run_cmd("pkill -f 'warning-sitting-a-long-time.jpg'")
+            run_cmd("""osascript -e 'tell application "Preview" to quit'""")
 
         # Wait to ensure programmatic close is complete
         time.sleep(0.5)
