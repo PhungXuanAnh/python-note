@@ -204,9 +204,9 @@ def show_warning_image_until_closed():
         # Give the image viewer a moment to start up properly
         time.sleep(0.5)
 
-        # Display the image for 1.5 seconds, checking if user closes it
+        # Display the image for 3 seconds, checking if user closes it
         start_time = time.time()
-        while time.time() - start_time < 1.5:
+        while time.time() - start_time < 3:
             # Check if image is still displayed
             if platform == "linux" or platform == "linux2":
                 image_status = subprocess.call(
