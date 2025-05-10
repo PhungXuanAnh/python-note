@@ -204,7 +204,7 @@ def show_warning_image_until_closed():
         # Give the image viewer a moment to start up properly
         time.sleep(0.5)
 
-        # Display the image for 3 seconds, checking if user closes it
+        # Display the image for 3 seconds, checking if user closes it or locks screen
         start_time = time.time()
         while time.time() - start_time < 3:
             # Check if image is still displayed
@@ -220,6 +220,17 @@ def show_warning_image_until_closed():
                     stdout=subprocess.PIPE,
                     stderr=subprocess.PIPE,
                 )
+
+            # Check if screen is locked
+            if is_screensaver_active():
+                # Close the image if it's still open
+                if image_status == 0:
+                    if platform == "linux" or platform == "linux2":
+                        run_cmd("pkill -f 'feh --title=warning'")
+                    elif platform == "darwin":
+                        run_cmd("""osascript -e 'tell application "Preview" to quit'""")
+                user_closed_image = True
+                return  # Exit function since screen is locked
 
             # If the image is no longer displayed and we're not in programmatic close phase,
             # the user must have closed it manually
