@@ -139,7 +139,7 @@ def main():
         break 1 second to allow unlock screen manually
     """
     while True:        
-        working_time(20 * 60)
+        working_time(0.1 * 60)
 
         # Start image warning cycle
         show_warning_image_until_closed()
@@ -182,7 +182,7 @@ def show_warning_image_until_closed():
                     "--draw-tinted",
                     "--no-menus",
                     "--on-top",
-                    "/home/xuananh/repo/python-note/pystray_sample/warning-sitting-a-long-time.jpg",
+                    "/home/xuananh/repo/python-note/datetime_sample/exercises.png",
                 ],
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
@@ -191,7 +191,7 @@ def show_warning_image_until_closed():
             # For macOS, use AppleScript to open and position the image
             osascript_cmd = (
                 """osascript -e 'tell application "Preview" to open POSIX file """
-                """"$(pwd)/pystray_sample/warning-sitting-a-long-time.jpg"' -e """
+                """"/home/xuananh/repo/python-note/datetime_sample/exercises.png"' -e """
                 """"tell application "Preview" to activate" """
             )
             process = subprocess.Popen(
