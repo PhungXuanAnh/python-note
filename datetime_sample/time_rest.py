@@ -171,13 +171,12 @@ def show_warning_image_until_closed():
             x = mouse_pos.split()[0].split(":")[1]
             y = mouse_pos.split()[1].split(":")[1]
 
-            # Open the warning image at mouse position using feh (install if needed: sudo apt install feh)
+            # Open the warning image in fullscreen mode using feh
             process = subprocess.Popen(
                 [
                     "feh",
                     "--title=warning",
-                    "--geometry=+" + x + "+" + y,
-                    "--auto-zoom",
+                    "--fullscreen",  # Add fullscreen flag
                     "--borderless",
                     "--draw-tinted",
                     "--no-menus",
@@ -188,11 +187,12 @@ def show_warning_image_until_closed():
                 stderr=subprocess.PIPE,
             )
         elif platform == "darwin":
-            # For macOS, use AppleScript to open and position the image
+            # For macOS, use AppleScript to open the image in fullscreen mode
             osascript_cmd = (
                 """osascript -e 'tell application "Preview" to open POSIX file """
                 """"/home/xuananh/repo/python-note/datetime_sample/exercises.png"' -e """
-                """"tell application "Preview" to activate" """
+                """"tell application "Preview" to activate" -e """
+                """"tell application "System Events" to tell process "Preview" to keystroke "f" using {command down}"' """
             )
             process = subprocess.Popen(
                 osascript_cmd,
@@ -204,9 +204,9 @@ def show_warning_image_until_closed():
         # Give the image viewer a moment to start up properly
         time.sleep(0.5)
 
-        # Display the image for 3 seconds, checking if user closes it or locks screen
+        # Display the image for 10 seconds, checking if user closes it or locks screen
         start_time = time.time()
-        while time.time() - start_time < 3:
+        while time.time() - start_time < 10:
             # Check if image is still displayed
             if platform == "linux" or platform == "linux2":
                 image_status = subprocess.call(
