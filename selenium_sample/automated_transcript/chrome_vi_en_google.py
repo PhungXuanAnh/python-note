@@ -29,7 +29,7 @@ driver.get("https://translate.google.com/?sl=vi&tl=en")
 
 while True:
     try:
-        click_button_translate_by_voice(driver)
+        click_button_translate_by_voice(driver, recording_stream_name="Google_Translate_Vi_to_En")
     except:
         traceback.print_exc()
     
