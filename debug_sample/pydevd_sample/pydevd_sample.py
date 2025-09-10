@@ -42,10 +42,11 @@ import multiprocessing
 
 def worker():
     import pydevd
-    pydevd.settrace(host="222.254.34.158",
+    pydevd.settrace(host="localhost",
                     port=5678,
                     stdoutToServer=True,
                     stderrToServer=True,
+                    suspend=False  # Don't block if debugger not attached
                     )
 #     import pydevd;pydevd.settrace()
     var1 = 4
