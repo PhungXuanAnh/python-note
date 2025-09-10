@@ -9,13 +9,13 @@ from common import click_button_translate_by_voice
 chrome_options = webdriver.ChromeOptions()
 # chrome_options.add_experimental_option("detach", True)  # keep chrome and chromedriver to stay open after running all code
 # chrome_options.add_argument('--profile-directory=Profile 16')
-chrome_options.add_argument("user-data-dir=/home/xuananh/.config/google-chrome1") #Path to your chrome profile
-chrome_options.add_argument("class=chrome1")    # NOTE: it must add this argument while running chrome to allow new chrome instance
+chrome_options.add_argument("user-data-dir=/home/xuananh/.config/google-chrome_en_vi_google") #Path to your chrome profile
+chrome_options.add_argument("class=chrome_en_vi_google")    # NOTE: it must add this argument while running chrome to allow new chrome instance
                                                 # be linked to new icon and be grouped in another icon in dock of ubuntu launcher
                                                 # for example this is command to run chrome in terminal:
-                                                # google-chrome --user-data-dir=/home/xuananh/.config/google-chrome1 --class="chrome1"
-                                                # Add StartupWMClass=chrome1 to this file :
-                                                # /home/xuananh/Dropbox/Work/Other/conf.d/google-chrome/desktop-shortcut/chrome1.desktop 
+                                                # google-chrome --user-data-dir=/home/xuananh/.config/google-chrome_en_vi_google --class="chrome_en_vi_google"
+                                                # Add StartupWMClass=chrome_en_vi_google to this file :
+                                                # /home/xuananh/Dropbox/Work/Other/conf.d/google-chrome/desktop-shortcut/chrome_en_vi_google.desktop 
                                                 # copy or create soft link to ~/.local/share/applications/
                                                 # open new chrome shortcut from menu of launcher to see new icon in dock
                                                 # then run this python file

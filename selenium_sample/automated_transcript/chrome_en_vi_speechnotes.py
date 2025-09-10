@@ -5,8 +5,8 @@ from selenium.webdriver.common.by import By
 chrome_options = webdriver.ChromeOptions()
 chrome_options.add_experimental_option("detach", True)  # keep chrome and chromedriver to stay open after running all code
 # chrome_options.add_argument('--profile-directory=Profile 16')
-chrome_options.add_argument("user-data-dir=/home/xuananh/.config/google-chrome3")
-chrome_options.add_argument("class=chrome3")    # NOTE: it must add this argument while running chrome to allow new chrome instance
+chrome_options.add_argument("user-data-dir=/home/xuananh/.config/google-chrome-en_vi_speechnotes")
+chrome_options.add_argument("class=chrome_en_vi_speechnotes")    # NOTE: it must add this argument while running chrome to allow new chrome instance
                                                 # be linked to new icon and be grouped in another icon in dock of ubuntu launcher
                                                 # for example this is command to run chrome in terminal:
                                                 # google-chrome --user-data-dir=/home/xuananh/.config/google-chrome1 --class="chrome1"
