@@ -1,0 +1,14 @@
+[Desktop Entry]
+Name=Click Submit Button
+Comment=Selenium script to click submit button in Chrome
+Exec=/home/xuananh/repo/python-note/.venv/bin/python /home/xuananh/repo/python-note/selenium_sample/gemini_auto_upload_image/click_to_submit_button.py
+Path=/home/xuananh/repo/python-note/selenium_sample/gemini_auto_upload_image
+Icon=/home/xuananh/repo/python-note/selenium_sample/gemini_auto_upload_image/click_to_submit_button.jpg
+Type=Application
+Terminal=true
+Categories=Development;
+StartupNotify=true
+
+# ln -sf /home/xuananh/repo/python-note/selenium_sample/gemini_auto_upload_image/click_to_submit_button.desktop \
+#     ~/.local/share/applications/click_to_submit_button.desktop
+# update-desktop-database ~/.local/share/applications

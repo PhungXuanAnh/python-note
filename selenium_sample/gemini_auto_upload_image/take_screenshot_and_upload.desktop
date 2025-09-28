@@ -1,0 +1,14 @@
+[Desktop Entry]
+Name=Take Screenshot and Upload
+Comment=Take VM screenshot and upload to Gemini via Chrome
+Exec=/home/xuananh/repo/python-note/.venv/bin/python /home/xuananh/repo/python-note/selenium_sample/gemini_auto_upload_image/take_screenshot_and_upload.py
+Path=/home/xuananh/repo/python-note/selenium_sample/gemini_auto_upload_image
+Icon=/home/xuananh/repo/python-note/selenium_sample/gemini_auto_upload_image/take_screenshot_and_upload.png
+Type=Application
+Terminal=true
+Categories=Development;Graphics;
+StartupNotify=true
+
+# ln -sf /home/xuananh/repo/python-note/selenium_sample/gemini_auto_upload_image/take_screenshot_and_upload.desktop \
+#     ~/.local/share/applications/take_screenshot_and_upload.desktop
+# update-desktop-database ~/.local/share/applications

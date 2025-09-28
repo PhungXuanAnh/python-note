@@ -26,6 +26,8 @@ from selenium.webdriver.support import expected_conditions as EC
 
 class ChromeConnector:
     def __init__(self, debug_port=9222, user_data_dir=None, profile_directory="Default"):
+        # NOTE: always need to pass profile_directory="Default" to avoid creating a new profile
+        # when connecting to an existing Chrome instance and call driver.get()
         self.debug_port = debug_port
         self.user_data_dir = user_data_dir or "/tmp/chrome_debug_profile"
         self.profile_directory = profile_directory
@@ -121,17 +123,9 @@ class ChromeConnector:
             # Check if Chrome is running without debugging
             if self.is_chrome_process_running():
                 print("Chrome is running but without remote debugging.")
-                print("You may need to close Chrome and run this script again,")
-                print("or start Chrome manually with remote debugging:")
-                print(f"google-chrome --remote-debugging-port={self.debug_port}")
-                
-                # Ask user if they want to try starting new instance
-                try:
-                    choice = input("Start new Chrome instance with debugging? (y/n): ").lower()
-                    if choice != 'y':
-                        return None
-                except KeyboardInterrupt:
-                    return None
+                print("Automatically starting new Chrome instance with remote debugging...")
+            else:
+                print("No Chrome process found. Starting new Chrome instance with remote debugging...")
             
             # Start new Chrome instance with debugging
             if self.start_chrome_with_debug():
