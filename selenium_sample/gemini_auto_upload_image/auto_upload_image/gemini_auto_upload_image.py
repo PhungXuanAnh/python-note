@@ -68,9 +68,9 @@ try:
     print("Clicked the 'Upload files' button.")
 
     # 3. Call the shell script to handle file dialog
-    print("Calling gemini_auto_file_picker.sh to handle file dialog...")
+    print("Calling auto_file_picker.sh to handle file dialog...")
     script_dir = os.path.dirname(os.path.abspath(__file__))
-    script_path = os.path.join(script_dir, "gemini_auto_file_picker.sh")
+    script_path = os.path.join(script_dir, "auto_file_picker.sh")
     
     # Prepare environment variables for GUI operations
     env = os.environ.copy()

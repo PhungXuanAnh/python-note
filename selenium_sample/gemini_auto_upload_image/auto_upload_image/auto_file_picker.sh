@@ -2,7 +2,7 @@
 
 # Automated file picker interaction script
 # This script waits for a file dialog to appear and automatically selects the image file
-# Usage: ./gemini_auto_file_picker.sh <file_path>
+# Usage: ./auto_file_picker.sh <file_path>
 
 # Get file path from command line argument
 FILE_PATH="$1"

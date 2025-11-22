@@ -1,7 +1,16 @@
 import subprocess
 import os
+import sys
+import logging
 from datetime import datetime
 from pathlib import Path
+
+logging.basicConfig(
+    level=logging.DEBUG,
+    format="%(levelname)-7s [%(asctime)s] [%(module)s.%(funcName)s:%(lineno)d] : %(message)s",
+    datefmt="%Y-%m-%d %H:%M:%S",
+    stream=sys.stdout,
+)
 
 
 def take_vm_screenshot(vm_name, output_dir="~/Downloads/vm-screenshot"):
@@ -37,18 +46,18 @@ def take_vm_screenshot(vm_name, output_dir="~/Downloads/vm-screenshot"):
         
         # Verify the file was created
         if os.path.exists(filepath):
-            print(f"Screenshot saved successfully: {filepath}")
+            logging.info(f"Screenshot saved successfully: {filepath}")
             return filepath
         else:
             raise FileNotFoundError(f"Screenshot file was not created: {filepath}")
             
     except subprocess.CalledProcessError as e:
-        print(f"Error taking screenshot: {e}")
-        print(f"Command output: {e.stdout}")
-        print(f"Command error: {e.stderr}")
+        logging.error(f"Error taking screenshot: {e}")
+        logging.error(f"Command output: {e.stdout}")
+        logging.error(f"Command error: {e.stderr}")
         raise
     except FileNotFoundError as e:
-        print(f"VBoxManage command not found. Make sure VirtualBox is installed and in PATH.")
+        logging.error(f"VBoxManage command not found. Make sure VirtualBox is installed and in PATH.")
         raise
 
 
@@ -58,10 +67,10 @@ def main():
         # Example: Take screenshot of ubuntu-22.04 VM
         vm_name = "ubuntu-22.04"
         screenshot_path = take_vm_screenshot(vm_name)
-        print(f"Screenshot taken and saved to: {screenshot_path}")
+        logging.info(f"Screenshot taken and saved to: {screenshot_path}")
         
     except Exception as e:
-        print(f"Failed to take screenshot: {e}")
+        logging.error(f"Failed to take screenshot: {e}")
 
 
 if __name__ == "__main__":
