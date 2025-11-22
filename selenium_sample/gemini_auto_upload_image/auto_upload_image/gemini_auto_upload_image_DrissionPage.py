@@ -77,7 +77,12 @@ def gemini_auto_upload(file_path):
             ]
 
             logging.info("Launching new Chrome instance...")
-            chrome_process = subprocess.Popen(chrome_cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            chrome_process = subprocess.Popen(
+                chrome_cmd, 
+                stdout=subprocess.DEVNULL, 
+                stderr=subprocess.DEVNULL,
+                start_new_session=True  # Detach from parent process
+            )
 
             # Wait for Chrome to be ready
             logging.info("Waiting for Chrome to be ready...")
