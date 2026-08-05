@@ -1,0 +1,3 @@
+# Browser automation over CDP. Selenium and undetected_chromedriver were dropped:
+# DrissionPage drives a normal Chrome process, so there is no WebDriver fingerprint.
+DrissionPage>=4.1.0

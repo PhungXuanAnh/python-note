@@ -1,0 +1,212 @@
+"""claude.ai provider.
+
+Selectors verified against the live UI. claude.ai keeps a reachable hidden
+``<input type="file">`` next to the composer, so no OS-level file dialog is involved.
+"""
+import logging
+import os
+import time
+
+from providers.base import Provider
+
+logger = logging.getLogger(__name__)
+
+MODEL_MENU_BUTTON = "css:button[data-testid='model-selector-dropdown']"
+MODEL_OPTION = "css:div[role='menuitemradio']"
+EXTENDED_SWITCH = "css:span[role='switch'][aria-label='Extended']"
+EFFORT_TRIGGER = "css:[data-testid='effort-menu-trigger']"
+
+# Effort levels, keyed by the label claude.ai shows. Note "Extra" is `xhigh` in the DOM.
+# Models differ: Opus 5 offers this submenu, Haiku 4.5 offers the Extended switch instead.
+EFFORT_TESTIDS = {
+    "low": "effort-option-low",
+    "medium": "effort-option-medium",
+    "high": "effort-option-high",
+    "extra": "effort-option-xhigh",
+    "xhigh": "effort-option-xhigh",
+    "max": "effort-option-max",
+}
+
+
+class ClaudeProvider(Provider):
+    name = "claude"
+
+    file_input_selector = "css:input[data-testid='file-upload']"
+    composer_selectors = (
+        "css:div[data-testid='chat-input']",
+        "css:div.ProseMirror[contenteditable='true']",
+        "css:div[contenteditable='true']",
+    )
+    submit_selectors = (
+        "css:button[aria-label='Send message']",
+        "css:button[data-testid='send-button']",
+        "css:button[type='submit']",
+    )
+    attachment_required = True
+    # Only used when no file name is known; `attachment_selectors` is the real check.
+    attachment_ready_selectors = ("css:fieldset img[src*='/files/'][src$='/preview']",)
+    leftover_attachment_selectors = ("css:button[aria-label^='Remove ']",)
+
+    def attach_file(self, file_path):
+        self.uploader.upload(file_path, input_selector=self.file_input_selector)
+
+    def attachment_selectors(self, file_path):
+        """claude.ai tags each thumbnail with that file's base name.
+
+        Scoped to this file's name on purpose, and with no generic fallback: the composer
+        keeps attachments across navigation, so a leftover chip from an earlier run would
+        otherwise pass as this run's upload. Measured on a 7 MB image, the chip appears at
+        ~0.2s with a local `blob:` src and only switches to `/files/…` when the bytes
+        reached the server at ~4s, so the `/files/` src is the signal that the upload is
+        genuinely done.
+        """
+        if not file_path:
+            return self.attachment_ready_selectors
+        name = os.path.basename(file_path)
+        return (
+            f"css:div[data-testid='{name}'] img[src*='/files/']",
+            f"css:img[alt='{name}'][src*='/files/']",
+        )
+
+    # ------------------------------------------------------------- model picking
+
+    def select_model(self):
+        """Apply the configured model, effort level and Extended-thinking toggle."""
+        want_model = (self.config.model or "").strip()
+        want_effort = (self.config.effort or "").strip()
+        want_extended = self.config.extended_thinking
+        if not (want_model or want_effort or want_extended is not None):
+            return
+
+        # Validate before touching the UI, so a typo cannot leave the model half-changed.
+        if want_effort and want_effort.lower() not in EFFORT_TESTIDS:
+            raise RuntimeError(
+                f"claude: unknown effort {want_effort!r}; expected one of "
+                f"{sorted(EFFORT_TESTIDS)}"
+            )
+
+        button = self.tab.ele(MODEL_MENU_BUTTON, timeout=15)
+        if not button:
+            logger.warning("claude: model dropdown not found, leaving the model as is")
+            return
+
+        # The button label carries both parts, e.g. "Model: Opus 5 High".
+        logger.info("claude: model selector reads %r", self._current_label())
+
+        needs_model = bool(want_model) and not self._current_label().startswith(want_model)
+        if not needs_model and not want_effort and want_extended is None:
+            logger.info("claude: nothing to change")
+            return
+
+        self._open_model_menu(button)
+        try:
+            if needs_model:
+                self._pick_model(want_model)
+                # Choosing a model closes the menu; reopen for the remaining settings.
+                if want_effort or want_extended is not None:
+                    time.sleep(1)
+                    self._open_model_menu(self.tab.ele(MODEL_MENU_BUTTON, timeout=10))
+            if want_effort:
+                self._set_effort(want_effort)
+            if want_extended is not None:
+                self._set_extended(want_extended)
+        finally:
+            self._close_model_menu()
+
+        logger.info("claude: model selector now reads %r", self._current_label())
+
+    def _current_label(self):
+        """Text of the model button, e.g. 'Opus 5 High' or 'Haiku 4.5'."""
+        button = self.tab.ele(MODEL_MENU_BUTTON, timeout=5)
+        if not button:
+            return ""
+        return (button.attr("aria-label") or "").removeprefix("Model:").strip()
+
+    def _set_effort(self, want_effort):
+        """Pick an effort level from the submenu next to the model list."""
+        testid = EFFORT_TESTIDS.get(want_effort.lower())
+        if not testid:
+            raise RuntimeError(
+                f"claude: unknown effort {want_effort!r}; expected one of "
+                f"{sorted(EFFORT_TESTIDS)}"
+            )
+
+        trigger = self.tab.ele(EFFORT_TRIGGER, timeout=5)
+        if not trigger:
+            logger.warning("claude: the selected model has no Effort submenu, ignoring "
+                           "effort=%r", want_effort)
+            return
+
+        # base-ui nested menus open on hover and ignore clicks on the trigger.
+        for _ in range(3):
+            if trigger.attr("aria-expanded") == "true":
+                break
+            trigger.hover()
+            time.sleep(1.2)
+            trigger = self.tab.ele(EFFORT_TRIGGER, timeout=3) or trigger
+        if trigger.attr("aria-expanded") != "true":
+            raise RuntimeError("claude: the Effort submenu did not open on hover")
+
+        option = self.tab.ele(f"css:[data-testid='{testid}']", timeout=5)
+        if not option:
+            raise RuntimeError(f"claude: no effort option matched {testid!r}")
+        if option.attr("aria-checked") == "true":
+            logger.info("claude: effort already %r", want_effort)
+            return
+        self._click(option, f"effort option {want_effort!r}")
+        time.sleep(1.5)
+        logger.info("claude: effort set to %r", want_effort)
+
+    def _open_model_menu(self, button):
+        if not button:
+            raise RuntimeError("claude: model dropdown disappeared")
+        if button.attr("aria-expanded") != "true":
+            self._click(button, "model dropdown")
+            time.sleep(1.5)
+        if button.attr("aria-expanded") != "true":
+            raise RuntimeError("claude: model dropdown refused to open")
+
+    def _close_model_menu(self):
+        button = self.tab.ele(MODEL_MENU_BUTTON, timeout=3)
+        if button and button.attr("aria-expanded") == "true":
+            self._click(button, "model dropdown (close)")
+            time.sleep(0.5)
+
+    def _pick_model(self, want_model):
+        """Click the radio item whose label starts with the wanted model name."""
+        options = self.tab.eles(MODEL_OPTION)
+        logger.info("claude: %d model options offered", len(options))
+        for option in options:
+            label = (option.text or "").strip()
+            if not label.startswith(want_model):
+                continue
+            if option.attr("aria-checked") == "true":
+                logger.info("claude: %r is already selected", want_model)
+                return
+            self._click(option, f"model option {want_model!r}")
+            logger.info("claude: selected model %r", want_model)
+            time.sleep(1.5)
+            return
+        available = [(o.text or "").splitlines()[0] for o in options]
+        raise RuntimeError(
+            f"claude: model {want_model!r} not in the dropdown. Offered: {available}. "
+            "It may sit behind 'More models'."
+        )
+
+    def _set_extended(self, want_extended):
+        switch = self.tab.ele(EXTENDED_SWITCH, timeout=5)
+        if not switch:
+            logger.info("claude: the selected model has no Extended switch (it uses the "
+                        "Effort submenu instead), ignoring extended_thinking")
+            return
+        is_on = switch.attr("aria-checked") == "true"
+        if is_on == want_extended:
+            logger.info("claude: Extended thinking already %s", "on" if is_on else "off")
+            return
+        self._click(switch, "Extended switch")
+        time.sleep(1)
+        now_on = (self.tab.ele(EXTENDED_SWITCH, timeout=3) or switch).attr("aria-checked") == "true"
+        logger.info("claude: Extended thinking toggled %s -> %s",
+                    "on" if is_on else "off", "on" if now_on else "off")
+        if now_on != want_extended:
+            logger.warning("claude: Extended thinking did not reach the requested state")

@@ -1,0 +1,174 @@
+####################################################################################
+# Configuration for the VM-screenshot uploader.
+#
+# Everything the tool needs to know is here: which VM to screenshot, which AI web UI
+# to send it to, and which Chrome user-data-dir / profile to drive.
+#
+# Any value can be overridden on the command line, see `python run.py --help`.
+####################################################################################
+
+[general]
+# Name of the VirtualBox VM to screenshot (see `VBoxManage list vms`).
+vm_name = "ubuntu-24.04"
+
+# Which provider to use. Must match one of the [providers.*] sections below.
+provider = "claude"
+
+# Where screenshots are written.
+screenshot_dir = "~/Downloads/vm-screenshot"
+
+# Text typed into the composer together with the screenshot. Empty string = attach only.
+prompt = "Help me do the task in image"
+
+# Send the message after attaching. false = leave it in the composer for manual review.
+submit = true
+
+# Send a harmless keystroke (left Shift) to the guest before capturing, so a VM whose
+# screen has blanked does not produce an all-black screenshot.
+wake_vm = true
+
+
+####################################################################################
+# Default browser settings. Each provider may override any of these in its own
+# [providers.<name>.browser] section.
+#
+# Running several providers at once, two ways:
+#
+# 1. SHARED BROWSER (what this file does by default). Every provider keeps the same
+#    user_data_dir and debug_port, so they share one Chrome and each gets its own tab.
+#    Runs can overlap. Requires one profile signed into all of them.
+#
+# 2. SEPARATE BROWSERS. Give a provider its own [providers.<name>.browser] with BOTH a
+#    different user_data_dir AND a different debug_port. Both parts are required: Chrome
+#    allows only one process per user-data-dir, so a second launch against a directory
+#    already in use just hands off to the running process and exits without ever opening
+#    its debugging port.
+####################################################################################
+[browser]
+binary = "/usr/bin/google-chrome"
+
+# Chrome user-data-dir holding the logged-in session, and the profile inside it.
+user_data_dir = "~/.config/google-chrome-gemini"
+profile = "Default"
+
+# CDP port used to attach to an already running Chrome, or to launch a new one.
+debug_port = 9222
+
+# false = never raise the browser above the window you are working in. New tabs open in
+# the background and an existing window is left where it is. CDP input events reach a
+# background tab anyway, so the automation still works.
+# true  = activate the tab and resize the window, which pulls Chrome to the front.
+# Measured focus thieves, both now gated behind this: resizing the window over CDP, and
+# opening a foreground tab. Launching Chrome from scratch always takes focus, unavoidably.
+focus_window = false
+
+# maximized  - normal window filling the screen (keeps the tab bar and address bar)
+# fullscreen - true fullscreen, browser UI hidden
+# normal     - use window_size below
+# Applied on launch via --start-maximized/--start-fullscreen, and over CDP when attaching
+# to a Chrome that is already running.
+window_mode = "maximized"
+window_size = "1400,950"
+
+startup_timeout = 20.0
+
+# Flags applied when this tool launches Chrome itself. Ignored when attaching to an
+# already running instance.
+#
+# Deliberately NOT here: --disable-blink-features=AutomationControlled. Chrome shows a
+# permanent "unsupported command-line flag" infobar for it, and it buys nothing: it only
+# matters when something passes --enable-automation, which DrissionPage never does since
+# it attaches to a plain Chrome over CDP. Measured both ways: navigator.webdriver is
+# false either way.
+extra_args = [
+    "--no-first-run",
+    "--no-default-browser-check",
+    "--disable-dev-shm-usage",
+    "--disable-extensions",
+    "--disable-default-apps",
+    "--disable-background-timer-throttling",
+    "--disable-backgrounding-occluded-windows",
+    "--disable-renderer-backgrounding",
+]
+
+
+####################################################################################
+# Providers
+#
+# upload_strategy (both are pure CDP, nothing touches the desktop):
+#   direct_input - write the path straight into a reachable <input type="file">
+#   cdp          - intercept the native file chooser so it never opens
+####################################################################################
+
+[providers.claude]
+url = "https://claude.ai/new"
+url_match = "claude.ai"
+upload_strategy = "direct_input"
+# Model label exactly as shown in claude.ai's model dropdown. Empty = leave as is.
+#
+# Models seen in the dropdown (copy the label verbatim, the match is by prefix):
+#   "Fable 5"    For your toughest challenges      - requires usage credits
+#   "Opus 5"     For complex tasks
+#   "Sonnet 5"   Most efficient for everyday tasks
+#   "Haiku 4.5"  Fastest for quick answers         - cheapest, no Effort submenu
+# Anything behind the dropdown's "More models" entry is NOT reachable yet: the provider
+# only clicks items in the top-level list.
+model = "Haiku 4.5"
+
+# Effort level, for models that offer the Effort submenu (Fable 5, Opus 5, Sonnet 5).
+# Empty = leave whatever the UI is set to.
+#
+#   "Low"
+#   "Medium"
+#   "High"     <- claude.ai's own default
+#   "Extra"    (the DOM calls this one xhigh; "xhigh" is accepted here too)
+#   "Max"      - requires usage credits
+#
+# Higher effort means more thorough answers, but slower and it burns your limits faster.
+# Haiku 4.5 has no Effort submenu, so this key is ignored while model = "Haiku 4.5".
+#
+# Cheapest, for a quick look at a screenshot:
+#   model = "Haiku 4.5"
+#   effort = ""
+# Thorough, for debugging something subtle in the screenshot:
+#   model = "Opus 5"
+#   effort = "High"
+effort = ""
+
+# Extended thinking toggle, for models that show the Extended switch instead of Effort
+# (Haiku 4.5). Set to false to keep answers, and token use, small.
+# Ignored on models that use the Effort submenu.
+extended_thinking = false
+
+# Auto-send for THIS provider only. When uncommented it wins over [general].submit, so
+# leave it commented to follow the general setting -- otherwise editing [general].submit
+# appears to do nothing. `--submit` / `--no-submit` on the command line beats both, and
+# `run.py --print-config` always prints which one is in effect.
+#
+# Either way the run waits for claude.ai's own thumbnail to switch to a server URL before
+# sending, and skips the click while the Send button reports itself disabled, so the
+# message can never go out without the image.
+# submit = false
+
+[providers.gemini]
+url = "https://gemini.google.com"
+url_match = "gemini.google.com"
+upload_strategy = "cdp"
+# Model picking is not implemented for Gemini: whatever the web UI is already set to is
+# used. Setting a value here only logs a warning. Implement `select_model` in
+# providers/gemini.py first, see providers/claude.py for the pattern.
+model = ""
+
+# Uncomment to give Gemini a browser of its own, fully independent of Claude's.
+# Change both keys together, see the note above the [browser] section.
+# [providers.gemini.browser]
+# user_data_dir = "~/.config/google-chrome-auto-upload-file-gemini"
+# debug_port = 9223
+
+[providers.codex]
+url = "https://chatgpt.com/codex"
+url_match = "chatgpt.com"
+upload_strategy = "cdp"
+# Skeleton provider: its selectors are unverified and `attach_file` raises. Model picking
+# is not implemented either. See providers/codex.py for how to finish it.
+model = ""

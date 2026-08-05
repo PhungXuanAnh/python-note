@@ -1,0 +1,17 @@
+[Desktop Entry]
+Name=Take Screenshot and Upload
+Comment=Screenshot the VM from config.toml and send it to the configured AI chat
+Exec=@PYTHON@ @APP_DIR@/run.py
+Path=@APP_DIR@
+Icon=@LAUNCHER_DIR@/take_screenshot_and_upload.png
+Type=Application
+Terminal=true
+Categories=Development;
+StartupNotify=true
+
+# Template: the @...@ placeholders are filled in by ../install.sh, which is what keeps the
+# launchers working after this project is moved. Edit here, then re-run ../install.sh.
+#
+# Which VM, which provider and which Chrome profile are read from ../../config.toml.
+# To pin this launcher to one provider regardless of config, append e.g. --provider gemini
+# to the Exec line above.

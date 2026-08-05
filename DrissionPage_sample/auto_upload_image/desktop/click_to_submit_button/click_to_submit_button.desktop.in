@@ -1,0 +1,15 @@
+[Desktop Entry]
+Name=Click Submit Button
+Comment=Press send in the AI chat that is already open in Chrome
+Exec=@PYTHON@ @APP_DIR@/run.py --submit-only
+Path=@APP_DIR@
+Icon=@LAUNCHER_DIR@/click_to_submit_button.jpg
+Type=Application
+Terminal=true
+Categories=Development;
+StartupNotify=true
+
+# Template: the @...@ placeholders are filled in by ../install.sh, which is what keeps the
+# launchers working after this project is moved. Edit here, then re-run ../install.sh.
+#
+# The provider, and therefore which send button to look for, comes from ../../config.toml.

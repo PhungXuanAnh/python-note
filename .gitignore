@@ -11,3 +11,5 @@ test
 celerybeat*
 tmp.*
 env.sh
+tmp/
+.plan-with-files
