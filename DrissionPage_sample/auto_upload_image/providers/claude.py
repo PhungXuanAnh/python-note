@@ -6,6 +6,7 @@ Selectors verified against the live UI. claude.ai keeps a reachable hidden
 import logging
 import os
 import time
+from collections import namedtuple
 
 from providers.base import Provider
 
@@ -16,16 +17,44 @@ MODEL_OPTION = "css:div[role='menuitemradio']"
 EXTENDED_SWITCH = "css:span[role='switch'][aria-label='Extended']"
 EFFORT_TRIGGER = "css:[data-testid='effort-menu-trigger']"
 
-# Effort levels, keyed by the label claude.ai shows. Note "Extra" is `xhigh` in the DOM.
+# Effort levels as the DOM names them, in the `effort-option-<level>` test ids. claude.ai
+# spells xhigh "Extra" everywhere a human sees it, so both names are accepted.
 # Models differ: Opus 5 offers this submenu, Haiku 4.5 offers the Extended switch instead.
-EFFORT_TESTIDS = {
-    "low": "effort-option-low",
-    "medium": "effort-option-medium",
-    "high": "effort-option-high",
-    "extra": "effort-option-xhigh",
-    "xhigh": "effort-option-xhigh",
-    "max": "effort-option-max",
-}
+EFFORT_LEVELS = ("low", "medium", "high", "xhigh", "max")
+EFFORT_ALIASES = {"extra": "xhigh"}
+EXTENDED_WORD = "extended"
+
+#: What the model button says, split into its parts. ``effort`` is a member of
+#: ``EFFORT_LEVELS`` or ""; ``extended`` is None when the model has no Extended switch.
+ModelState = namedtuple("ModelState", "label model effort extended")
+
+
+def canonical_effort(value):
+    """Fold the label claude.ai shows onto the level name the DOM uses."""
+    key = (value or "").strip().lower()
+    return EFFORT_ALIASES.get(key, key)
+
+
+def parse_model_label(label):
+    """Split the model button's aria-label into what is actually selected.
+
+    claude.ai writes the whole selection into that one string, so no menu has to be
+    opened to find out what is set. Measured, all four shapes:
+
+        "Opus 5 High"        model + effort
+        "Opus 5 Extra"       "Extra" is the DOM's xhigh
+        "Haiku 4.5 Extended" Extended thinking on
+        "Haiku 4.5"          Extended thinking off
+
+    A model offering the Effort submenu has no Extended switch at all, hence
+    ``extended=None`` there: not applicable, rather than off.
+    """
+    head, _, last = label.rpartition(" ")
+    if head and last.lower() == EXTENDED_WORD:
+        return ModelState(label, head, "", True)
+    if head and canonical_effort(last) in EFFORT_LEVELS:
+        return ModelState(label, head, canonical_effort(last), None)
+    return ModelState(label, label, "", False if label else None)
 
 
 class ClaudeProvider(Provider):
@@ -71,7 +100,11 @@ class ClaudeProvider(Provider):
     # ------------------------------------------------------------- model picking
 
     def select_model(self):
-        """Apply the configured model, effort level and Extended-thinking toggle."""
+        """Apply the configured model, effort level and Extended-thinking toggle.
+
+        Nothing is clicked while the UI already agrees with the config: the current
+        settings are read from the model button, see ``_read_state``.
+        """
         want_model = (self.config.model or "").strip()
         want_effort = (self.config.effort or "").strip()
         want_extended = self.config.extended_thinking
@@ -79,57 +112,88 @@ class ClaudeProvider(Provider):
             return
 
         # Validate before touching the UI, so a typo cannot leave the model half-changed.
-        if want_effort and want_effort.lower() not in EFFORT_TESTIDS:
+        if want_effort and canonical_effort(want_effort) not in EFFORT_LEVELS:
             raise RuntimeError(
                 f"claude: unknown effort {want_effort!r}; expected one of "
-                f"{sorted(EFFORT_TESTIDS)}"
+                f"{sorted(EFFORT_LEVELS + tuple(EFFORT_ALIASES))}"
             )
 
-        button = self.tab.ele(MODEL_MENU_BUTTON, timeout=15)
-        if not button:
+        if not self.tab.ele(MODEL_MENU_BUTTON, timeout=15):
             logger.warning("claude: model dropdown not found, leaving the model as is")
             return
 
-        # The button label carries both parts, e.g. "Model: Opus 5 High".
-        logger.info("claude: model selector reads %r", self._current_label())
+        state = self._read_state()
+        logger.info("claude: model selector reads %r (model=%r effort=%r extended=%s)",
+                    state.label, state.model, state.effort, state.extended)
 
-        needs_model = bool(want_model) and not self._current_label().startswith(want_model)
-        if not needs_model and not want_effort and want_extended is None:
-            logger.info("claude: nothing to change")
+        if want_model and not state.model.startswith(want_model):
+            self._open_model_menu(self.tab.ele(MODEL_MENU_BUTTON, timeout=10))
+            try:
+                self._pick_model(want_model)
+            finally:
+                self._close_model_menu()
+            # Picking a model closes the menu and rewrites the button label with the new
+            # model's own effort / Extended state, so re-read rather than assume the rest
+            # still needs changing.
+            time.sleep(1)
+            state = self._read_state()
+            logger.info("claude: model selector now reads %r", state.label)
+
+        # The same label says which of the two controls this model offers: an effort word
+        # means the Effort submenu, its absence means the Extended switch.
+        has_effort_menu = state.extended is None
+
+        set_effort = False
+        if want_effort:
+            if not has_effort_menu:
+                logger.info("claude: %r has no Effort submenu, ignoring effort=%r",
+                            state.model, want_effort)
+            elif canonical_effort(want_effort) == state.effort:
+                logger.info("claude: effort is already %r, leaving the menu closed",
+                            want_effort)
+            else:
+                set_effort = True
+
+        set_extended = False
+        if want_extended is not None:
+            if has_effort_menu:
+                logger.info("claude: %r uses the Effort submenu, ignoring extended_thinking",
+                            state.model)
+            elif state.extended == want_extended:
+                logger.info("claude: Extended thinking is already %s, leaving the menu closed",
+                            "on" if want_extended else "off")
+            else:
+                set_extended = True
+
+        if not (set_effort or set_extended):
             return
 
-        self._open_model_menu(button)
+        self._open_model_menu(self.tab.ele(MODEL_MENU_BUTTON, timeout=10))
         try:
-            if needs_model:
-                self._pick_model(want_model)
-                # Choosing a model closes the menu; reopen for the remaining settings.
-                if want_effort or want_extended is not None:
-                    time.sleep(1)
-                    self._open_model_menu(self.tab.ele(MODEL_MENU_BUTTON, timeout=10))
-            if want_effort:
+            if set_effort:
                 self._set_effort(want_effort)
-            if want_extended is not None:
+            if set_extended:
                 self._set_extended(want_extended)
         finally:
             self._close_model_menu()
 
-        logger.info("claude: model selector now reads %r", self._current_label())
+        logger.info("claude: model selector now reads %r", self._read_state().label)
 
-    def _current_label(self):
-        """Text of the model button, e.g. 'Opus 5 High' or 'Haiku 4.5'."""
+    def _read_state(self):
+        """Read the current model, effort and Extended thinking without any clicking."""
         button = self.tab.ele(MODEL_MENU_BUTTON, timeout=5)
-        if not button:
-            return ""
-        return (button.attr("aria-label") or "").removeprefix("Model:").strip()
+        label = (button.attr("aria-label") or "").removeprefix("Model:").strip() if button else ""
+        return parse_model_label(label)
 
     def _set_effort(self, want_effort):
         """Pick an effort level from the submenu next to the model list."""
-        testid = EFFORT_TESTIDS.get(want_effort.lower())
-        if not testid:
+        level = canonical_effort(want_effort)
+        if level not in EFFORT_LEVELS:
             raise RuntimeError(
                 f"claude: unknown effort {want_effort!r}; expected one of "
-                f"{sorted(EFFORT_TESTIDS)}"
+                f"{sorted(EFFORT_LEVELS + tuple(EFFORT_ALIASES))}"
             )
+        testid = f"effort-option-{level}"
 
         trigger = self.tab.ele(EFFORT_TRIGGER, timeout=5)
         if not trigger:

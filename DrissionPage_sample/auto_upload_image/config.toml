@@ -18,7 +18,19 @@ provider = "claude"
 screenshot_dir = "~/Downloads/vm-screenshot"
 
 # Text typed into the composer together with the screenshot. Empty string = attach only.
+#
+# Typed only when the composer does not already contain it. The tab, and with it the
+# draft, is reused between runs, so a standing instruction you leave in the composer is
+# kept as is instead of being pasted in again with every upload.
 prompt = "Help me do the task in image"
+
+# false = attach the file and type nothing, leaving the composer for you to write in.
+# The prompt above is kept, so flipping this back needs no retyping. Per run:
+# `--no-prompt` / `--add-prompt`, and naming a `--prompt` implies --add-prompt.
+#
+# Pair it with submit = false, otherwise the message goes out with no text at all. That
+# is what the "Only Upload Image" launcher does, see desktop/only_upload_image/.
+add_prompt = true
 
 # Send the message after attaching. false = leave it in the composer for manual review.
 submit = true
@@ -104,6 +116,11 @@ extra_args = [
 url = "https://claude.ai/new"
 url_match = "claude.ai"
 upload_strategy = "direct_input"
+# The three keys below are compared against what the UI already shows before anything is
+# clicked: claude.ai spells the whole selection into the model button's label ("Model:
+# Opus 5 High", "Model: Haiku 4.5 Extended"), so a run whose settings already match opens
+# no menu at all. Only a genuine difference costs clicks.
+#
 # Model label exactly as shown in claude.ai's model dropdown. Empty = leave as is.
 #
 # Models seen in the dropdown (copy the label verbatim, the match is by prefix):
@@ -113,7 +130,7 @@ upload_strategy = "direct_input"
 #   "Haiku 4.5"  Fastest for quick answers         - cheapest, no Effort submenu
 # Anything behind the dropdown's "More models" entry is NOT reachable yet: the provider
 # only clicks items in the top-level list.
-model = "Haiku 4.5"
+model = "Opus 5"
 
 # Effort level, for models that offer the Effort submenu (Fable 5, Opus 5, Sonnet 5).
 # Empty = leave whatever the UI is set to.
@@ -133,7 +150,7 @@ model = "Haiku 4.5"
 # Thorough, for debugging something subtle in the screenshot:
 #   model = "Opus 5"
 #   effort = "High"
-effort = ""
+effort = "High"
 
 # Extended thinking toggle, for models that show the Extended switch instead of Effort
 # (Haiku 4.5). Set to false to keep answers, and token use, small.

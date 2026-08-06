@@ -95,6 +95,8 @@ class AppConfig:
     provider_name: str
     screenshot_dir: str
     prompt: str = ""
+    #: False attaches the file and types nothing, leaving the composer to you.
+    add_prompt: bool = True
     submit: bool = True
     wake_vm: bool = False
     providers: dict = field(default_factory=dict)
@@ -102,6 +104,11 @@ class AppConfig:
 
     def __post_init__(self):
         self.screenshot_dir = _expand(self.screenshot_dir)
+
+    @property
+    def effective_prompt(self):
+        """The text to type, or "" when the prompt is switched off."""
+        return self.prompt if self.add_prompt else ""
 
     @property
     def effective_submit(self):
@@ -127,7 +134,8 @@ class AppConfig:
             f"vm_name          : {self.vm_name}",
             f"provider         : {p.name}",
             f"screenshot_dir   : {self.screenshot_dir}",
-            f"prompt           : {self.prompt!r}",
+            f"prompt           : {self.effective_prompt!r}"
+            + ("" if self.add_prompt else f"  (add_prompt is off, {self.prompt!r} not typed)"),
             f"submit           : {self.effective_submit}"
             + (f"  (provider override of [general].submit={self.submit})"
                if p.submit is not None else ""),
@@ -151,8 +159,9 @@ class AppConfig:
 def load_config(path=None, **overrides):
     """Read ``config.toml`` and apply non-``None`` keyword overrides from the CLI.
 
-    Recognised overrides: vm_name, provider_name, screenshot_dir, prompt, submit,
-    user_data_dir, profile, debug_port, model, extended_thinking, upload_strategy, url.
+    Recognised overrides: vm_name, provider_name, screenshot_dir, prompt, add_prompt,
+    submit, user_data_dir, profile, debug_port, model, extended_thinking,
+    upload_strategy, url.
     """
     path = Path(path) if path else DEFAULT_CONFIG_PATH
     if not path.is_file():
@@ -175,6 +184,7 @@ def load_config(path=None, **overrides):
         provider_name=general.get("provider", ""),
         screenshot_dir=general.get("screenshot_dir", "~/Downloads/vm-screenshot"),
         prompt=general.get("prompt", ""),
+        add_prompt=bool(general.get("add_prompt", True)),
         submit=bool(general.get("submit", True)),
         wake_vm=bool(general.get("wake_vm", False)),
         providers=providers,
@@ -186,11 +196,17 @@ def load_config(path=None, **overrides):
 
 
 def _apply_overrides(cfg, overrides):
-    for key in ("vm_name", "provider_name", "screenshot_dir", "prompt", "submit", "wake_vm"):
+    for key in ("vm_name", "provider_name", "screenshot_dir", "prompt", "add_prompt",
+                "submit", "wake_vm"):
         value = overrides.get(key)
         if value is not None:
             setattr(cfg, key, value)
     cfg.screenshot_dir = _expand(cfg.screenshot_dir)
+
+    # Naming a prompt on the command line is itself a request to type it, whatever the
+    # file says. The two flags are mutually exclusive, so this cannot fight --no-prompt.
+    if overrides.get("prompt") is not None:
+        cfg.add_prompt = True
 
     provider = cfg.provider  # raises early if the provider name is unknown
     for key in ("url", "upload_strategy", "model", "effort", "extended_thinking"):

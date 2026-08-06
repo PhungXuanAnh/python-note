@@ -6,6 +6,7 @@ Everything is driven by config.toml; the flags below only override it for one ru
     python run.py                              # config defaults
     python run.py --provider gemini            # same VM, different UI
     python run.py --file ~/Pictures/bug.png    # upload an existing file instead
+    python run.py --no-prompt --no-submit      # attach only, write the message yourself
     python run.py --submit-only                # just press send in the open chat
     python run.py --print-config               # show the resolved config and exit
     python run.py --dump-dom                   # list the selectors the page exposes
@@ -36,9 +37,16 @@ def parse_args(argv=None):
     parser.add_argument("--file", help="upload this file instead of taking a screenshot")
     parser.add_argument("--no-shot", action="store_true",
                         help="do not attach anything, only type/submit")
-    parser.add_argument("--prompt", help="text to type into the composer")
     parser.add_argument("--submit-only", action="store_true",
                         help="press send in the already-open chat and exit")
+
+    # Either name the text or say you want none; asking for both makes no sense.
+    prompt = parser.add_mutually_exclusive_group()
+    prompt.add_argument("--prompt", help="text to type into the composer (implies --add-prompt)")
+    prompt.add_argument("--add-prompt", dest="add_prompt", action="store_const", const=True,
+                        help="type the configured prompt (config default)")
+    prompt.add_argument("--no-prompt", dest="add_prompt", action="store_const", const=False,
+                        help="attach only, leave the composer for you to write in")
 
     wake = parser.add_mutually_exclusive_group()
     wake.add_argument("--wake-vm", dest="wake_vm", action="store_const", const=True,
@@ -123,6 +131,7 @@ def main(argv=None):
         vm_name=args.vm_name,
         provider_name=args.provider,
         prompt=args.prompt,
+        add_prompt=args.add_prompt,
         submit=args.submit,
         wake_vm=args.wake_vm,
         model=args.model,
@@ -173,7 +182,9 @@ def main(argv=None):
                 "[general].submit=%s in %s",
                 submit, provider_cfg.name, cfg.submit, cfg.source_path,
             )
-        provider.run(file_path=file_path, prompt=cfg.prompt, submit=submit)
+        if not cfg.add_prompt:
+            logger.info("add_prompt is off: attaching only, the composer is left to you")
+        provider.run(file_path=file_path, prompt=cfg.effective_prompt, submit=submit)
 
     logger.info("Done. Chrome stays open on %s", tab.url)
     return 0

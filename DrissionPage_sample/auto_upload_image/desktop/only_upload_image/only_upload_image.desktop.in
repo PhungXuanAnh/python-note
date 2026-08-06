@@ -1,0 +1,20 @@
+[Desktop Entry]
+Name=Only Upload Image
+Comment=Screenshot the VM and attach it, no prompt and no send: you write the message
+Exec=@PYTHON@ @APP_DIR@/run.py --no-prompt --no-submit
+Path=@APP_DIR@
+Icon=@LAUNCHER_DIR@/only_upload_image.png
+Type=Application
+Terminal=true
+Categories=Development;
+StartupNotify=true
+
+# Template: the @...@ placeholders are filled in by ../install.sh, which is what keeps the
+# launchers working after this project is moved. Edit here, then re-run ../install.sh.
+#
+# Same run as "Take Screenshot and Upload", minus the typing and the send. Both flags are
+# needed: without --no-submit the message would go out with the image and no text at all.
+# Type your own message in the composer afterwards, then send it, or use the "Click Submit
+# Button" launcher.
+#
+# Which VM, which provider and which Chrome profile are read from ../../config.toml.

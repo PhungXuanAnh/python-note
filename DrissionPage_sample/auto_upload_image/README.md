@@ -44,9 +44,14 @@ One sub-folder per launcher, each holding a `.desktop.in` template and that entr
 ```
 desktop/
 ├── take_screenshot_and_upload/   run.py — screenshot, attach, send
+├── only_upload_image/            run.py --no-prompt --no-submit — attach only
 ├── click_to_submit_button/       run.py --submit-only — press send in the open chat
 └── install.sh
 ```
+
+**Only Upload Image** is the same run without the typing and the send: the screenshot is
+attached and the composer is left to you. Write your own message, then send it yourself or
+click **Click Submit Button**.
 
 ```bash
 ./desktop/install.sh              # generate the entries into ~/.local/share/applications
@@ -101,14 +106,15 @@ for that port.
 python run.py                            # config defaults: screenshot + upload + send
 python run.py --provider gemini
 python run.py --file ~/Pictures/bug.png  # upload an existing file, no VM involved
+python run.py --no-prompt --no-submit    # attach only, write the message yourself
 python run.py --no-submit                # leave the message in the composer
 python run.py --submit-only              # just press send in the open chat
 python run.py --print-config             # resolved config, nothing else
 python run.py --dump-dom                 # list the selectors the page exposes
 ```
 
-Every config value has a matching flag (`--vm`, `--prompt`, `--model`, `--effort`,
-`--no-extended-thinking`, `--user-data-dir`, `--profile`, `--debug-port`,
+Every config value has a matching flag (`--vm`, `--prompt`, `--no-prompt`, `--model`,
+`--effort`, `--no-extended-thinking`, `--user-data-dir`, `--profile`, `--debug-port`,
 `--window-mode`, `--upload-strategy`). Flags win over the file for that run only.
 
 ## Model and effort (claude)
@@ -131,6 +137,22 @@ or for one run: `python run.py --model "Opus 5" --effort High`.
 
 The key that does not apply to the current model is ignored with a log line rather than an
 error. The `Effort` submenu opens on hover, not on click — worth knowing if you extend it.
+
+**Nothing is clicked while the UI already agrees with the config.** claude.ai writes the
+entire selection into the model button's `aria-label`, so all three settings are read
+before any menu is opened:
+
+| Label | model | effort | extended |
+|---|---|---|---|
+| `Model: Opus 5 High` | Opus 5 | high | n/a — this model has no switch |
+| `Model: Opus 5 Extra` | Opus 5 | xhigh (the UI spells it "Extra") | n/a |
+| `Model: Haiku 4.5 Extended` | Haiku 4.5 | n/a — this model has no submenu | on |
+| `Model: Haiku 4.5` | Haiku 4.5 | n/a | off |
+
+A run that only differs in the model opens the menu once: after the model is picked the
+label is read again, and the new model's own effort / Extended state usually needs no
+second visit. Which control a model offers is read from the same label, so `effort` on
+Haiku 4.5 is ignored without opening anything.
 
 ## Upload strategies
 
@@ -182,6 +204,16 @@ Launching Chrome from scratch always takes focus. That is unavoidable — start 
   new one, so an in-progress conversation is not lost. The flip side: a draft or an
   attachment left in that composer rides along with the next message, so the run warns
   when it finds one.
+- The `prompt` is typed only when the composer does not already contain it, whitespace
+  ignored. That makes the reused draft useful rather than a hazard: leave a standing
+  instruction in the composer and each screenshot joins it instead of appending a second
+  copy of it. A leftover that is exactly the configured prompt is reported as reused, not
+  as the "composer already contains text" warning.
+- `add_prompt = false` (or `--no-prompt`) switches the typing off entirely while keeping
+  the `prompt` value in the file, for the runs where you want to write the message
+  yourself. Naming a `--prompt` on the command line implies `--add-prompt`, and asking for
+  both `--prompt` and `--no-prompt` is rejected. Pair it with `--no-submit`, or the message
+  goes out with the image and no text at all.
 - `wake_vm` exists because a guest whose screen has blanked screenshots as pure black.
   The wake keystroke is left Shift, which types nothing inside the guest.
 - Before sending, the run waits for the provider's own attachment preview and aborts

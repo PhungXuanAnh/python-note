@@ -8,6 +8,15 @@ from core.file_upload import FileUploader
 logger = logging.getLogger(__name__)
 
 
+def normalized(text):
+    """Collapse whitespace so composer text can be compared with configured text.
+
+    Rich-text composers wrap each line in its own element and pad with non-breaking
+    spaces, so the text read back is never byte-identical to what was typed.
+    """
+    return " ".join((text or "").replace("\u00a0", " ").split())
+
+
 class Provider(ABC):
     """Drives one AI chat web UI through attach-file / type / submit.
 
@@ -131,9 +140,18 @@ class Provider(ABC):
         return None
 
     def type_prompt(self, text):
+        """Type the prompt, unless the composer already holds it.
+
+        The tab, and with it the composer draft, is reused between runs: a standing
+        instruction typed once should not be repeated with every screenshot. The
+        comparison ignores whitespace, see ``normalized``.
+        """
         if not text:
             return
         composer = self._require(self.composer_selectors, what="composer")
+        if normalized(text) in normalized(composer.text):
+            logger.info("Composer already contains the prompt, not typing it again: %r", text)
+            return
         self._click(composer, "composer")
         composer.input(text)
         logger.info("Typed prompt: %r", text)
@@ -168,15 +186,19 @@ class Provider(ABC):
 
     # ---------------------------------------------------------------- orchestration
 
-    def warn_if_composer_dirty(self):
+    def warn_if_composer_dirty(self, prompt=""):
         """Point out anything already staged in the reused tab's composer.
 
         The tab is reused on purpose, so a draft or an attachment left from an earlier
-        run would silently ride along with the message we are about to send.
+        run would silently ride along with the message we are about to send. Text that
+        is just the configured prompt is expected, not a surprise: ``type_prompt``
+        deliberately leaves it in place instead of typing it twice.
         """
         composer = self._first(self.composer_selectors, timeout=3, what="composer")
         existing = (composer.text or "").strip() if composer else ""
-        if existing:
+        if existing and prompt and normalized(prompt) == normalized(existing):
+            logger.info("Composer already holds the configured prompt, it will be reused")
+        elif existing:
             logger.warning("Composer already contains text, it will be sent too: %r",
                            existing[:80])
         for selector in self.leftover_attachment_selectors:
@@ -189,7 +211,7 @@ class Provider(ABC):
 
     def run(self, file_path=None, prompt="", submit=True):
         self.open()
-        self.warn_if_composer_dirty()
+        self.warn_if_composer_dirty(prompt)
         self.select_model()
         if file_path:
             self.attach_file(file_path)
