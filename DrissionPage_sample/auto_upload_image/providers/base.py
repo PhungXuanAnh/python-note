@@ -1,4 +1,16 @@
-"""Provider contract shared by every AI web UI this tool can drive."""
+"""Provider contract shared by every AI UI this tool can drive.
+
+Two layers, because not every target is a web page:
+
+``Provider``
+    The order of a run -- open, attach, type, submit -- plus the parts that only need
+    "read what is staged" and "write text", so they are the same whether the composer is
+    a contenteditable div or the input line of a terminal UI.
+``BrowserProvider``
+    Everything DrissionPage: a tab, CSS locators, the file uploader.
+
+A terminal provider subclasses ``Provider`` directly, see ``providers/claude_code.py``.
+"""
 import logging
 import time
 from abc import ABC, abstractmethod
@@ -18,13 +30,104 @@ def normalized(text):
 
 
 class Provider(ABC):
-    """Drives one AI chat web UI through attach-file / type / submit.
-
-    Subclasses describe *where things are* (selectors) and, when a UI needs it,
-    override the steps. ``run`` keeps the overall order in one place.
-    """
+    """Drives one AI UI through attach-file / type / submit."""
 
     name = "base"
+
+    #: True when the runner has to hand this provider a browser tab.
+    needs_browser = False
+
+    def __init__(self, config):
+        self.config = config
+
+    # ---------------------------------------------------------------- what a UI must offer
+
+    @abstractmethod
+    def open(self):
+        """Get the UI in front of us and ready for input."""
+
+    @abstractmethod
+    def composer_text(self):
+        """Whatever is currently staged for sending, as plain text."""
+
+    @abstractmethod
+    def write_text(self, text):
+        """Append ``text`` to the composer, without sending."""
+
+    @abstractmethod
+    def attach_file(self, file_path):
+        """Attach ``file_path`` to the composer."""
+
+    @abstractmethod
+    def submit(self):
+        """Send what is staged."""
+
+    # ---------------------------------------------------------------- shared steps
+
+    def select_model(self):
+        """Pick the configured model. No-op for UIs without a model switcher."""
+        if self.config.model:
+            logger.warning("%s: model selection is not implemented, ignoring model=%r",
+                           self.name, self.config.model)
+
+    def wait_attachment_ready(self, file_path=None, timeout=60):
+        """Block until the attachment is really staged. No-op unless overridden."""
+        return None
+
+    def type_prompt(self, text):
+        """Type the prompt, unless the composer already holds it.
+
+        The composer is reused between runs: a standing instruction typed once should not
+        be repeated with every screenshot. The comparison ignores whitespace, see
+        ``normalized``.
+        """
+        if not text:
+            return
+        if normalized(text) in normalized(self.composer_text()):
+            logger.info("Composer already contains the prompt, not typing it again: %r", text)
+            return
+        self.write_text(text)
+        logger.info("Typed prompt: %r", text)
+
+    def warn_if_composer_dirty(self, prompt=""):
+        """Point out anything already staged in the reused composer.
+
+        The session is reused on purpose, so a draft left from an earlier run would
+        silently ride along with the message we are about to send. Text that is just the
+        configured prompt is expected, not a surprise: ``type_prompt`` deliberately leaves
+        it in place instead of typing it twice.
+        """
+        existing = (self.composer_text() or "").strip()
+        if existing and prompt and normalized(prompt) == normalized(existing):
+            logger.info("Composer already holds the configured prompt, it will be reused")
+        elif existing:
+            logger.warning("Composer already contains text, it will be sent too: %r",
+                           existing[:80])
+
+    # ---------------------------------------------------------------- orchestration
+
+    def run(self, file_path=None, prompt="", submit=True):
+        self.open()
+        self.warn_if_composer_dirty(prompt)
+        self.select_model()
+        if file_path:
+            self.attach_file(file_path)
+            self.wait_attachment_ready(file_path)
+        self.type_prompt(prompt)
+        if submit:
+            self.submit()
+        else:
+            logger.info("submit disabled, leaving the message in the composer")
+
+
+class BrowserProvider(Provider):
+    """A provider whose UI is a web page driven over CDP.
+
+    Subclasses describe *where things are* (selectors) and, when a UI needs it,
+    override the steps.
+    """
+
+    needs_browser = True
 
     #: Locator of a reachable ``<input type="file">``, when the UI has one.
     file_input_selector = ""
@@ -41,9 +144,9 @@ class Provider(ABC):
     #: Leave False while the selectors are still guesses, to only warn.
     attachment_required = False
 
-    def __init__(self, tab, config):
+    def __init__(self, config, tab):
+        super().__init__(config)
         self.tab = tab
-        self.config = config
         self.uploader = FileUploader(tab, config.upload_strategy)
         # A real mouse event over CDP always raises the browser window, so when we are
         # asked to stay out of the way we dispatch clicks from JS instead. Measured:
@@ -98,15 +201,14 @@ class Provider(ABC):
             )
         return element
 
-    def select_model(self):
-        """Pick the configured model. No-op for UIs without a model switcher."""
-        if self.config.model:
-            logger.warning("%s: model selection is not implemented, ignoring model=%r",
-                           self.name, self.config.model)
+    def composer_text(self):
+        composer = self._first(self.composer_selectors, timeout=3, what="composer")
+        return (composer.text or "") if composer else ""
 
-    @abstractmethod
-    def attach_file(self, file_path):
-        """Attach ``file_path`` to the composer."""
+    def write_text(self, text):
+        composer = self._require(self.composer_selectors, what="composer")
+        self._click(composer, "composer")
+        composer.input(text)
 
     def attachment_selectors(self, file_path):
         """Locators proving ``file_path`` finished uploading.
@@ -139,23 +241,6 @@ class Provider(ABC):
         logger.warning("%s; the selectors may be stale, continuing anyway", message)
         return None
 
-    def type_prompt(self, text):
-        """Type the prompt, unless the composer already holds it.
-
-        The tab, and with it the composer draft, is reused between runs: a standing
-        instruction typed once should not be repeated with every screenshot. The
-        comparison ignores whitespace, see ``normalized``.
-        """
-        if not text:
-            return
-        composer = self._require(self.composer_selectors, what="composer")
-        if normalized(text) in normalized(composer.text):
-            logger.info("Composer already contains the prompt, not typing it again: %r", text)
-            return
-        self._click(composer, "composer")
-        composer.input(text)
-        logger.info("Typed prompt: %r", text)
-
     def wait_submit_enabled(self, button, timeout=60):
         """Wait while the send button reports itself disabled.
 
@@ -184,23 +269,8 @@ class Provider(ABC):
         self._click(button, "send button")
         logger.info("Clicked the send button")
 
-    # ---------------------------------------------------------------- orchestration
-
     def warn_if_composer_dirty(self, prompt=""):
-        """Point out anything already staged in the reused tab's composer.
-
-        The tab is reused on purpose, so a draft or an attachment left from an earlier
-        run would silently ride along with the message we are about to send. Text that
-        is just the configured prompt is expected, not a surprise: ``type_prompt``
-        deliberately leaves it in place instead of typing it twice.
-        """
-        composer = self._first(self.composer_selectors, timeout=3, what="composer")
-        existing = (composer.text or "").strip() if composer else ""
-        if existing and prompt and normalized(prompt) == normalized(existing):
-            logger.info("Composer already holds the configured prompt, it will be reused")
-        elif existing:
-            logger.warning("Composer already contains text, it will be sent too: %r",
-                           existing[:80])
+        super().warn_if_composer_dirty(prompt)
         for selector in self.leftover_attachment_selectors:
             leftovers = self.tab.eles(selector) or []
             if leftovers:
@@ -208,16 +278,3 @@ class Provider(ABC):
                 logger.warning("Composer already holds %d attachment(s), they will be sent "
                                "too: %s", len(leftovers), labels)
                 break
-
-    def run(self, file_path=None, prompt="", submit=True):
-        self.open()
-        self.warn_if_composer_dirty(prompt)
-        self.select_model()
-        if file_path:
-            self.attach_file(file_path)
-            self.wait_attachment_ready(file_path)
-        self.type_prompt(prompt)
-        if submit:
-            self.submit()
-        else:
-            logger.info("submit disabled, leaving the message in the composer")

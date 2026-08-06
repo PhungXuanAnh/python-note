@@ -1,18 +1,25 @@
 ####################################################################################
-# Configuration for the VM-screenshot uploader.
+# Global configuration for the VM-screenshot uploader: which VM to screenshot, what to
+# say, and the Chrome defaults. Nothing provider-specific belongs here.
 #
-# Everything the tool needs to know is here: which VM to screenshot, which AI web UI
-# to send it to, and which Chrome user-data-dir / profile to drive.
+# Each provider keeps its own settings next to its code:
 #
-# Any value can be overridden on the command line, see `python run.py --help`.
+#   providers/claude/config.toml        claude.ai
+#   providers/claude_code/config.toml   the Claude Code TUI (tmux, no browser)
+#   providers/gemini/config.toml        gemini.google.com
+#   providers/codex/config.toml         skeleton
+#
+# Any value can be overridden on the command line, see `python run.py --help`, and
+# `run.py --print-config` prints what a run will actually use.
 ####################################################################################
 
 [general]
 # Name of the VirtualBox VM to screenshot (see `VBoxManage list vms`).
 vm_name = "ubuntu-24.04"
 
-# Which provider to use. Must match one of the [providers.*] sections below.
-provider = "claude"
+# Which provider to use: the name of a folder under providers/ that has a config.toml.
+# `run.py --print-config` lists the configured ones.
+provider = "claude-code"
 
 # Where screenshots are written.
 screenshot_dir = "~/Downloads/vm-screenshot"
@@ -41,8 +48,9 @@ wake_vm = true
 
 
 ####################################################################################
-# Default browser settings. Each provider may override any of these in its own
-# [providers.<name>.browser] section.
+# Default browser settings, shared by every browser provider. Any one of them can
+# override these in a [browser] table inside its own providers/<name>/config.toml.
+# Ignored entirely by terminal providers such as claude-code.
 #
 # Running several providers at once, two ways:
 #
@@ -50,11 +58,11 @@ wake_vm = true
 #    user_data_dir and debug_port, so they share one Chrome and each gets its own tab.
 #    Runs can overlap. Requires one profile signed into all of them.
 #
-# 2. SEPARATE BROWSERS. Give a provider its own [providers.<name>.browser] with BOTH a
-#    different user_data_dir AND a different debug_port. Both parts are required: Chrome
-#    allows only one process per user-data-dir, so a second launch against a directory
-#    already in use just hands off to the running process and exits without ever opening
-#    its debugging port.
+# 2. SEPARATE BROWSERS. Give a provider its own [browser] table with BOTH a different
+#    user_data_dir AND a different debug_port. Both parts are required: Chrome allows
+#    only one process per user-data-dir, so a second launch against a directory already
+#    in use just hands off to the running process and exits without ever opening its
+#    debugging port.
 ####################################################################################
 [browser]
 binary = "/usr/bin/google-chrome"
@@ -102,90 +110,3 @@ extra_args = [
     "--disable-backgrounding-occluded-windows",
     "--disable-renderer-backgrounding",
 ]
-
-
-####################################################################################
-# Providers
-#
-# upload_strategy (both are pure CDP, nothing touches the desktop):
-#   direct_input - write the path straight into a reachable <input type="file">
-#   cdp          - intercept the native file chooser so it never opens
-####################################################################################
-
-[providers.claude]
-url = "https://claude.ai/new"
-url_match = "claude.ai"
-upload_strategy = "direct_input"
-# The three keys below are compared against what the UI already shows before anything is
-# clicked: claude.ai spells the whole selection into the model button's label ("Model:
-# Opus 5 High", "Model: Haiku 4.5 Extended"), so a run whose settings already match opens
-# no menu at all. Only a genuine difference costs clicks.
-#
-# Model label exactly as shown in claude.ai's model dropdown. Empty = leave as is.
-#
-# Models seen in the dropdown (copy the label verbatim, the match is by prefix):
-#   "Fable 5"    For your toughest challenges      - requires usage credits
-#   "Opus 5"     For complex tasks
-#   "Sonnet 5"   Most efficient for everyday tasks
-#   "Haiku 4.5"  Fastest for quick answers         - cheapest, no Effort submenu
-# Anything behind the dropdown's "More models" entry is NOT reachable yet: the provider
-# only clicks items in the top-level list.
-model = "Opus 5"
-
-# Effort level, for models that offer the Effort submenu (Fable 5, Opus 5, Sonnet 5).
-# Empty = leave whatever the UI is set to.
-#
-#   "Low"
-#   "Medium"
-#   "High"     <- claude.ai's own default
-#   "Extra"    (the DOM calls this one xhigh; "xhigh" is accepted here too)
-#   "Max"      - requires usage credits
-#
-# Higher effort means more thorough answers, but slower and it burns your limits faster.
-# Haiku 4.5 has no Effort submenu, so this key is ignored while model = "Haiku 4.5".
-#
-# Cheapest, for a quick look at a screenshot:
-#   model = "Haiku 4.5"
-#   effort = ""
-# Thorough, for debugging something subtle in the screenshot:
-#   model = "Opus 5"
-#   effort = "High"
-effort = "High"
-
-# Extended thinking toggle, for models that show the Extended switch instead of Effort
-# (Haiku 4.5). Set to false to keep answers, and token use, small.
-# Ignored on models that use the Effort submenu.
-extended_thinking = false
-
-# Auto-send for THIS provider only. When uncommented it wins over [general].submit, so
-# leave it commented to follow the general setting -- otherwise editing [general].submit
-# appears to do nothing. `--submit` / `--no-submit` on the command line beats both, and
-# `run.py --print-config` always prints which one is in effect.
-#
-# Either way the run waits for claude.ai's own thumbnail to switch to a server URL before
-# sending, and skips the click while the Send button reports itself disabled, so the
-# message can never go out without the image.
-# submit = false
-
-[providers.gemini]
-url = "https://gemini.google.com"
-url_match = "gemini.google.com"
-upload_strategy = "cdp"
-# Model picking is not implemented for Gemini: whatever the web UI is already set to is
-# used. Setting a value here only logs a warning. Implement `select_model` in
-# providers/gemini.py first, see providers/claude.py for the pattern.
-model = ""
-
-# Uncomment to give Gemini a browser of its own, fully independent of Claude's.
-# Change both keys together, see the note above the [browser] section.
-# [providers.gemini.browser]
-# user_data_dir = "~/.config/google-chrome-auto-upload-file-gemini"
-# debug_port = 9223
-
-[providers.codex]
-url = "https://chatgpt.com/codex"
-url_match = "chatgpt.com"
-upload_strategy = "cdp"
-# Skeleton provider: its selectors are unverified and `attach_file` raises. Model picking
-# is not implemented either. See providers/codex.py for how to finish it.
-model = ""

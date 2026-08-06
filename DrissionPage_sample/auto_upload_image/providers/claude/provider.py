@@ -8,7 +8,7 @@ import os
 import time
 from collections import namedtuple
 
-from providers.base import Provider
+from providers.base import BrowserProvider
 
 logger = logging.getLogger(__name__)
 
@@ -57,7 +57,7 @@ def parse_model_label(label):
     return ModelState(label, label, "", False if label else None)
 
 
-class ClaudeProvider(Provider):
+class ClaudeProvider(BrowserProvider):
     name = "claude"
 
     file_input_selector = "css:input[data-testid='file-upload']"

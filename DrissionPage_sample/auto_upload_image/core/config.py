@@ -15,6 +15,9 @@ DEFAULT_CONFIG_PATH = PACKAGE_ROOT / "config.toml"
 
 UPLOAD_STRATEGIES = ("direct_input", "cdp")
 WINDOW_MODES = ("maximized", "fullscreen", "normal")
+#: How a provider is reached. "browser" drives a web page over CDP, "terminal" drives a
+#: text UI in a tmux session; the two need entirely different keys, see ProviderConfig.
+TRANSPORTS = ("browser", "terminal")
 
 
 def _expand(path):
@@ -66,10 +69,16 @@ class BrowserConfig:
 
 @dataclass
 class ProviderConfig:
-    """Everything provider-specific: entry URL, upload mechanism, model choice."""
+    """Everything provider-specific: how to reach it, and which model to ask for.
+
+    ``model``, ``effort`` and ``submit`` mean the same thing for both transports. The
+    rest splits: a browser provider needs ``url`` and ``upload_strategy``, a terminal one
+    needs ``working_dir``, ``session`` and the launch flags below.
+    """
 
     name: str
-    url: str
+    url: str = ""
+    transport: str = "browser"
     url_match: str = ""
     upload_strategy: str = "cdp"
     model: str = ""
@@ -79,12 +88,43 @@ class ProviderConfig:
     submit: Optional[bool] = None
     browser: BrowserConfig = field(default_factory=BrowserConfig)
 
+    # ---- terminal transport only -------------------------------------------------
+    #: The CLI to run. A bare name is looked up on PATH and then in the usual user-local
+    #: bin directories; set an absolute path if it lives somewhere unusual.
+    command: str = "claude"
+    #: Directory the TUI is started in, i.e. the project it will work on.
+    working_dir: str = ""
+    #: tmux session name, and the guake tab name that shows it.
+    session: str = "cc"
+    #: `--permission-mode`. "auto" still asks before touching anything outside
+    #: working_dir, which is what add_dirs is for.
+    permission_mode: str = "auto"
+    #: Extra directories the TUI may read without asking. The screenshot directory is
+    #: appended automatically, since that is where the images it is sent come from.
+    add_dirs: list = field(default_factory=list)
+    #: Anything else to put on the command line, verbatim.
+    extra_args: list = field(default_factory=list)
+    #: How long to wait for the TUI to draw its input line.
+    ready_timeout: float = 60.0
+
     def __post_init__(self):
+        if self.transport not in TRANSPORTS:
+            raise ValueError(
+                f"provider {self.name!r}: transport must be one of {TRANSPORTS}, "
+                f"got {self.transport!r}"
+            )
+        if self.transport == "terminal":
+            self.working_dir = _expand(self.working_dir) if self.working_dir else ""
+            self.add_dirs = [_expand(p) for p in self.add_dirs]
+            self.ready_timeout = float(self.ready_timeout)
+            return
         if self.upload_strategy not in UPLOAD_STRATEGIES:
             raise ValueError(
                 f"provider {self.name!r}: upload_strategy must be one of "
                 f"{UPLOAD_STRATEGIES}, got {self.upload_strategy!r}"
             )
+        if not self.url:
+            raise ValueError(f"provider {self.name!r}: a browser provider needs a url")
         if not self.url_match:
             self.url_match = self.url.split("://", 1)[-1].split("/", 1)[0]
 
@@ -128,11 +168,16 @@ class AppConfig:
 
     def describe(self):
         p = self.provider
-        b = p.browser
-        return "\n".join([
+        return "\n".join(self._common_lines(p) + (
+            self._terminal_lines(p) if p.transport == "terminal"
+            else self._browser_lines(p)
+        ) + [f"available        : {', '.join(sorted(self.providers))}"])
+
+    def _common_lines(self, p):
+        return [
             f"config file      : {self.source_path}",
             f"vm_name          : {self.vm_name}",
-            f"provider         : {p.name}",
+            f"provider         : {p.name}  ({p.transport})",
             f"screenshot_dir   : {self.screenshot_dir}",
             f"prompt           : {self.effective_prompt!r}"
             + ("" if self.add_prompt else f"  (add_prompt is off, {self.prompt!r} not typed)"),
@@ -140,44 +185,92 @@ class AppConfig:
             + (f"  (provider override of [general].submit={self.submit})"
                if p.submit is not None else ""),
             f"wake_vm          : {self.wake_vm}",
+            f"model            : {p.model or '<leave as is>'}",
+            f"effort           : {p.effort or '<leave as is>'}",
+        ]
+
+    def _terminal_lines(self, p):
+        return [
+            f"working_dir      : {p.working_dir or '<current directory>'}",
+            f"tmux session     : {p.session}   (attach: tmux attach -t {p.session})",
+            f"permission_mode  : {p.permission_mode or '<claude default>'}",
+            f"add_dirs         : {', '.join(p.add_dirs) or '<none>'}",
+            f"extra_args       : {' '.join(p.extra_args) or '<none>'}",
+        ]
+
+    def _browser_lines(self, p):
+        b = p.browser
+        return [
             f"url              : {p.url}",
             f"url_match        : {p.url_match}",
             f"upload_strategy  : {p.upload_strategy}",
-            f"model            : {p.model or '<leave as is>'}",
-            f"effort           : {p.effort or '<leave as is>'}",
-            f"extended_thinking: {p.extended_thinking if p.extended_thinking is not None else '<leave as is>'}",
+            f"extended_thinking: "
+            f"{p.extended_thinking if p.extended_thinking is not None else '<leave as is>'}",
             f"browser binary   : {b.binary}",
             f"user_data_dir    : {b.user_data_dir}",
             f"profile          : {b.profile}",
             f"debug_port       : {b.debug_port}",
             f"focus_window     : {b.focus_window}",
             f"window_mode      : {b.window_mode}",
-            f"available        : {', '.join(sorted(self.providers))}",
-        ])
+        ]
+
+
+def _read_toml(path):
+    with path.open("rb") as fh:
+        return tomllib.load(fh)
+
+
+def _load_providers(base_browser):
+    """Build every provider's config from its own ``providers/<name>/config.toml``.
+
+    Kept next to the implementation on purpose: adding a provider means adding one
+    folder, and the global file never has to learn about it. A provider whose file is
+    missing is simply not configured, and asking for it by name fails with the list of
+    the ones that are.
+    """
+    # Imported here rather than at module scope: the providers package pulls in
+    # DrissionPage, which has no business loading for `--print-config`-style work.
+    from providers import config_paths
+
+    providers = {}
+    for name, path in sorted(config_paths().items()):
+        if not path.is_file():
+            continue
+        section = dict(_read_toml(path))
+        browser_override = section.pop("browser", None) or {}
+        browser = replace(base_browser, **browser_override) if browser_override else base_browser
+        try:
+            providers[name] = ProviderConfig(name=name, browser=browser, **section)
+        except TypeError as exc:
+            raise SystemExit(f"{path}: {exc}") from None
+    return providers
 
 
 def load_config(path=None, **overrides):
-    """Read ``config.toml`` and apply non-``None`` keyword overrides from the CLI.
+    """Read the global config plus every provider's own, and apply CLI overrides.
+
+    The global file holds ``[general]`` and the default ``[browser]``; everything
+    provider-specific lives in ``providers/<name>/config.toml``.
 
     Recognised overrides: vm_name, provider_name, screenshot_dir, prompt, add_prompt,
-    submit, user_data_dir, profile, debug_port, model, extended_thinking,
-    upload_strategy, url.
+    submit, wake_vm, user_data_dir, profile, debug_port, window_mode, focus_window,
+    model, effort, extended_thinking, upload_strategy, url, working_dir, session.
     """
     path = Path(path) if path else DEFAULT_CONFIG_PATH
     if not path.is_file():
         raise SystemExit(f"Config file not found: {path}")
-    with path.open("rb") as fh:
-        raw = tomllib.load(fh)
+    raw = _read_toml(path)
+
+    if raw.get("providers"):
+        raise SystemExit(
+            f"{path} still has a [providers.*] section. Provider settings moved next to "
+            f"their code, in providers/<name>/config.toml; this file is for [general] "
+            f"and the default [browser] only."
+        )
 
     general = raw.get("general", {})
     base_browser = BrowserConfig(**raw.get("browser", {}))
-
-    providers = {}
-    for name, section in (raw.get("providers") or {}).items():
-        section = dict(section)
-        browser_override = section.pop("browser", None) or {}
-        browser = replace(base_browser, **browser_override) if browser_override else base_browser
-        providers[name] = ProviderConfig(name=name, browser=browser, **section)
+    providers = _load_providers(base_browser)
 
     cfg = AppConfig(
         vm_name=general.get("vm_name", ""),
@@ -208,8 +301,17 @@ def _apply_overrides(cfg, overrides):
     if overrides.get("prompt") is not None:
         cfg.add_prompt = True
 
+    # A terminal provider is handed screenshots by absolute path, and Claude Code stops
+    # to ask before reading anything outside the directories it was started with. That
+    # would strand the run on a prompt nothing is going to answer, so grant the one
+    # directory the images actually come from.
+    for provider in cfg.providers.values():
+        if provider.transport == "terminal" and cfg.screenshot_dir not in provider.add_dirs:
+            provider.add_dirs.append(cfg.screenshot_dir)
+
     provider = cfg.provider  # raises early if the provider name is unknown
-    for key in ("url", "upload_strategy", "model", "effort", "extended_thinking"):
+    for key in ("url", "upload_strategy", "model", "effort", "extended_thinking",
+                "working_dir", "session"):
         value = overrides.get(key)
         if value is not None:
             setattr(provider, key, value)

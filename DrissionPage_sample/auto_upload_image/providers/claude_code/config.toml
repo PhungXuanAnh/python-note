@@ -1,0 +1,60 @@
+####################################################################################
+# claude-code: the Claude Code TUI, not a web page.
+#
+# It runs in a tmux session (fixed name, see `session`) which a guake tab attaches to,
+# so you can watch it. Nothing here touches X11 or the focus: tmux is driven entirely
+# through its own CLI, and the guake tab is only created when nothing is showing the
+# session yet. Attach yourself any time:
+#
+#   make cc-attach          (or: tmux attach -t cc)
+#
+# The screenshot is NOT pasted in. Its absolute path goes into the prompt and Claude
+# Code reads the file itself, which is why the screenshot directory is granted below.
+#
+# Shared settings live in the global ../../config.toml.
+####################################################################################
+transport = "terminal"
+
+# The CLI to run. A bare name is looked up on PATH first, then in ~/.local/bin,
+# /usr/local/bin, ~/bin and ~/.npm-global/bin -- because a run started from a desktop
+# launcher inherits the desktop session's PATH, which is narrower than your shell's and
+# on this machine does not contain ~/.local/bin, where claude actually lives. Whichever
+# directory it is found in is also put on the session's PATH, so Claude Code's own Bash
+# tool does not inherit the same gap. Set an absolute path here if it lives elsewhere.
+command = "claude"
+
+# The project Claude Code opens in, and the only place it can change files without
+# asking. Pick deliberately: with permission_mode = "auto" it edits here unattended.
+working_dir = "~/Downloads/tmp"
+
+# tmux session name, and the name of the guake tab that shows it.
+session = "cc"
+
+# `claude --model`: an alias (haiku, sonnet, opus, fable) or a full model name.
+model = "sonnet"
+
+# `claude --effort`: low | medium | high | xhigh | max. Ignored by models that have no
+# effort levels -- Haiku 4.5 is one, exactly as on claude.ai.
+effort = "low"
+
+# `claude --permission-mode`: acceptEdits | auto | bypassPermissions | manual | dontAsk |
+# plan. "auto" is what keeps a run from stopping on a permission question -- but only
+# inside working_dir and add_dirs, and only on models that have it. Measured: haiku falls
+# back silently and logs "manual mode on", sonnet logs "auto mode on"; and with "auto"
+# alone, reading a screenshot from ~/Downloads still stopped on "Do you want to proceed?"
+# until that directory was granted below. Every run prints the status line it ends up on.
+permission_mode = "auto"
+
+# Extra directories it may read without asking. [general].screenshot_dir is appended
+# automatically, so this is only for anything else you want reachable.
+add_dirs = []
+
+# Anything else to append to the command line, verbatim, e.g. ["--add-dir", "~/other"].
+extra_args = []
+
+# How long to wait for the TUI to draw its input line after launching.
+ready_timeout = 60.0
+
+# Model and effort are launch flags, so they only apply to a session this tool starts.
+# When one is already running, the run says what it is actually running and leaves the
+# conversation alone; `run.py --restart-session` (or `make cc-kill`) applies a change.

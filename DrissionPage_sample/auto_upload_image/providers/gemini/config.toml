@@ -1,0 +1,22 @@
+####################################################################################
+# gemini.google.com. Shared settings live in the global ../../config.toml.
+#
+# upload_strategy = "cdp": the page has no reachable <input type="file">, only a native
+# OS chooser, which is intercepted over CDP so it never appears.
+####################################################################################
+url = "https://gemini.google.com"
+url_match = "gemini.google.com"
+upload_strategy = "cdp"
+
+# Model picking is not implemented for Gemini: whatever the web UI is already set to is
+# used. Setting a value here only logs a warning. Implement `select_model` in
+# provider.py first, see ../claude/provider.py for the pattern.
+model = ""
+
+# Uncomment to give Gemini a browser of its own, fully independent of Claude's.
+# Change both keys together: Chrome allows one process per user-data-dir, so a second
+# launch against a directory already in use just hands off to the running process and
+# exits without ever opening its debugging port.
+# [browser]
+# user_data_dir = "~/.config/google-chrome-auto-upload-file-gemini"
+# debug_port = 9223

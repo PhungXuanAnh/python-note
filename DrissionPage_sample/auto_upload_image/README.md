@@ -11,19 +11,38 @@ so there is no WebDriver binary and no `navigator.webdriver` fingerprint.
 
 ```
 DrissionPage_sample/auto_upload_image/
-├── config.toml                  VM name, provider, Chrome user-data-dir + profile, prompt
+├── config.toml                  GLOBAL only: VM, prompt, Chrome defaults
 ├── run.py                       CLI entry point / what the .desktop launchers call
 ├── core/config.py               config loading, per-provider overrides, CLI overrides
 ├── core/screenshot.py           VBoxManage controlvm <vm> screenshotpng
 ├── core/browser.py              attach to Chrome on the CDP port or launch it; tab reuse
 ├── core/file_upload.py          the two upload strategies
+├── core/terminal.py             tmux session + guake viewer tab (terminal transport)
 ├── providers/base.py            contract + open -> model -> attach -> type -> submit
-├── providers/claude.py          claude.ai, incl. model / effort / Extended thinking
-├── providers/gemini.py          gemini.google.com
-├── providers/codex.py           skeleton, selectors not verified yet
+├── providers/claude/            claude.ai, incl. model / effort / Extended thinking
+├── providers/claude_code/       the Claude Code TUI, driven through tmux
+├── providers/gemini/            gemini.google.com
+├── providers/codex/             skeleton, selectors not verified yet
 ├── desktop/                     launcher templates, their icons, and install.sh
 └── bootstrap-chrome-to-log-in.sh  plain Chrome on the configured profile, to sign in by hand
 ```
+
+**Configuration is split in two.** The root `config.toml` holds only what is global —
+`[general]` and the default `[browser]`. Everything provider-specific lives beside that
+provider's code:
+
+```
+providers/claude/
+├── __init__.py
+├── provider.py       the implementation
+└── config.toml       url, model, effort … and an optional [browser] override
+```
+
+So adding a provider means adding one folder, and the global file never learns about it.
+The folder may be named differently from the provider (`claude_code/` holds `claude-code`,
+since Python packages cannot contain a hyphen) — the loader finds each config through the
+provider class's own module, so no name-mangling rule is involved. A `[providers.*]`
+section left in the global file is rejected with a message saying where it moved.
 
 ## Setup
 
@@ -105,6 +124,7 @@ for that port.
 ```bash
 python run.py                            # config defaults: screenshot + upload + send
 python run.py --provider gemini
+python run.py --provider claude-code     # the Claude Code TUI, in tmux, no browser
 python run.py --file ~/Pictures/bug.png  # upload an existing file, no VM involved
 python run.py --no-prompt --no-submit    # attach only, write the message yourself
 python run.py --no-submit                # leave the message in the composer
@@ -154,6 +174,69 @@ label is read again, and the new model's own effort / Extended state usually nee
 second visit. Which control a model offers is read from the same label, so `effort` on
 Haiku 4.5 is ignored without opening anything.
 
+## claude-code: the TUI instead of a web page
+
+`provider = "claude-code"` sends the screenshot to the Claude Code terminal UI rather
+than a browser. Its config is `providers/claude_code/config.toml`; the keys that differ
+are `working_dir` (the project it opens in), `session`, `permission_mode` and `add_dirs`.
+
+Each run starts the session if it is not there and reuses it if it is, so clicking a
+launcher twice does not stack up sessions, tabs or `claude` processes:
+
+| State | What the run does |
+|---|---|
+| no tmux session | creates it, running `claude` with the configured flags |
+| session running | reuses it, and only reports what it was started with |
+| nothing attached | opens a guake tab named after the session, running `tmux attach` |
+| already attached | leaves guake alone — `make cc-attach` counts as attached |
+
+```bash
+python run.py --provider claude-code
+python run.py --provider claude-code --restart-session   # apply a new model/effort
+make cc-attach     # watch it (Ctrl-b d detaches, leaving it running)
+make cc-status     # what is running, and the flags it was started with
+make cc-kill       # stop it; the next run starts a fresh one
+```
+
+**It runs in tmux, and a guake tab is only the window onto it.** Measured on this
+machine, guake's own CLI (`--new-tab`, `--send-text-tab-name`, `--tab-contents`, …) never
+showed or focused its window, so either would have left the mouse alone — the deciding
+difference is that guake can only send *text and Enter*, while a TUI needs Escape, Ctrl-C
+and friends. `tmux send-keys` sends any key, `capture-pane` reads the screen, none of it
+touches X11, and the session outlives a guake restart. The tab is created only when
+nothing is showing the session yet, which is asked of tmux (`list-clients`), so your own
+`make cc-attach` counts and repeat runs never pile up tabs.
+
+**The image is passed as a path, not pasted.** No clipboard and no Ctrl-V: the absolute
+path goes into the prompt and Claude Code reads the file itself. `[general].screenshot_dir`
+is appended to `add_dirs` automatically, because otherwise the run strands on a
+"Do you want to proceed?" permission prompt that nothing will answer.
+
+Three behaviours worth knowing, all found by testing:
+
+| | |
+|---|---|
+| Typing | `tmux send-keys -l` never reaches the TUI; a paste buffer does, byte for byte |
+| Submitting | the first Enter after a paste is eaten by the TUI's paste handling, so `submit()` presses Enter until the input line empties, and says how many it took |
+| `--permission-mode` | claude falls back silently when a model has no auto mode — `low` effort + haiku logged `⏸ manual mode on`, sonnet logged `⏵⏵ auto mode on`. Every run logs that status line, so you can see which you got |
+
+**A desktop launcher does not get your shell's PATH.** It inherits the desktop session's,
+which on this machine has no `~/.local/bin` — exactly where `claude` is. Started that way,
+tmux could not execute it, the pane died instantly and the session was gone before
+anything could be sent, so the launcher appeared to do nothing at all while the same run
+from a terminal worked. The CLI is therefore resolved to an absolute path first (PATH,
+then `~/.local/bin`, `/usr/local/bin`, `~/bin`, `~/.npm-global/bin`; override with
+`command` in the provider's config), and whichever directory it is found in is added to
+the session's PATH so Claude Code's own Bash tool does not inherit the same gap. A session
+that dies immediately now says so instead of failing later with "no server running".
+
+`model` and `effort` are launch flags, so they only apply to a session this tool starts.
+For one already running, the run compares the config against the command tmux recorded
+(`pane_start_command`) and warns rather than restarting your conversation behind your
+back; `--restart-session` applies the change. A brand-new `working_dir` makes Claude Code
+ask whether it trusts the folder — the run stops and tells you to answer that once
+yourself, since clicking through a security gate is not the tool's call.
+
 ## Upload strategies
 
 Set per provider in `config.toml`:
@@ -169,10 +252,16 @@ input element is reached. Nothing is typed at the desktop, so neither needs X11 
 ## Adding a provider
 
 1. `python run.py --provider <name> --no-shot --no-submit --dump-dom` to see the handles.
-2. Copy `providers/codex.py`, fill in the selector tuples.
-3. Register the class in `providers/__init__.py` and add a `[providers.<name>]` section.
+2. Copy `providers/codex/` to `providers/<name>/`, fill in the selector tuples in
+   `provider.py` and the url in `config.toml`.
+3. Register the class in `providers/__init__.py`. Nothing else needs editing.
 
 Override `select_model` only if the UI has a model switcher — see `providers/claude.py`.
+
+A provider that is not a web page subclasses `Provider` directly instead of
+`BrowserProvider`, implements `open` / `composer_text` / `write_text` / `attach_file` /
+`submit`, and sets `transport = "terminal"` in its config section; the runner then skips
+Chrome entirely. `providers/claude_code.py` is the worked example.
 
 ## Staying out of your way
 

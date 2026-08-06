@@ -6,7 +6,7 @@ the OS file chooser, which the ``cdp`` upload strategy intercepts so it never ap
 import logging
 import time
 
-from providers.base import Provider
+from providers.base import BrowserProvider
 
 logger = logging.getLogger(__name__)
 
@@ -22,7 +22,7 @@ UPLOAD_FILES_ITEMS = (
 )
 
 
-class GeminiProvider(Provider):
+class GeminiProvider(BrowserProvider):
     name = "gemini"
 
     composer_selectors = (

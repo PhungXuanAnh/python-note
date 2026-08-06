@@ -22,7 +22,7 @@ from core import browser as browser_mod  # noqa: E402
 from core.config import UPLOAD_STRATEGIES, WINDOW_MODES, load_config  # noqa: E402
 from core.logging_setup import setup_logging  # noqa: E402
 from core.screenshot import take_vm_screenshot  # noqa: E402
-from providers import available, get_provider  # noqa: E402
+from providers import available, get_provider, provider_class  # noqa: E402
 
 logger = logging.getLogger("run")
 
@@ -67,6 +67,13 @@ def parse_args(argv=None):
                           action="store_const", const=True)
     thinking.add_argument("--no-extended-thinking", dest="extended_thinking",
                           action="store_const", const=False)
+
+    parser.add_argument("--working-dir",
+                        help="directory the terminal provider's TUI runs in")
+    parser.add_argument("--session", help="tmux session name for a terminal provider")
+    parser.add_argument("--restart-session", action="store_true",
+                        help="kill the terminal provider's tmux session first, so it "
+                             "restarts with the configured model/effort")
 
     parser.add_argument("--user-data-dir", help="override the Chrome user-data-dir")
     parser.add_argument("--profile", help="override the Chrome profile directory")
@@ -137,6 +144,8 @@ def main(argv=None):
         model=args.model,
         effort=args.effort,
         extended_thinking=args.extended_thinking,
+        working_dir=args.working_dir,
+        session=args.session,
         upload_strategy=args.upload_strategy,
         user_data_dir=args.user_data_dir,
         profile=args.profile,
@@ -158,13 +167,24 @@ def main(argv=None):
             cfg.vm_name, cfg.screenshot_dir, wake=cfg.wake_vm
         )
 
-    chromium, launched = browser_mod.connect(provider_cfg.browser)
-    tab = browser_mod.open_tab(chromium, provider_cfg.url, provider_cfg.url_match,
-                               focus=provider_cfg.browser.focus_window)
-    browser_mod.apply_window_mode(tab, provider_cfg.browser, launched=launched)
-    provider = get_provider(tab, provider_cfg)
+    # A terminal provider brings its own session; only a browser one needs Chrome.
+    tab = None
+    if provider_class(provider_cfg.name).needs_browser:
+        chromium, launched = browser_mod.connect(provider_cfg.browser)
+        tab = browser_mod.open_tab(chromium, provider_cfg.url, provider_cfg.url_match,
+                                   focus=provider_cfg.browser.focus_window)
+        browser_mod.apply_window_mode(tab, provider_cfg.browser, launched=launched)
+    provider = get_provider(provider_cfg, tab)
+
+    if args.restart_session:
+        session = getattr(provider, "session", None)
+        if session is None:
+            raise SystemExit("--restart-session only applies to a terminal provider")
+        session.kill()
 
     if args.dump_dom:
+        if tab is None:
+            raise SystemExit("--dump-dom only applies to a browser provider")
         provider.open()
         dump_dom(tab)
         return 0
@@ -186,7 +206,10 @@ def main(argv=None):
             logger.info("add_prompt is off: attaching only, the composer is left to you")
         provider.run(file_path=file_path, prompt=cfg.effective_prompt, submit=submit)
 
-    logger.info("Done. Chrome stays open on %s", tab.url)
+    if tab is not None:
+        logger.info("Done. Chrome stays open on %s", tab.url)
+    else:
+        logger.info("Done. Look at it with: tmux attach -t %s", provider_cfg.session)
     return 0
 
 

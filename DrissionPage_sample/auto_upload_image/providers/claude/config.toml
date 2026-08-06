@@ -1,0 +1,69 @@
+####################################################################################
+# claude.ai. Settings for this provider only; anything shared lives in the global
+# ../../config.toml, and a [browser] table here overrides the global one.
+#
+# upload_strategy (both are pure CDP, nothing touches the desktop):
+#   direct_input - write the path straight into a reachable <input type="file">
+#   cdp          - intercept the native file chooser so it never opens
+####################################################################################
+url = "https://claude.ai/new"
+url_match = "claude.ai"
+upload_strategy = "direct_input"
+
+# The three keys below are compared against what the UI already shows before anything is
+# clicked: claude.ai spells the whole selection into the model button's label ("Model:
+# Opus 5 High", "Model: Haiku 4.5 Extended"), so a run whose settings already match opens
+# no menu at all. Only a genuine difference costs clicks.
+#
+# Model label exactly as shown in claude.ai's model dropdown. Empty = leave as is.
+#
+# Models seen in the dropdown (copy the label verbatim, the match is by prefix):
+#   "Fable 5"    For your toughest challenges      - requires usage credits
+#   "Opus 5"     For complex tasks
+#   "Sonnet 5"   Most efficient for everyday tasks
+#   "Haiku 4.5"  Fastest for quick answers         - cheapest, no Effort submenu
+# Anything behind the dropdown's "More models" entry is NOT reachable yet: the provider
+# only clicks items in the top-level list.
+model = "Opus 5"
+
+# Effort level, for models that offer the Effort submenu (Fable 5, Opus 5, Sonnet 5).
+# Empty = leave whatever the UI is set to.
+#
+#   "Low"
+#   "Medium"
+#   "High"     <- claude.ai's own default
+#   "Extra"    (the DOM calls this one xhigh; "xhigh" is accepted here too)
+#   "Max"      - requires usage credits
+#
+# Higher effort means more thorough answers, but slower and it burns your limits faster.
+# Haiku 4.5 has no Effort submenu, so this key is ignored while model = "Haiku 4.5".
+#
+# Cheapest, for a quick look at a screenshot:
+#   model = "Haiku 4.5"
+#   effort = ""
+# Thorough, for debugging something subtle in the screenshot:
+#   model = "Opus 5"
+#   effort = "High"
+effort = "High"
+
+# Extended thinking toggle, for models that show the Extended switch instead of Effort
+# (Haiku 4.5). Set to false to keep answers, and token use, small.
+# Ignored on models that use the Effort submenu.
+extended_thinking = false
+
+# Auto-send for THIS provider only. When uncommented it wins over [general].submit, so
+# leave it commented to follow the general setting -- otherwise editing [general].submit
+# appears to do nothing. `--submit` / `--no-submit` on the command line beats both, and
+# `run.py --print-config` always prints which one is in effect.
+#
+# Either way the run waits for claude.ai's own thumbnail to switch to a server URL before
+# sending, and skips the click while the Send button reports itself disabled, so the
+# message can never go out without the image.
+# submit = false
+
+# Uncomment to give this provider a browser of its own, independent of the others. Change
+# BOTH keys together: Chrome allows one process per user-data-dir, so a second launch
+# against a directory already in use just hands off and never opens its debugging port.
+# [browser]
+# user_data_dir = "~/.config/google-chrome-claude"
+# debug_port = 9223

@@ -1,0 +1,13 @@
+####################################################################################
+# chatgpt.com/codex. Skeleton provider: its selectors are unverified and `attach_file`
+# raises, so this section exists mainly so `--provider codex --dump-dom` can reach the
+# page. See provider.py for how to finish it.
+#
+# Shared settings live in the global ../../config.toml.
+####################################################################################
+url = "https://chatgpt.com/codex"
+url_match = "chatgpt.com"
+upload_strategy = "cdp"
+
+# Model picking is not implemented either.
+model = ""

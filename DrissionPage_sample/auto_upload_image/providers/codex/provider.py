@@ -14,12 +14,12 @@ Nothing here is verified against the live UI yet. To finish it:
 """
 import logging
 
-from providers.base import Provider
+from providers.base import BrowserProvider
 
 logger = logging.getLogger(__name__)
 
 
-class CodexProvider(Provider):
+class CodexProvider(BrowserProvider):
     name = "codex"
 
     # TODO: replace with real locators, see the module docstring.
