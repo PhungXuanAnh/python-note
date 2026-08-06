@@ -25,17 +25,17 @@ command = "claude"
 
 # The project Claude Code opens in, and the only place it can change files without
 # asking. Pick deliberately: with permission_mode = "auto" it edits here unattended.
-working_dir = "~/Downloads/tmp"
+working_dir = "/home/xuananh/repo/task_supporter"
 
 # tmux session name, and the name of the guake tab that shows it.
 session = "cc"
 
 # `claude --model`: an alias (haiku, sonnet, opus, fable) or a full model name.
-model = "sonnet"
+model = "opus"
 
 # `claude --effort`: low | medium | high | xhigh | max. Ignored by models that have no
 # effort levels -- Haiku 4.5 is one, exactly as on claude.ai.
-effort = "low"
+effort = "high"
 
 # `claude --permission-mode`: acceptEdits | auto | bypassPermissions | manual | dontAsk |
 # plan. "auto" is what keeps a run from stopping on a permission question -- but only

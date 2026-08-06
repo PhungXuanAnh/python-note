@@ -113,8 +113,24 @@ class ClaudeCodeProvider(Provider):
         else:
             self.session.create(argv, env=self.session_env(argv))
             self.launched = True
+        # Before the readiness check rather than after it. When the TUI stops on a
+        # question this tool refuses to answer -- the folder-trust gate below is the one
+        # that actually happens -- the tab showing that question has to be up by then,
+        # or the run dies with the session still invisible and nothing to answer it in.
+        self.show_session()
         self.wait_ready()
-        self.viewer.ensure_tab(self.session)
+
+    def show_session(self):
+        """Put the session on screen, without letting that fail the run.
+
+        guake is a convenience here, not a dependency: the session runs either way and
+        can always be attached to by hand, so a broken tab is a warning, not an error.
+        """
+        try:
+            self.viewer.ensure_tab(self.session)
+        except Exception as exc:
+            logger.warning("claude-code: could not open a guake tab (%s). Attach yourself "
+                           "with: tmux attach -t %s", exc, self.session.name)
 
     def wait_ready(self, timeout=None):
         """Block until the TUI has drawn its input box, and nothing is blocking it."""
@@ -129,11 +145,23 @@ class ClaudeCodeProvider(Provider):
             )
         if TRUST_PROMPT in text:
             # A security gate on a folder Claude Code has not seen before. Answering it
-            # from a script would defeat the point of asking, so stop and say so.
+            # from a script would defeat the point of asking, so stop and say so. The
+            # session is on screen by now (see open()), so the question is answerable.
+            #
+            # Spelling out the stuck case matters: the gate blocks the pane forever, so a
+            # session left sitting on it fails every later run identically, and "reusing
+            # tmux session 'cc'" on its own reads like the session is fine.
+            where = "Claude Code is asking whether it can trust "
+            if self.launched:
+                what = f"{where}{self.config.working_dir!r}."
+            else:
+                what = (f"the tmux session {self.session.name!r} has been parked on the "
+                        f"trust prompt for {self.config.working_dir!r} since an earlier "
+                        f"run, and stays there until it is answered.")
             raise RuntimeError(
-                f"{self.name}: Claude Code is asking whether it can trust "
-                f"{self.config.working_dir!r}. Answer that once yourself, then re-run: "
-                f"tmux attach -t {self.session.name}"
+                f"{self.name}: {what} Answer it once in the session and re-run"
+                f" -- it is in the guake tab {self.viewer.tab_name!r}, or attach with:"
+                f" tmux attach -t {self.session.name}"
             )
         logger.info("Claude Code is ready in tmux session %r", self.session.name)
         status = next((line.strip() for line in reversed(text.splitlines()) if line.strip()), "")

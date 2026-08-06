@@ -214,4 +214,11 @@ def main(argv=None):
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    try:
+        sys.exit(main())
+    except RuntimeError as exc:
+        # Every "the UI is not in a state we can drive" stop raises RuntimeError with a
+        # message written to be read, and a traceback above it only buries that message --
+        # doubly so from a desktop launcher, whose terminal closes the moment we exit.
+        logger.error("%s", exc)
+        sys.exit(1)
