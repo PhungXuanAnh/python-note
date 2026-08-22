@@ -15,11 +15,16 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
 
-def send(sent_subject, sent_text):
+def send(sent_subject, sent_text, *, quiet=False):
     gmail_user = os.environ.get("GMAIL_USER")
     gmail_app_password = os.environ.get("GMAIL_APP_PW")
     sent_from = gmail_user
     sent_to = ["phungxuananh1991+python_app@gmail.com"]
+
+    if not gmail_user or not gmail_app_password:
+        if not quiet:
+            print("Error: GMAIL_USER and GMAIL_APP_PW must be set.")
+        return False
 
     email_text = "\r\n".join(
         [
@@ -32,15 +37,19 @@ def send(sent_subject, sent_text):
     ).encode("utf-8")
 
     try:
-        server = smtplib.SMTP_SSL("smtp.gmail.com", 465)
+        server = smtplib.SMTP_SSL("smtp.gmail.com", 465, timeout=10)
         server.ehlo()
         server.login(gmail_user, gmail_app_password)
         server.sendmail(sent_from, sent_to, email_text)
         server.close()
 
-        print("Email sent!")
+        if not quiet:
+            print("Email sent!")
+        return True
     except Exception as exception:
-        print("Error: %s!\n\n" % exception)
+        if not quiet:
+            print("Error: %s!\n\n" % exception)
+        return False
 
 
 def send_html_email():
