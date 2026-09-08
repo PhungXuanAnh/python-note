@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "hooks": {
+    "agentStop": [
+      {
+        "type": "command",
+        "bash": "/home/xuananh/.pyenv/versions/3.11.0/bin/python3 /home/xuananh/repo/python-note/slack_sample/agent-stop-hook/agent_stop_slack_hook.py --agent-name 'GitHub Copilot' --channel C0C07TUSQ4R",
+        "timeoutSec": 15
+      }
+    ]
+  }
+}

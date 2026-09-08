@@ -25,4 +25,7 @@ cc-status:
 cc-kill:
 	tmux kill-session -t =$(CC_SESSION)
 
-.PHONY: install-all-requirements cc-attach cc-status cc-kill
+install-stop-slack-hooks:
+	@$(MAKE) -C slack_sample/agent-stop-hook install
+
+.PHONY: install-all-requirements cc-attach cc-status cc-kill install-stop-slack-hooks
