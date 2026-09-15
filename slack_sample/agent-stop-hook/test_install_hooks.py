@@ -99,7 +99,7 @@ class InstallHooksTests(unittest.TestCase):
                     message = json.loads(result.stdout)
                     self.assertEqual(message["channel"], "CTEST")
                     directory = str(self.home) if raw == "{broken" else "/tmp/demo"
-                    self.assertEqual(message["text"], "🛑 " + label + " harness đã dừng — thư mục: " + directory)
+                    self.assertEqual(message["text"], label.upper() + " harness đã dừng — thư mục: " + directory)
 
     def test_preview_and_selected_install_with_quoted_paths(self):
         checkout = self.home / "checkout 'with spaces'"
@@ -121,7 +121,7 @@ class InstallHooksTests(unittest.TestCase):
         result = subprocess.run(command + " --dry-run", shell=True, input="{broken", text=True,
                                 capture_output=True, cwd=self.home, timeout=5)
         self.assertEqual(result.returncode, 0)
-        self.assertEqual(json.loads(result.stdout)["text"], "🛑 Codex harness đã dừng — thư mục: " + str(self.home))
+        self.assertEqual(json.loads(result.stdout)["text"], "CODEX harness đã dừng — thư mục: " + str(self.home))
 
     def test_invalid_config_aborts_before_writing_any_selected_target(self):
         broken = self.write_json(".kiro/hooks/stop-slack.json", {})

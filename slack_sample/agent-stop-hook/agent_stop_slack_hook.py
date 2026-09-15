@@ -7,19 +7,37 @@ Only the Python standard library is required. Importing this file does no I/O.
 """
 
 import argparse
-from html import escape
+import fcntl
+from html import escape, unescape
 import json
 import os
 from pathlib import Path
+import subprocess
 import sys
+from time import sleep
+from urllib.error import HTTPError
+from urllib.parse import urlencode
 from urllib.request import Request, urlopen
 
 
 DEFAULT_CREDENTIALS = (
     Path.home() / "Dropbox/Work/Other/credentials_bk/slack_phungxuananh_workspace.json"
 )
-MAX_MESSAGE_LENGTH = 3900
+MAX_MESSAGE_LENGTH = 3000
 REQUEST_TIMEOUT = 8
+RETENTION_CHANNEL_ID = "C0C07TUSQ4R"
+KEEP_MESSAGES = 10
+ICON_BASE_URL = "https://unpkg.com/@lobehub/icons-static-png@1.97.0/"
+HARNESS_ICONS = {
+    "CODEX": "light/codex-color.png",
+    "CLAUDE CODE": "light/claudecode-color.png",
+    "GITHUB COPILOT": "dark/githubcopilot.png",
+    "KIRO": "light/kiro-color.png",
+}
+
+
+class SlackCleanupError(Exception):
+    """A fixed diagnostic safe to write to the cleanup log."""
 
 
 def payload_value(payload, *names):
@@ -50,21 +68,22 @@ def single_line(value):
 
 
 def stop_text(agent, directory):
-    return "🛑 {} harness đã dừng — thư mục: {}".format(single_line(agent), single_line(directory))
+    return "{} harness đã dừng — thư mục: {}".format(single_line(agent).upper(), single_line(directory))
 
 
 def build_notification(payload, *, agent=None, channel=None):
     """Show only the harness, full working directory, and stopped status."""
     cwd = str(payload_value(payload, "cwd", "working_directory", "workingDirectory") or os.getcwd())
-    return slack_message(stop_text(agent_name(payload, agent), cwd), channel=channel)
+    label = agent_name(payload, agent)
+    return slack_message(stop_text(label, cwd), channel=channel, agent=label)
 
 
-def slack_message(text, *, channel=None):
-    """Use the same bounded, plain-text Slack envelope for every notification."""
+def slack_message(text, *, channel=None, agent=None):
+    """Show a small harness icon inline, with plain text for notifications."""
     text = escape(text, quote=False)
     if len(text) > MAX_MESSAGE_LENGTH:
         text = text[:MAX_MESSAGE_LENGTH - 14] + "\n… (truncated)"
-    return {
+    notification = {
         "channel": channel or os.environ.get("SLACK_CHANNEL") or "#ai-stopped",
         "text": text,
         "mrkdwn": False,
@@ -73,6 +92,17 @@ def slack_message(text, *, channel=None):
         "unfurl_links": False,
         "unfurl_media": False,
     }
+    label = single_line(agent or "").upper()
+    icon = HARNESS_ICONS.get(label)
+    if icon:
+        notification["blocks"] = [{
+            "type": "context",
+            "elements": [
+                {"type": "image", "image_url": ICON_BASE_URL + icon, "alt_text": label},
+                {"type": "plain_text", "text": unescape(text), "emoji": False},
+            ],
+        }]
+    return notification
 
 
 def load_token():
@@ -88,19 +118,121 @@ def load_token():
     return token.strip()
 
 
-def send_notification(notification):
+def slack_request(method, parameters, token, *, timeout=REQUEST_TIMEOUT):
+    url = "https://slack.com/api/" + method
+    data = json.dumps(parameters, ensure_ascii=False).encode("utf-8")
+    if method == "conversations.history":
+        url += "?" + urlencode(parameters)
+        data = None
     request = Request(
-        "https://slack.com/api/chat.postMessage",
-        data=json.dumps(notification, ensure_ascii=False).encode("utf-8"),
+        url,
+        data=data,
         headers={
-            "Authorization": "Bearer " + load_token(),
+            "Authorization": "Bearer " + token,
             "Content-Type": "application/json; charset=utf-8",
         },
-        method="POST",
+        method="GET" if data is None else "POST",
     )
-    with urlopen(request, timeout=REQUEST_TIMEOUT) as response:
-        result = json.load(response)
-    return isinstance(result, dict) and result.get("ok") is True
+    with urlopen(request, timeout=timeout) as response:
+        return json.load(response)
+
+
+def prune_history(channel, token):
+    """Preserve the newest ten channel messages, then delete older ones."""
+    def request(method, parameters):
+        failures = 0
+        while True:
+            try:
+                result = slack_request(method, parameters, token)
+                break
+            except HTTPError as error:
+                if error.code != 429:
+                    raise
+                delay = max(1, int(error.headers.get("Retry-After", "30")))
+                error.close()
+                sleep(delay)
+            except OSError:
+                failures += 1
+                if failures == 3:
+                    raise
+                sleep(failures)
+        if result.get("ok") is not True:
+            # Other senders' messages cannot be deleted; another hook may also
+            # have already deleted this message. Continue to older messages.
+            if method == "chat.delete" and result.get("error") in (
+                "cant_delete_message", "message_not_found",
+            ):
+                return result
+            explanations = {
+                "missing_scope": "missing channels:history (or groups:history) scope",
+                "not_in_channel": "bot must join ai-stopped",
+                "invalid_auth": "invalid Slack credentials",
+            }
+            raise SlackCleanupError(explanations.get(result.get("error"), "Slack cleanup failed"))
+        return result
+
+    parameters = {"channel": channel, "limit": 100}
+    kept = 0
+    deleted = skipped = 0
+    while True:
+        history = request("conversations.history", parameters)
+        messages = history["messages"]
+        for message in messages:
+            if message.get("type") != "message":
+                continue
+            if kept < KEEP_MESSAGES:
+                kept += 1
+                continue
+            result = request("chat.delete", {"channel": channel, "ts": message["ts"]})
+            if result.get("ok") is True:
+                deleted += 1
+            elif result.get("error") == "cant_delete_message":
+                skipped += 1
+        if not messages or not history.get("has_more"):
+            return deleted, skipped
+        # Time pagination stays stable when this hook (or another) deletes
+        # messages, and keeps new arrivals outside the remaining scan.
+        parameters["latest"] = messages[-1]["ts"]
+
+
+def cleanup_directory():
+    directory = Path.home() / ".cache" / "agent-stop-slack-hook"
+    directory.mkdir(parents=True, exist_ok=True, mode=0o700)
+    return directory
+
+
+def run_cleanup(channel):
+    # Serialize workers from all harnesses on this machine. A queued worker
+    # reads fresh history, so notifications arriving during cleanup are handled.
+    with (cleanup_directory() / (channel + ".lock")).open("a") as lock:
+        fcntl.flock(lock, fcntl.LOCK_EX)
+        deleted, skipped = prune_history(channel, load_token())
+    print(f"Slack cleanup: deleted {deleted}; skipped {skipped} undeletable messages.", flush=True)
+
+
+def start_cleanup(channel):
+    with (cleanup_directory() / (channel + ".log")).open("a") as log:
+        subprocess.Popen(
+            [sys.executable, str(Path(__file__).resolve()), "--cleanup-only", "--channel", channel],
+            stdin=subprocess.DEVNULL, stdout=log, stderr=log,
+            start_new_session=True, close_fds=True,
+        )
+
+
+def send_notification(notification, *, strict=False):
+    token = load_token()
+    result = slack_request("chat.postMessage", notification, token)
+    if not isinstance(result, dict) or result.get("ok") is not True:
+        return False
+    channel = result.get("channel")
+    if channel == RETENTION_CHANNEL_ID:
+        try:
+            start_cleanup(channel)
+        except Exception:
+            # Cleanup must not turn a delivered notification into a failure.
+            if strict:
+                print("Slack history cleanup could not start.", file=sys.stderr)
+    return True
 
 
 def should_skip(payload):
@@ -118,7 +250,24 @@ def main(argv=None):
     parser.add_argument("--channel", help="Slack channel ID or name; overrides SLACK_CHANNEL")
     parser.add_argument("--dry-run", action="store_true", help="print request JSON without credentials or network")
     parser.add_argument("--strict", action="store_true", help="return nonzero on failure for manual testing")
+    parser.add_argument("--cleanup-only", action="store_true", help="clean ai-stopped history without sending a notification; wait until done")
     args = parser.parse_args(argv)
+    if args.cleanup_only:
+        channel = args.channel or os.environ.get("SLACK_CHANNEL") or RETENTION_CHANNEL_ID
+        if channel not in (RETENTION_CHANNEL_ID, "ai-stopped", "#ai-stopped"):
+            parser.error("--cleanup-only only supports ai-stopped")
+        if args.dry_run:
+            print("Would keep the newest 10 messages in ai-stopped and delete older messages.")
+            return 0
+        try:
+            run_cleanup(RETENTION_CHANNEL_ID)
+        except SlackCleanupError as error:
+            print(f"Slack cleanup failed: {error}.", file=sys.stderr)
+            return 1
+        except Exception:
+            print("Slack cleanup failed: network, credentials, or local worker error.", file=sys.stderr)
+            return 1
+        return 0
     payload = {}
     try:
         raw = args.payload
@@ -141,12 +290,13 @@ def main(argv=None):
         notification = slack_message(
             stop_text(agent_name(payload, args.agent_name), directory),
             channel=args.channel,
+            agent=agent_name(payload, args.agent_name),
         )
     if args.dry_run:
         print(json.dumps(notification, ensure_ascii=False, indent=2))
         return 0
     try:
-        sent = send_notification(notification)
+        sent = send_notification(notification, strict=args.strict)
     except Exception:
         # Never print request/response bodies, credentials, or the hook payload.
         sent = False

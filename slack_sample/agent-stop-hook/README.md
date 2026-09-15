@@ -9,6 +9,41 @@ channels, `chat:write.public` also allows posting without joining. Private
 channels require their channel ID and the bot must be added to the channel.
 The shared Copilot JSON uses the ID of `#ai-stopped`.
 
+## Keep the latest 10 messages
+
+After each successful notification to `#ai-stopped` (`C0C07TUSQ4R`), the hook
+keeps the 10 newest channel messages, including the notification just sent,
+and deletes older messages. It follows history pages to clean older backlogs.
+Other destination channels are not cleaned. Thread replies are not scanned.
+
+Add `channels:history` to the app's Bot Token Scopes and reinstall the app in
+the workspace if needed. The bot must be a member of `ai-stopped`; posting
+with `chat:write.public` alone does not grant history access. A private channel
+requires `groups:history` instead. See [Slack history permissions](https://docs.slack.dev/reference/methods/conversations.history/).
+
+[Slack only allows a bot to delete its own messages](https://docs.slack.dev/reference/methods/chat.delete/).
+Older messages from other senders are skipped, so a mixed channel may still
+contain more than 10 messages. Cleanup runs in a detached background process
+so it can finish a large backlog after the stop hook exits. Workers take a
+per-channel file lock to serialize cleanup across harnesses on this machine.
+On [HTTP 429](https://docs.slack.dev/apis/web-api/rate-limits/), the worker waits
+for Slack's `Retry-After` delay and retries; temporary network failures get two
+retries. A large backlog may take several minutes, without delaying the agent.
+
+Cleanup summaries and errors are appended to
+`~/.cache/agent-stop-slack-hook/C0C07TUSQ4R.log`. Cleanup failure never changes
+successful delivery to a failure; `--strict` reports failure to start the
+worker. `--dry-run` does no cleanup.
+
+To clean an existing backlog and wait for completion without posting a message:
+
+```sh
+python3 slack_sample/agent-stop-hook/agent_stop_slack_hook.py --cleanup-only
+```
+
+This command only supports `ai-stopped`, returns nonzero on cleanup failure,
+and reports how many messages were deleted or could not be deleted.
+
 ## Global installation
 
 Install all four hooks with one command (Linux/macOS, Python 3.8+ and Make):
@@ -73,10 +108,22 @@ review/trust the new Stop handler before it can run. In Claude Code, use `/hooks
 to inspect the user hook. Kiro requires the current global `v1` hook format
 (IDE 1.x / CLI 3.x); this installer does not configure legacy Kiro 0.x/CLI 2.x.
 
-For Copilot in VS Code, add `"~/.copilot/hooks": true` to the user setting
-`chat.hookFilesLocations`, or use an already configured directory linked there.
-On this machine, `~/.copilot/hooks` links to `~/Dropbox/Work/copilot/hooks`, which
-VS Code already loads. The installer preserves that link.
+For Copilot in VS Code, use the canonical `~/.copilot/hooks` location. Recent
+VS Code versions already load it by default; an explicit setting also works:
+
+```json
+"chat.hookFilesLocations": {
+  "~/.copilot/hooks": true
+}
+```
+
+On this machine, `~/.copilot/hooks` links to `~/Dropbox/Work/copilot/hooks`.
+Do not also enable the Dropbox path in `chat.hookFilesLocations`: VS Code
+merges configured locations with its defaults and compares their paths,
+so it can load the same hook twice through a symlink and its target. Remove
+that duplicate entry while preserving unrelated locations and the symlink.
+The installer preserves the symlink and does not modify VS Code settings.
+See [VS Code hook locations](https://code.visualstudio.com/docs/agent-customization/hooks).
 
 ## Configuration
 
@@ -92,8 +139,22 @@ The credential file is read at runtime; tokens do not belong in hook JSON.
 Messages contain only the harness, stopped status, and full working directory:
 
 ```text
-🛑 Claude Code harness đã dừng — thư mục: /home/xuananh/repo/python-note
+CLAUDE CODE harness đã dừng — thư mục: /home/xuananh/repo/python-note
 ```
+
+Each known harness gets its own small image before the text, replacing the
+shared stop-sign emoji. Names appear in uppercase: `CODEX`, `CLAUDE CODE`,
+`GITHUB COPILOT`, and `KIRO`. Images come from
+[LobeHub Icons](https://github.com/lobehub/lobe-icons), pinned to PNG package
+version `1.97.0` on UNPKG. Codex uses the blue terminal icon, Claude Code the
+orange pixel mascot, Copilot the white robot face for dark backgrounds, and
+Kiro the purple ghost icon.
+
+The icon and plain text use a Slack context block; a text fallback supports
+notifications and screen readers. Text is limited to 3,000 characters to fit
+Slack's text-object limit. Unknown harnesses show their uppercase name without
+a brand image. Slack loads the public image URLs; the hook does not download
+icons or need custom workspace emoji permissions. This applies to new messages.
 
 Time, model, session, turn, and response content are omitted. The old
 `SLACK_INCLUDE_RESPONSE` option is no longer used. Prompts and transcript files
@@ -118,7 +179,8 @@ the Copilot JSON unchanged to another harness is insufficient.
 | Kiro IDE 1.x / CLI 3.x | `Stop` in `.kiro/hooks/*.json` | `--agent-name Kiro` |
 
 Use a hook timeout of 15 seconds. Delivery uses an 8-second socket timeout
-with no retries. Failures return exit code 0 and write no stdout/stderr during
+with no retries; history cleanup runs separately in the background. Failures
+return exit code 0 and write no stdout/stderr during
 normal hook execution. Unrelated events and recursive `stop_hook_active`
 callbacks are skipped. Use either native Codex Stop or legacy notify, not both.
 Codex requires reviewing/trusting new hook commands through `/hooks`.
