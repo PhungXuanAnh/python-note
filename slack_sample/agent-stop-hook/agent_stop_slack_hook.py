@@ -7,6 +7,7 @@ Only the Python standard library is required. Importing this file does no I/O.
 """
 
 import argparse
+from decimal import Decimal
 import fcntl
 from html import escape, unescape
 import json
@@ -23,6 +24,10 @@ from urllib.request import Request, urlopen
 DEFAULT_CREDENTIALS = (
     Path.home() / "Dropbox/Work/Other/credentials_bk/slack_phungxuananh_workspace.json"
 )
+DEFAULT_USER_TOKEN_FILE = (
+    Path.home() / "Dropbox/Work/Other/credentials_bk/slack_phungxuananh_workspace_user_oauth_token.txt"
+)
+MARK_READ_DELAY = 60
 MAX_MESSAGE_LENGTH = 3000
 REQUEST_TIMEOUT = 8
 RETENTION_CHANNEL_ID = "C0C07TUSQ4R"
@@ -118,10 +123,21 @@ def load_token():
     return token.strip()
 
 
+def load_user_token():
+    token = os.environ.get("SLACK_USER_TOKEN")
+    if not token:
+        path = Path(os.environ.get("SLACK_USER_TOKEN_FILE") or DEFAULT_USER_TOKEN_FILE).expanduser()
+        token = path.read_text(encoding="utf-8")
+    token = token.strip()
+    if not token.startswith("xoxp-") or any(character.isspace() for character in token):
+        raise ValueError("missing or invalid user token")
+    return token
+
+
 def slack_request(method, parameters, token, *, timeout=REQUEST_TIMEOUT):
     url = "https://slack.com/api/" + method
     data = json.dumps(parameters, ensure_ascii=False).encode("utf-8")
-    if method == "conversations.history":
+    if method in ("conversations.history", "conversations.info"):
         url += "?" + urlencode(parameters)
         data = None
     request = Request(
@@ -219,12 +235,78 @@ def start_cleanup(channel):
         )
 
 
+def mark_read_request(method, parameters, token):
+    for attempt in range(3):
+        try:
+            result = slack_request(method, parameters, token)
+        except HTTPError as error:
+            retryable = error.code == 429 or error.code >= 500
+            delay = max(1, int(error.headers.get("Retry-After", "30"))) if error.code == 429 else attempt + 1
+            error.close()
+            if not retryable or attempt == 2:
+                raise
+        except OSError:
+            if attempt == 2:
+                raise
+            delay = attempt + 1
+        else:
+            if result.get("ok") is True:
+                return result
+            if method == "conversations.info" and result.get("error") == "missing_scope":
+                return result
+            if result.get("error") not in ("ratelimited", "internal_error", "service_unavailable") or attempt == 2:
+                raise ValueError("Slack rejected the mark-read request")
+            delay = 30 if result.get("error") == "ratelimited" else attempt + 1
+        sleep(delay)
+
+
+def run_mark_read(channel, timestamp):
+    target = Decimal(timestamp)
+    if not target.is_finite() or target <= 0:
+        raise ValueError("invalid message timestamp")
+    sleep(MARK_READ_DELAY)
+    token = load_user_token()
+    with (cleanup_directory() / (channel + ".read.lock")).open("a+") as lock:
+        fcntl.flock(lock, fcntl.LOCK_EX)
+        lock.seek(0)
+        previous = lock.read().strip()
+        if previous and Decimal(previous) >= target:
+            return
+        info = mark_read_request("conversations.info", {"channel": channel}, token)
+        last_read = info.get("channel", {}).get("last_read")
+        if last_read and Decimal(last_read) >= target:
+            return
+        if not last_read:
+            print("Slack auto-read: read cursor unavailable; marking the notification timestamp.", flush=True)
+        mark_read_request("conversations.mark", {"channel": channel, "ts": timestamp}, token)
+        lock.seek(0)
+        lock.truncate()
+        lock.write(timestamp)
+    print("Slack auto-read: notification marked as read.", flush=True)
+
+
+def start_mark_read(channel, timestamp):
+    with (cleanup_directory() / (channel + ".read.log")).open("a") as log:
+        subprocess.Popen(
+            [sys.executable, str(Path(__file__).resolve()), "--mark-read-only", timestamp, "--channel", channel],
+            stdin=subprocess.DEVNULL, stdout=log, stderr=log,
+            start_new_session=True, close_fds=True,
+        )
+
+
 def send_notification(notification, *, strict=False):
     token = load_token()
     result = slack_request("chat.postMessage", notification, token)
     if not isinstance(result, dict) or result.get("ok") is not True:
         return False
     channel = result.get("channel")
+    timestamp = result.get("ts")
+    if channel and timestamp:
+        try:
+            start_mark_read(channel, timestamp)
+        except Exception:
+            if strict:
+                print("Slack auto-read worker could not start.", file=sys.stderr)
     if channel == RETENTION_CHANNEL_ID:
         try:
             start_cleanup(channel)
@@ -250,8 +332,22 @@ def main(argv=None):
     parser.add_argument("--channel", help="Slack channel ID or name; overrides SLACK_CHANNEL")
     parser.add_argument("--dry-run", action="store_true", help="print request JSON without credentials or network")
     parser.add_argument("--strict", action="store_true", help="return nonzero on failure for manual testing")
-    parser.add_argument("--cleanup-only", action="store_true", help="clean ai-stopped history without sending a notification; wait until done")
+    workers = parser.add_mutually_exclusive_group()
+    workers.add_argument("--cleanup-only", action="store_true", help="clean ai-stopped history without sending a notification; wait until done")
+    workers.add_argument("--mark-read-only", metavar="TS", help=f"mark a notification as read after {MARK_READ_DELAY} seconds without sending; wait until done")
     args = parser.parse_args(argv)
+    if args.mark_read_only is not None:
+        if not args.channel or not args.channel.isalnum() or args.channel[0] not in "CDG":
+            parser.error("--mark-read-only requires --channel with a Slack conversation ID")
+        if args.dry_run:
+            print(f"Would mark the notification as read after {MARK_READ_DELAY} seconds.")
+            return 0
+        try:
+            run_mark_read(args.channel, args.mark_read_only)
+        except Exception:
+            print("Slack auto-read failed: check user token, scopes, channel membership, network, or local worker.", file=sys.stderr)
+            return 1
+        return 0
     if args.cleanup_only:
         channel = args.channel or os.environ.get("SLACK_CHANNEL") or RETENTION_CHANNEL_ID
         if channel not in (RETENTION_CHANNEL_ID, "ai-stopped", "#ai-stopped"):

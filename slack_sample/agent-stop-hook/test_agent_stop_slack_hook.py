@@ -193,6 +193,83 @@ class SlackStopHookTests(unittest.TestCase):
                 with patch.dict(os.environ, {"SLACK_BOT_TOKEN": "env-token"}):
                     self.assertEqual(hook.load_token(), "env-token")
 
+    def test_user_token_file_and_environment_are_separate_from_bot_credentials(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "user-token.txt"
+            path.write_text("xoxp-file-token\n")
+            with patch.dict(os.environ, {"SLACK_USER_TOKEN_FILE": str(path)}):
+                self.assertEqual(hook.load_user_token(), "xoxp-file-token")
+                self.assertEqual(hook.load_token(), "test-bot-token")
+                with patch.dict(os.environ, {"SLACK_USER_TOKEN": "xoxp-env-token"}):
+                    self.assertEqual(hook.load_user_token(), "xoxp-env-token")
+
+    def test_auto_read_starts_only_after_delivery_and_failure_preserves_cleanup(self):
+        channel, timestamp = hook.RETENTION_CHANNEL_ID, "123.000001"
+        for delivered in (True, False):
+            posted = {"ok": delivered, "channel": channel, "ts": timestamp}
+            with self.subTest(delivered=delivered), patch.object(hook, "slack_request", return_value=posted), patch.object(hook, "start_cleanup"), patch.object(hook, "start_mark_read") as worker:
+                self.assertEqual(hook.send_notification({"channel": channel}), delivered)
+                self.assertEqual(worker.call_count, int(delivered))
+                if delivered:
+                    worker.assert_called_once_with(channel, timestamp)
+        with patch.object(hook, "slack_request", return_value={"ok": True, "channel": channel, "ts": timestamp}), patch.object(hook, "start_cleanup") as cleanup, patch.object(hook, "start_mark_read", side_effect=OSError("secret")):
+            self.assertEqual(self.invoke("{}", "--strict"), (0, "", "Slack auto-read worker could not start.\nSlack stop notification sent.\n"))
+            cleanup.assert_called_once_with(channel)
+
+    def test_auto_read_worker_detaches_and_dry_run_does_no_io(self):
+        with tempfile.TemporaryDirectory() as directory, patch.object(hook, "cleanup_directory", return_value=Path(directory)), patch.object(hook.subprocess, "Popen") as process:
+            hook.start_mark_read(hook.RETENTION_CHANNEL_ID, "123.000001")
+            command = process.call_args.args[0]
+            self.assertEqual(command[-4:], ["--mark-read-only", "123.000001", "--channel", hook.RETENTION_CHANNEL_ID])
+            self.assertTrue(process.call_args.kwargs["start_new_session"])
+            self.assertEqual(process.call_args.kwargs["stdin"], hook.subprocess.DEVNULL)
+            self.assertNotIn("test-bot-token", command)
+        with patch.object(hook, "run_mark_read") as worker:
+            self.assertEqual(
+                self.invoke("", "--mark-read-only", "123.000001", "--channel", hook.RETENTION_CHANNEL_ID, "--dry-run"),
+                (0, "Would mark the notification as read after 180 seconds.\n", ""),
+            )
+            worker.assert_not_called()
+
+    def test_auto_read_waits_three_minutes_uses_user_token_and_skips_older_workers(self):
+        channel, timestamp = hook.RETENTION_CHANNEL_ID, "123.000001"
+        for info in ({"ok": True, "channel": {"last_read": "100.000001"}}, {"ok": False, "error": "missing_scope"}):
+            responses = [io.BytesIO(json.dumps(info).encode()), io.BytesIO(b'{"ok":true}')]
+            with self.subTest(info=info), tempfile.TemporaryDirectory() as directory, patch.object(hook, "cleanup_directory", return_value=Path(directory)), patch.object(hook, "load_user_token", return_value="xoxp-user-token"), patch.object(hook, "sleep") as sleep, patch.object(hook, "urlopen", side_effect=responses) as request:
+                status, stdout, stderr = self.invoke("", "--mark-read-only", timestamp, "--channel", channel)
+                self.assertEqual((status, stderr), (0, ""))
+                self.assertIn("notification marked as read", stdout)
+                sleep.assert_called_once_with(180)
+                info_request, mark_request = [entry.args[0] for entry in request.call_args_list]
+                self.assertEqual(info_request.get_method(), "GET")
+                self.assertEqual(parse_qs(urlsplit(info_request.full_url).query), {"channel": [channel]})
+                self.assertEqual(mark_request.full_url, "https://slack.com/api/conversations.mark")
+                self.assertEqual(mark_request.get_header("Authorization"), "Bearer xoxp-user-token")
+                self.assertEqual(json.loads(mark_request.data), {"channel": channel, "ts": timestamp})
+                hook.run_mark_read(channel, "122.000001")
+                self.assertEqual(request.call_count, 2)
+
+    def test_auto_read_skips_already_read_messages_and_sanitizes_failures(self):
+        for response, expected_status in (({"ok": True, "channel": {"last_read": "124.000001"}}, 0), ({"ok": False, "error": "secret"}, 1)):
+            with self.subTest(response=response), tempfile.TemporaryDirectory() as directory, patch.object(hook, "cleanup_directory", return_value=Path(directory)), patch.object(hook, "load_user_token", return_value="xoxp-user-token"), patch.object(hook, "sleep"), patch.object(hook, "slack_request", return_value=response) as request:
+                status, stdout, stderr = self.invoke("", "--mark-read-only", "123.000001", "--channel", hook.RETENTION_CHANNEL_ID)
+                self.assertEqual(status, expected_status)
+                self.assertEqual(request.call_count, 1)
+                self.assertEqual(request.call_args.args[0], "conversations.info")
+                self.assertNotIn("secret", stdout + stderr)
+                self.assertNotIn("xoxp-user-token", stdout + stderr)
+
+    def test_auto_read_retries_rate_limits_and_bounds_network_retries(self):
+        rate_limit = HTTPError("url", 429, "rate limited", {"Retry-After": "7"}, io.BytesIO())
+        with patch.object(hook, "slack_request", side_effect=[rate_limit, {"ok": True}]) as request, patch.object(hook, "sleep") as sleep:
+            hook.mark_read_request("conversations.mark", {}, "xoxp-user-token")
+            sleep.assert_called_once_with(7)
+            self.assertEqual(request.call_count, 2)
+        with patch.object(hook, "slack_request", side_effect=OSError("secret")) as request, patch.object(hook, "sleep"):
+            with self.assertRaises(OSError):
+                hook.mark_read_request("conversations.mark", {}, "xoxp-user-token")
+            self.assertEqual(request.call_count, 3)
+
 
 if __name__ == "__main__":
     unittest.main()

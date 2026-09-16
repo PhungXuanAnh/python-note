@@ -44,6 +44,39 @@ python3 slack_sample/agent-stop-hook/agent_stop_slack_hook.py --cleanup-only
 This command only supports `ai-stopped`, returns nonzero on cleanup failure,
 and reports how many messages were deleted or could not be deleted.
 
+## Automatically mark notifications as read
+
+After each successful notification, a separate detached worker waits 180 seconds (3 minutes)
+and calls `conversations.mark` with the returned channel ID and message timestamp.
+The stop hook exits immediately; history cleanup continues independently.
+Slack marks the conversation read through that timestamp, including older messages,
+for the owner of the user token, not for the bot or other users.
+
+The user token is loaded at runtime from `SLACK_USER_TOKEN`, or from the plain-text
+file configured by `SLACK_USER_TOKEN_FILE`. Its default is
+`~/Dropbox/Work/Other/credentials_bk/slack_phungxuananh_workspace_user_oauth_token.txt`.
+Keep only the token in that file, outside Git. Bot credentials still handle posting
+and cleanup. Missing user credentials or auto-read failures do not affect delivery.
+
+For private `ai-stopped`, grant **User Token Scopes** `groups:write` and optionally
+`groups:read`, then reinstall the app as the user whose unread state should change.
+Public channels use `channels:write` and optionally `channels:read` instead.
+The user must belong to the channel. See
+[mark permissions](https://docs.slack.dev/reference/methods/conversations.mark/) and
+[conversation information permissions](https://docs.slack.dev/reference/methods/conversations.info/).
+
+When Slack supplies `last_read`, the worker skips messages already read.
+Without the read scope or that field, it marks the notification timestamp without
+checking the user's current read position. A separate per-channel lock and saved
+timestamp prevent older local workers from undoing newer workers' marks.
+Checking the cursor and marking are separate API calls, not an atomic operation.
+
+Auto-read logs go to `~/.cache/agent-stop-slack-hook/<channel>.read.log`.
+Transient network/server errors and rate limits get at most two retries;
+HTTP 429 honors `Retry-After`. Tokens and raw error responses are never logged.
+`--dry-run` does not start workers or load credentials. Sleep, shutdown, or a
+terminated worker can delay or prevent auto-read; pending jobs are not durable.
+
 ## Global installation
 
 Install all four hooks with one command (Linux/macOS, Python 3.8+ and Make):
@@ -131,6 +164,8 @@ See [VS Code hook locations](https://code.visualstudio.com/docs/agent-customizat
 | --- | --- |
 | `SLACK_BOT_TOKEN` or `SLACK_API_TOKEN` | Optional direct token; takes priority over the credentials file |
 | `SLACK_CREDENTIALS_JSON` | `~/Dropbox/Work/Other/credentials_bk/slack_phungxuananh_workspace.json` |
+| `SLACK_USER_TOKEN` | Optional user token for auto-read; overrides the token file |
+| `SLACK_USER_TOKEN_FILE` | `~/Dropbox/Work/Other/credentials_bk/slack_phungxuananh_workspace_user_oauth_token.txt` |
 | `SLACK_APP_NAME` | `xa-sample-app` inside `credentials["apps"]` |
 | `SLACK_CHANNEL` | `#ai-stopped` |
 | `AGENT_NAME` / `--agent-name` | Explicit harness label; otherwise inferred from payload |
