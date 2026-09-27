@@ -1,39 +1,33 @@
 #! /home/xuananh/repo/python-note/.venv/bin/python
 """
-sudo apt install gnome-screensaver -y
+Break reminder: count working time on the tray, then show a warning image until
+the user closes it, then lock the screen. Left-click the tray icon to pause/resume.
+
+sudo apt install gnome-screensaver feh -y
 
 Test run (isolated instance, env vars, tray screenshots): see README.md in this folder.
     datetime_sample/test.sh
 """
-import datetime
 import os
 import subprocess
 import sys
-import threading
 import time
-from sys import platform
 
 import pystray
-from flask import Flask
 
-current_dir = os.path.dirname(__file__)
-sys.path.append(current_dir + "/..")
-from mp3.play import play_mp3_with_volume
-from ngrok_sample.ngrok_client_api import list_tunnel
+sys.path.append(os.path.dirname(__file__) + "/..")
 from pystray_sample.pystray_sample_icon_from_created_image import (
     create_xorg_tray_image,
     xorg_icon,
 )
-from subprocess_sample.subprocess_sample import run_command, run_command_return_results
 
-RELEASE_LOCK_SCREEN = True
 PAUSED = False
-app = Flask(__name__)
 
 WHITE = (255, 255, 255)
 RED = (255, 0, 0)
 BLINK_LAST_SECONDS = 50  # blink the tray label during the last N seconds of working time
 WARNING_TEXT = "!"  # tray label while waiting for the user to lock the screen
+WARNING_IMAGE = "/home/xuananh/Dropbox/Temp/Wallpapers/sức-khỏe.png"
 _warning_fg = None  # last colour drawn by _show_warning_icon, to redraw only on change
 
 # Lets a test instance run without clashing with the real one (see README.md).
@@ -52,6 +46,13 @@ def _wait_while_paused():
     while PAUSED:
         xorg_icon.icon = create_xorg_tray_image(2000, 1100, "black", "II")
         time.sleep(0.5)
+
+
+def _paused_for():
+    """Block while paused; return the paused seconds, to shift a countdown's start by."""
+    before = time.time()
+    _wait_while_paused()
+    return time.time() - before
 
 
 def _blink_color():
@@ -93,336 +94,128 @@ def run_cmd(command):
     subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
 
-def _move_mouse(x, y):
-    run_cmd("xdotool mousemove {} {}".format(x, y))
-
-
-def move_mouse():
-    with open("/home/xuananh/repo/python-note/datetime_sample/mouse-position.txt", "r") as f:
-        for position in f.readlines():
-            command = "xdotool mousemove {}".format(position)
-            p = subprocess.Popen(
-                command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT
-            )
-            p.wait()
-
-
 def lock_screen():
     if NO_LOCK:
         print("lock_screen skipped (TIME_REST_NO_LOCK=1)")
         return
-    if platform == "linux" or platform == "linux2":
-        run_cmd("gnome-screensaver-command --lock")
-    elif platform == "darwin":
-        run_cmd("maclock")
-
-
-def is_osx_screen_lock():
-    import Quartz
-
-    d = Quartz.CGSessionCopyCurrentDictionary()
-    return "CGSSessionScreenIsLocked" in d.keys()
-
-
-def is_ubuntu_screen_lock():
-    process = subprocess.Popen(
-        "gnome-screensaver-command -q",
-        shell=True,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.STDOUT,
-    )
-    result = process.communicate()
-    if result[0] == b"The screensaver is active\n":
-        return True
-    elif result[0] == b"The screensaver is inactive\n":
-        return False
+    run_cmd("gnome-screensaver-command --lock")
 
 
 def is_screensaver_active():
-    if platform == "linux" or platform == "linux2":
-        return is_ubuntu_screen_lock()
-    elif platform == "darwin":
-        return is_osx_screen_lock()
+    output = subprocess.run(
+        ["gnome-screensaver-command", "-q"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT
+    ).stdout
+    return output == b"The screensaver is active\n"
 
 
-def active_screen():
-    run_cmd("gnome-screensaver-command --active")
+def _open_warning_image():
+    subprocess.Popen(
+        [
+            "feh",
+            "--title={}".format(FEH_TITLE),
+            "--fullscreen",
+            "--borderless",
+            "--draw-tinted",
+            "--no-menus",
+            "--on-top",
+            WARNING_IMAGE,
+        ],
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+    )
 
 
-def working_time(times):
-    global RELEASE_LOCK_SCREEN
-    RELEASE_LOCK_SCREEN = True
+def _is_warning_image_open():
+    pattern = "feh --title={}".format(FEH_TITLE)
+    return subprocess.call(["pgrep", "-f", pattern], stdout=subprocess.DEVNULL) == 0
 
-    start = datetime.datetime.now()
-    now = datetime.datetime.now()
-    while (now - start).seconds < times:
 
+def _close_warning_image():
+    run_cmd("pkill -f 'feh --title={}'".format(FEH_TITLE))
+
+
+def working_time(seconds):
+    """Show elapsed working seconds on the tray; the count restarts while the screen is locked."""
+    start = time.time()
+    now = start
+    while now - start < seconds:
         if PAUSED:
-            # Freeze the elapsed counter: shift `start` forward by the paused
-            # interval so the countdown resumes exactly where it stopped.
-            prev = now
-            _wait_while_paused()
-            now = datetime.datetime.now()
-            start += now - prev
+            # Freeze the elapsed counter so it resumes exactly where it stopped.
+            start += _paused_for()
+            now = time.time()
             continue
 
-        # NOTE: if using stdout, you have to run command like this: ./time_rest.py >> time_rest.log
-        # sys.stdout.write("working time: {} of {}".format((now - start).seconds, times))
-        # sys.stdout.flush()
-        
-        elapsed = (now - start).seconds
-        log_file.write("working time: {} of {}\n".format(elapsed, times))
+        elapsed = int(now - start)
+        log_file.write("working time: {} of {}\n".format(elapsed, seconds))
         log_file.flush()
-        fg = _blink_color() if times - elapsed <= BLINK_LAST_SECONDS else WHITE
-        xorg_icon.icon = create_xorg_tray_image(2000, 1100, 'black', str(elapsed), fg=fg)
-
-        if RELEASE_LOCK_SCREEN:
-            start = datetime.datetime.now()
-            RELEASE_LOCK_SCREEN = False
+        fg = _blink_color() if seconds - elapsed <= BLINK_LAST_SECONDS else WHITE
+        xorg_icon.icon = create_xorg_tray_image(2000, 1100, "black", str(elapsed), fg=fg)
 
         if is_screensaver_active():
-            start = datetime.datetime.now()
+            start = time.time()
 
-        now = datetime.datetime.now()
+        now = time.time()
         time.sleep(1)
 
-    RELEASE_LOCK_SCREEN = False
 
-
-def break_time(time_to_break):
-    # lock_screen()
-    start = datetime.datetime.now()
-    now = datetime.datetime.now()
-    print(RELEASE_LOCK_SCREEN)
-
-    while (now - start).seconds < time_to_break and not RELEASE_LOCK_SCREEN:
+def break_time(seconds):
+    """Re-lock the screen if it gets unlocked within `seconds` after locking."""
+    start = time.time()
+    now = start
+    while now - start < seconds:
         if PAUSED:
-            prev = now
-            _wait_while_paused()
-            now = datetime.datetime.now()
-            start += now - prev
+            start += _paused_for()
+            now = time.time()
             continue
-        print("break time: {} of {}".format((now - start).seconds, time_to_break))
+        print("break time: {} of {}".format(int(now - start), seconds))
         time.sleep(1)
-        now = datetime.datetime.now()
+        now = time.time()
         if not is_screensaver_active():
             lock_screen()
             time.sleep(1)
 
-    print(RELEASE_LOCK_SCREEN)
-
-
-def main():
-    """
-        work 30 mins
-        lock screen
-        break 1 second to allow unlock screen manually
-    """
-    while True:        
-        working_time(WORK_SECONDS)
-
-        # Start image warning cycle
-        show_warning_image_until_closed()
-
-        # The code reaches here only after user closes the image
-        lock_screen()
-        break_time(1)
-        # move_mouse()
-       
-        # play_mp3_with_volume()
-        # while not RELEASE_LOCK_SCREEN and is_screensaver_active():
-        #     move_mouse()
-
 
 def show_warning_image_until_closed():
-    """Show warning image in a cycle until user manually closes it"""
+    """Reopen the warning image every ~10s until the user closes it or the screen gets locked."""
     global _warning_fg
-    # Flag to track if the user manually closed the image
-    user_closed_image = False
-
-    while not user_closed_image:
+    while True:
         # If paused during the reminder phase, wait here before (re)opening.
         _wait_while_paused()
         # Force a redraw: the tray may be showing the pause/working label.
         _warning_fg = None
         _show_warning_icon()
 
-        # Flag to track if we're in programmatic close phase
-        programmatic_close = False
-
-        # Get current mouse position for placing the image
-        if platform == "linux" or platform == "linux2":
-            mouse_pos = subprocess.check_output(
-                "xdotool getmouselocation", shell=True
-            ).decode("utf-8")
-            x = mouse_pos.split()[0].split(":")[1]
-            y = mouse_pos.split()[1].split(":")[1]
-
-            # Open the warning image in fullscreen mode using feh
-            process = subprocess.Popen(
-                [
-                    "feh",
-                    "--title={}".format(FEH_TITLE),
-                    "--fullscreen",  # Add fullscreen flag
-                    "--borderless",
-                    "--draw-tinted",
-                    "--no-menus",
-                    "--on-top",
-                    "/home/xuananh/Dropbox/Temp/Wallpapers/sức-khỏe.png",
-                ],
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-            )
-        elif platform == "darwin":
-            # For macOS, use AppleScript to open the image in fullscreen mode
-            osascript_cmd = (
-                """osascript -e 'tell application "Preview" to open POSIX file """
-                """"/home/xuananh/Dropbox/Temp/Wallpapers/sức-khỏe.png"' -e """
-                """"tell application "Preview" to activate" -e """
-                """"tell application "System Events" to tell process "Preview" to keystroke "f" using {command down}"' """
-            )
-            process = subprocess.Popen(
-                osascript_cmd,
-                shell=True,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-            )
-
+        _open_warning_image()
         # Give the image viewer a moment to start up properly
         _sleep_blinking(0.5)
 
-        # Display the image for 10 seconds, checking if user closes it or locks screen
-        start_time = time.time()
-        while time.time() - start_time < 10:
-            # If paused, close the warning image and break out to wait; the
-            # outer loop will re-open it once resumed.
+        start = time.time()
+        while time.time() - start < 10:
+            # If paused, close the image; the outer loop re-opens it once resumed.
             if PAUSED:
-                if platform == "linux" or platform == "linux2":
-                    run_cmd("pkill -f 'feh --title={}'".format(FEH_TITLE))
-                elif platform == "darwin":
-                    run_cmd("""osascript -e 'tell application "Preview" to quit'""")
                 break
-
-            # Check if image is still displayed
-            if platform == "linux" or platform == "linux2":
-                image_status = subprocess.call(
-                    ["pgrep", "-f", "feh --title={}".format(FEH_TITLE)],
-                    stdout=subprocess.PIPE,
-                    stderr=subprocess.PIPE,
-                )
-            elif platform == "darwin":
-                image_status = subprocess.call(
-                    ["pgrep", "-f", "Preview"],
-                    stdout=subprocess.PIPE,
-                    stderr=subprocess.PIPE,
-                )
-
-            # Check if screen is locked
             if is_screensaver_active():
-                # Close the image if it's still open
-                if image_status == 0:
-                    if platform == "linux" or platform == "linux2":
-                        run_cmd("pkill -f 'feh --title={}'".format(FEH_TITLE))
-                    elif platform == "darwin":
-                        run_cmd("""osascript -e 'tell application "Preview" to quit'""")
-                user_closed_image = True
-                return  # Exit function since screen is locked
-
-            # If the image is no longer displayed and we're not in programmatic close phase,
-            # the user must have closed it manually
-            if image_status != 0 and not programmatic_close:
-                user_closed_image = True
-                return  # Exit function, which will trigger lock_screen()
-
+                _close_warning_image()
+                return
+            if not _is_warning_image_open():
+                return  # closed by the user -> the caller locks the screen
             _show_warning_icon()
             time.sleep(0.1)
 
-        # Mark that we're entering programmatic close phase
-        programmatic_close = True
-
-        # After display time, close the image programmatically
-        if platform == "linux" or platform == "linux2":
-            run_cmd("pkill -f 'feh --title={}'".format(FEH_TITLE))
-        elif platform == "darwin":
-            run_cmd("""osascript -e 'tell application "Preview" to quit'""")
-
-        # Wait to ensure programmatic close is complete
-        _sleep_blinking(0.5)
-
-        # Reset flag for next cycle
-        programmatic_close = False
-
-        # Wait for 1 second before reopening
-        _sleep_blinking(1)
+        _close_warning_image()
+        # Let pkill finish, then wait a moment before reopening
+        _sleep_blinking(1.5)
 
 
-def get_domain():
-    if platform == "linux" or platform == "linux2":
-        return "xuananh-rl-lock-ubuntu"
-    elif platform == "darwin":
-        return "xuananh-rl-lock-mac"
-
-
-def update_screen_url(unlock_screen_url):
-    import json
-
-    import requests
-
-    resp = requests.put(
-        url="https://52.220.204.132:444/api/v1/unlock-screen-url/1",
-        verify=False,
-        headers={"Content-Type": "application/json"},
-        data=json.dumps({"url": unlock_screen_url}),
-    )
-
-
-def run_command_staqlab(command):
-    print("Running command '{}' ...".format(command))
-    p = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+def main():
     while True:
-        out = p.stdout.readline()
-        if out == b"" and p.poll() is not None:
-            break
-        if out != b"":
-            output_string = out.strip().decode()
-            print(output_string)
-            output_list = output_string.split(" ")
-            # print(output_list)
-            if output_list[0] == "HTTPS":
-                # print(output_list[3])
-                update_screen_url(output_list[3])
-    print("return-code = {} after run command '{}'".format(p.poll(), command))
-
-
-def update_ngrok_public_url():
-    resp = list_tunnel()
-    for value in resp["tunnels"]:
-        if value["name"] == "time-break-api-server (http)":
-            update_screen_url(value["public_url"])
-
-
-@app.route("/", methods=["get"])
-def release_lock_screen():
-    global RELEASE_LOCK_SCREEN
-    RELEASE_LOCK_SCREEN = True
-    return str(datetime.datetime.now())
+        working_time(WORK_SECONDS)
+        show_warning_image_until_closed()
+        lock_screen()
+        break_time(1)
 
 
 if __name__ == "__main__":
-    """
-    run countdown timer, time to 0, then force lock screen in 3 menutes
-    wait 3 menutes for open screen
-    """
-    # update_screen_url("test.com")
-    # move_mouse()
-
-    # threading.Thread(target=run_command_return_results, args=["ngrok start --all"]).start()
-    # threading.Thread(target=main, args=[]).start()
-
-    # time.sleep(3)
-    # update_ngrok_public_url()
-
-    # app.run(host="0.0.0.0", port=8100, debug=False)
     # The xorg backend has HAS_MENU = False: it cannot show a popup menu on
     # right-click. It only fires the item marked `default=True` on a left-click,
     # so left-clicking the tray icon toggles Pause/Resume.
@@ -436,5 +229,5 @@ if __name__ == "__main__":
         pystray.MenuItem("Quit", quit_app),
     )
     xorg_icon.run_detached()
-    
+
     main()
