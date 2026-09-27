@@ -4,6 +4,10 @@ import os
 import pystray
 from PIL import Image, ImageDraw, ImageFont
 
+# Pillow 10+ removed Image.ANTIALIAS; pystray still references it.
+if not hasattr(Image, "ANTIALIAS"):
+    Image.ANTIALIAS = Image.Resampling.LANCZOS
+
 # NOTE: it must remove these packages else the backend `xorg` doesn't work: pip uninstall pycairo PyGObject
 os.environ["PYSTRAY_BACKEND"] = "xorg"
 
