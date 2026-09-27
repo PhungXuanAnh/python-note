@@ -218,7 +218,7 @@ def show_warning_image_until_closed():
                     "--draw-tinted",
                     "--no-menus",
                     "--on-top",
-                    "/home/xuananh/repo/python-note/datetime_sample/exercises.png",
+                    "/home/xuananh/Dropbox/Temp/Wallpapers/sức-khỏe.png",
                 ],
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
@@ -227,7 +227,7 @@ def show_warning_image_until_closed():
             # For macOS, use AppleScript to open the image in fullscreen mode
             osascript_cmd = (
                 """osascript -e 'tell application "Preview" to open POSIX file """
-                """"/home/xuananh/repo/python-note/datetime_sample/exercises.png"' -e """
+                """"/home/xuananh/Dropbox/Temp/Wallpapers/sức-khỏe.png"' -e """
                 """"tell application "Preview" to activate" -e """
                 """"tell application "System Events" to tell process "Preview" to keystroke "f" using {command down}"' """
             )
