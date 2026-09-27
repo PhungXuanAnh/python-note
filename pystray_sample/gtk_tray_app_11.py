@@ -14,7 +14,7 @@ import gi
 current_dir = os.path.dirname(__file__)
 sys.path.append(current_dir + "/..")
 
-from pystray_sample.pystray_sample_icon_from_created_image import icon, create_image_with_text
+from pystray_sample.pystray_sample_icon_from_created_image import xorg_icon, create_xorg_tray_image
 from pystray_sample.windows_images import ImageDisplayManager
 
 gi.require_version("Gtk", "3.0")
@@ -34,10 +34,10 @@ def reset_counter():
     is_showing_image = False
     
     # Create a new image with updated counter text
-    new_image = create_image_with_text(2000, 1000, "black", str(counter))
+    new_image = create_xorg_tray_image(2000, 1000, "black", str(counter))
     
     # Update the icon
-    icon.icon = new_image
+    xorg_icon.icon = new_image
     
     return False  # Stop the timer from repeating
 
@@ -52,10 +52,10 @@ def update_counter():
     counter += 1
     
     # Create a new image with updated counter text
-    new_image = create_image_with_text(2000, 1000, "black", str(counter))
+    new_image = create_xorg_tray_image(2000, 1000, "black", str(counter))
     
     # Update the icon
-    icon.icon = new_image
+    xorg_icon.icon = new_image
     
     # Check if counter exceeds 5
     if counter > 1200:
@@ -78,7 +78,7 @@ def update_counter():
 
 def main():
     # Start the icon in detached mode
-    icon.run_detached()
+    xorg_icon.run_detached()
     
     # Set up a timer to update the counter every 1 second (1000 ms)
     GLib.timeout_add(1000, update_counter)

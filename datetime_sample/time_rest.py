@@ -10,6 +10,7 @@ import threading
 import time
 from sys import platform
 
+import pystray
 from flask import Flask
 
 current_dir = os.path.dirname(__file__)
@@ -17,15 +18,33 @@ sys.path.append(current_dir + "/..")
 from mp3.play import play_mp3_with_volume
 from ngrok_sample.ngrok_client_api import list_tunnel
 from pystray_sample.pystray_sample_icon_from_created_image import (
-    create_image_with_text,
-    icon,
+    create_xorg_tray_image,
+    xorg_icon,
 )
 from subprocess_sample.subprocess_sample import run_command, run_command_return_results
 
 RELEASE_LOCK_SCREEN = True
+PAUSED = False
 app = Flask(__name__)
 
 log_file = open("/tmp/time_rest.log", "w")
+
+
+def _wait_while_paused():
+    """Block while the tray Pause menu is active."""
+    while PAUSED:
+        xorg_icon.icon = create_xorg_tray_image(2000, 1100, "black", "II")
+        time.sleep(0.5)
+
+
+def toggle_pause(icon_obj, item):
+    global PAUSED
+    PAUSED = not PAUSED
+
+
+def quit_app(icon_obj, item):
+    icon_obj.stop()
+    os._exit(0)
 
 
 def run_cmd(command):
@@ -93,14 +112,23 @@ def working_time(times):
     start = datetime.datetime.now()
     now = datetime.datetime.now()
     while (now - start).seconds < times:
-        
+
+        if PAUSED:
+            # Freeze the elapsed counter: shift `start` forward by the paused
+            # interval so the countdown resumes exactly where it stopped.
+            prev = now
+            _wait_while_paused()
+            now = datetime.datetime.now()
+            start += now - prev
+            continue
+
         # NOTE: if using stdout, you have to run command like this: ./time_rest.py >> time_rest.log
         # sys.stdout.write("working time: {} of {}".format((now - start).seconds, times))
         # sys.stdout.flush()
         
         log_file.write("working time: {} of {}\n".format((now - start).seconds, times))
         log_file.flush()
-        icon.icon = create_image_with_text(2000, 1100, 'black', str((now - start).seconds))
+        xorg_icon.icon = create_xorg_tray_image(2000, 1100, 'black', str((now - start).seconds))
 
         if RELEASE_LOCK_SCREEN:
             start = datetime.datetime.now()
@@ -122,6 +150,12 @@ def break_time(time_to_break):
     print(RELEASE_LOCK_SCREEN)
 
     while (now - start).seconds < time_to_break and not RELEASE_LOCK_SCREEN:
+        if PAUSED:
+            prev = now
+            _wait_while_paused()
+            now = datetime.datetime.now()
+            start += now - prev
+            continue
         print("break time: {} of {}".format((now - start).seconds, time_to_break))
         time.sleep(1)
         now = datetime.datetime.now()
@@ -160,6 +194,9 @@ def show_warning_image_until_closed():
     user_closed_image = False
 
     while not user_closed_image:
+        # If paused during the reminder phase, wait here before (re)opening.
+        _wait_while_paused()
+
         # Flag to track if we're in programmatic close phase
         programmatic_close = False
 
@@ -207,6 +244,15 @@ def show_warning_image_until_closed():
         # Display the image for 10 seconds, checking if user closes it or locks screen
         start_time = time.time()
         while time.time() - start_time < 10:
+            # If paused, close the warning image and break out to wait; the
+            # outer loop will re-open it once resumed.
+            if PAUSED:
+                if platform == "linux" or platform == "linux2":
+                    run_cmd("pkill -f 'feh --title=warning'")
+                elif platform == "darwin":
+                    run_cmd("""osascript -e 'tell application "Preview" to quit'""")
+                break
+
             # Check if image is still displayed
             if platform == "linux" or platform == "linux2":
                 image_status = subprocess.call(
@@ -326,6 +372,18 @@ if __name__ == "__main__":
     # update_ngrok_public_url()
 
     # app.run(host="0.0.0.0", port=8100, debug=False)
-    icon.run_detached()
+    # The xorg backend has HAS_MENU = False: it cannot show a popup menu on
+    # right-click. It only fires the item marked `default=True` on a left-click,
+    # so left-clicking the tray icon toggles Pause/Resume.
+    xorg_icon.menu = pystray.Menu(
+        pystray.MenuItem(
+            lambda item: "Resume" if PAUSED else "Pause",
+            toggle_pause,
+            checked=lambda item: PAUSED,
+            default=True,
+        ),
+        pystray.MenuItem("Quit", quit_app),
+    )
+    xorg_icon.run_detached()
     
     main()

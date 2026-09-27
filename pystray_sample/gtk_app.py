@@ -1,6 +1,6 @@
 import os
 import gi
-from pystray_sample_icon_from_created_image import create_image_with_text, icon
+from pystray_sample_icon_from_created_image import create_xorg_tray_image, xorg_icon
 
 gi.require_version("Gtk", "3.0")
 from gi.repository import GdkPixbuf, Gtk, Gdk, GLib
@@ -132,7 +132,7 @@ class ButtonWindow(Gtk.Window):
         Gtk.main_quit()
 
 
-icon.run_detached()
+xorg_icon.run_detached()
 win = ButtonWindow()
 win.connect("destroy", Gtk.main_quit)
 win.show_all()

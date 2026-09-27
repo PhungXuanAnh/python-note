@@ -3,6 +3,7 @@ import os
 
 import pystray
 import Xlib.error
+import Xlib.X
 import Xlib.Xutil
 from PIL import Image, ImageDraw, ImageFilter, ImageFont
 
@@ -17,6 +18,13 @@ os.environ["PYSTRAY_BACKEND"] = "xorg"
 # NOTE: In these backends, the icon is larger
 # os.environ['PYSTRAY_BACKEND'] = 'appindicator'
 # os.environ["PYSTRAY_BACKEND"] = "gtk"
+
+# NOTE (xorg backend limitation): the `xorg` backend has HAS_MENU = False, so it
+# CANNOT show a full popup menu on right-click; only the menu item marked
+# `default=True` fires on a left-click. Everything below (create_xorg_tray_image
+# and _XorgWideIcon) is tuned specifically for the xorg XEmbed tray. If you ever
+# switch PYSTRAY_BACKEND to `appindicator`/`gtk` (which DO support real menus),
+# write separate builders for that backend instead of reusing these.
 
 
 def create_image(width, height, color1, color2):
@@ -42,7 +50,7 @@ PANEL_BG = (19, 19, 19)
 SLOT_H = 34
 
 
-def create_image_with_text(width, height, color, text='0000'):
+def create_xorg_tray_image(width, height, color, text='0000'):
     # Goal: white digits that look exactly like the GNOME panel clock next to the
     # tray - pure white, no dark outline, thin strokes - readable at ~34px tall.
     #
@@ -58,7 +66,7 @@ def create_image_with_text(width, height, color, text='0000'):
     #      white over PANEL_BG. The composite floor is PANEL_BG, so nothing can
     #      ever end up darker than the panel. Also render at SLOT_H so the
     #      backend paste is ~1:1 and barely resizes.
-    #   3. _WideIcon widens the tray slot to this label's aspect ratio so
+    #   3. _XorgWideIcon widens the tray slot to this label's aspect ratio so
     #      multi-digit numbers stay separated instead of squashed into ~24px.
     # Stroke weight is tuned with the MinFilter erosion below (smaller kernel =
     # thicker strokes); Ubuntu Light is already the thinnest sensible base.
@@ -80,17 +88,31 @@ def create_image_with_text(width, height, color, text='0000'):
         Image.new('RGB', (final_w, SLOT_H), PANEL_BG),
         mask,
     )
-    print("create_image_with_text", text)
+    print("create_xorg_tray_image", text)
     return image
 
 
-class _WideIcon(pystray.Icon):
+class _XorgWideIcon(pystray.Icon):
     """Tray icon that resizes its slot to match the icon's aspect ratio.
 
     The XEmbed tray hands out a ~24px-wide square by default, which crushes
     multi-digit numbers into an unreadable blob. Overriding the xorg backend's
     _draw lets us widen the window to fit the current image before painting.
     """
+
+    def _create_window(self):
+        # The xorg backend selects only Exposure/StructureNotify events, so the
+        # icon window never receives clicks and _on_button_press (the default
+        # menu action) never fires. Add ButtonPressMask so left-click works.
+        window = super()._create_window()
+        window.change_attributes(
+            event_mask=(
+                Xlib.X.ExposureMask
+                | Xlib.X.StructureNotifyMask
+                | Xlib.X.ButtonPressMask
+            )
+        )
+        return window
 
     def _draw(self):
         try:
@@ -116,18 +138,18 @@ class _WideIcon(pystray.Icon):
             pass
 
 
-# image = create_image_with_text(128, 64, 'white', 'Hello')
+# image = create_xorg_tray_image(128, 64, 'white', 'Hello')
 # image.show()
 
 # In order for the icon to be displayed, you must provide an icon
-icon = _WideIcon(
+xorg_icon = _XorgWideIcon(
     'test name',
     # icon=create_image(200, 200, 'black', 'white'))
-    icon=create_image_with_text(2000, 1000, "black", "1234"),
+    icon=create_xorg_tray_image(2000, 1000, "black", "1234"),
 )
 
 
 if __name__ == '__main__':
     # To finally show you icon, call run
-    icon.run()
-    # icon.run_detached()
+    xorg_icon.run()
+    # xorg_icon.run_detached()
