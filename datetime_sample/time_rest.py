@@ -1,6 +1,9 @@
 #! /home/xuananh/repo/python-note/.venv/bin/python
 """
 sudo apt install gnome-screensaver -y
+
+Test run (isolated instance, env vars, tray screenshots): see README.md in this folder.
+    datetime_sample/test.sh
 """
 import datetime
 import os
@@ -27,7 +30,21 @@ RELEASE_LOCK_SCREEN = True
 PAUSED = False
 app = Flask(__name__)
 
-log_file = open("/tmp/time_rest.log", "w")
+WHITE = (255, 255, 255)
+RED = (255, 0, 0)
+BLINK_LAST_SECONDS = 50  # blink the tray label during the last N seconds of working time
+WARNING_TEXT = "!"  # tray label while waiting for the user to lock the screen
+_warning_fg = None  # last colour drawn by _show_warning_icon, to redraw only on change
+
+# Lets a test instance run without clashing with the real one (see README.md).
+INSTANCE = os.environ.get("TIME_REST_INSTANCE", "")
+WORK_SECONDS = int(os.environ.get("TIME_REST_WORK_SECONDS", 20 * 60))
+NO_LOCK = os.environ.get("TIME_REST_NO_LOCK") == "1"
+LOG_PATH = "/tmp/time_rest_{}.log".format(INSTANCE) if INSTANCE else "/tmp/time_rest.log"
+# The real instance matches "feh --title=warning", so the test title must not contain it.
+FEH_TITLE = "{}-warning".format(INSTANCE) if INSTANCE else "warning"
+
+log_file = open(LOG_PATH, "w")
 
 
 def _wait_while_paused():
@@ -35,6 +52,30 @@ def _wait_while_paused():
     while PAUSED:
         xorg_icon.icon = create_xorg_tray_image(2000, 1100, "black", "II")
         time.sleep(0.5)
+
+
+def _blink_color():
+    """Alternate red/white once per second."""
+    return RED if int(time.time()) % 2 else WHITE
+
+
+def _show_warning_icon():
+    """Blink the tray label red/white while waiting for the user to lock the screen."""
+    global _warning_fg
+    if PAUSED:
+        return
+    fg = _blink_color()
+    if fg != _warning_fg:
+        _warning_fg = fg
+        xorg_icon.icon = create_xorg_tray_image(2000, 1100, "black", WARNING_TEXT, fg=fg)
+
+
+def _sleep_blinking(seconds):
+    """time.sleep() that keeps the warning icon blinking."""
+    end = time.time() + seconds
+    while time.time() < end:
+        _show_warning_icon()
+        time.sleep(0.1)
 
 
 def toggle_pause(icon_obj, item):
@@ -67,6 +108,9 @@ def move_mouse():
 
 
 def lock_screen():
+    if NO_LOCK:
+        print("lock_screen skipped (TIME_REST_NO_LOCK=1)")
+        return
     if platform == "linux" or platform == "linux2":
         run_cmd("gnome-screensaver-command --lock")
     elif platform == "darwin":
@@ -126,9 +170,11 @@ def working_time(times):
         # sys.stdout.write("working time: {} of {}".format((now - start).seconds, times))
         # sys.stdout.flush()
         
-        log_file.write("working time: {} of {}\n".format((now - start).seconds, times))
+        elapsed = (now - start).seconds
+        log_file.write("working time: {} of {}\n".format(elapsed, times))
         log_file.flush()
-        xorg_icon.icon = create_xorg_tray_image(2000, 1100, 'black', str((now - start).seconds))
+        fg = _blink_color() if times - elapsed <= BLINK_LAST_SECONDS else WHITE
+        xorg_icon.icon = create_xorg_tray_image(2000, 1100, 'black', str(elapsed), fg=fg)
 
         if RELEASE_LOCK_SCREEN:
             start = datetime.datetime.now()
@@ -173,7 +219,7 @@ def main():
         break 1 second to allow unlock screen manually
     """
     while True:        
-        working_time(20 * 60)
+        working_time(WORK_SECONDS)
 
         # Start image warning cycle
         show_warning_image_until_closed()
@@ -190,12 +236,16 @@ def main():
 
 def show_warning_image_until_closed():
     """Show warning image in a cycle until user manually closes it"""
+    global _warning_fg
     # Flag to track if the user manually closed the image
     user_closed_image = False
 
     while not user_closed_image:
         # If paused during the reminder phase, wait here before (re)opening.
         _wait_while_paused()
+        # Force a redraw: the tray may be showing the pause/working label.
+        _warning_fg = None
+        _show_warning_icon()
 
         # Flag to track if we're in programmatic close phase
         programmatic_close = False
@@ -212,7 +262,7 @@ def show_warning_image_until_closed():
             process = subprocess.Popen(
                 [
                     "feh",
-                    "--title=warning",
+                    "--title={}".format(FEH_TITLE),
                     "--fullscreen",  # Add fullscreen flag
                     "--borderless",
                     "--draw-tinted",
@@ -239,7 +289,7 @@ def show_warning_image_until_closed():
             )
 
         # Give the image viewer a moment to start up properly
-        time.sleep(0.5)
+        _sleep_blinking(0.5)
 
         # Display the image for 10 seconds, checking if user closes it or locks screen
         start_time = time.time()
@@ -248,7 +298,7 @@ def show_warning_image_until_closed():
             # outer loop will re-open it once resumed.
             if PAUSED:
                 if platform == "linux" or platform == "linux2":
-                    run_cmd("pkill -f 'feh --title=warning'")
+                    run_cmd("pkill -f 'feh --title={}'".format(FEH_TITLE))
                 elif platform == "darwin":
                     run_cmd("""osascript -e 'tell application "Preview" to quit'""")
                 break
@@ -256,7 +306,7 @@ def show_warning_image_until_closed():
             # Check if image is still displayed
             if platform == "linux" or platform == "linux2":
                 image_status = subprocess.call(
-                    ["pgrep", "-f", "feh --title=warning"],
+                    ["pgrep", "-f", "feh --title={}".format(FEH_TITLE)],
                     stdout=subprocess.PIPE,
                     stderr=subprocess.PIPE,
                 )
@@ -272,7 +322,7 @@ def show_warning_image_until_closed():
                 # Close the image if it's still open
                 if image_status == 0:
                     if platform == "linux" or platform == "linux2":
-                        run_cmd("pkill -f 'feh --title=warning'")
+                        run_cmd("pkill -f 'feh --title={}'".format(FEH_TITLE))
                     elif platform == "darwin":
                         run_cmd("""osascript -e 'tell application "Preview" to quit'""")
                 user_closed_image = True
@@ -284,6 +334,7 @@ def show_warning_image_until_closed():
                 user_closed_image = True
                 return  # Exit function, which will trigger lock_screen()
 
+            _show_warning_icon()
             time.sleep(0.1)
 
         # Mark that we're entering programmatic close phase
@@ -291,18 +342,18 @@ def show_warning_image_until_closed():
 
         # After display time, close the image programmatically
         if platform == "linux" or platform == "linux2":
-            run_cmd("pkill -f 'feh --title=warning'")
+            run_cmd("pkill -f 'feh --title={}'".format(FEH_TITLE))
         elif platform == "darwin":
             run_cmd("""osascript -e 'tell application "Preview" to quit'""")
 
         # Wait to ensure programmatic close is complete
-        time.sleep(0.5)
+        _sleep_blinking(0.5)
 
         # Reset flag for next cycle
         programmatic_close = False
 
         # Wait for 1 second before reopening
-        time.sleep(1)
+        _sleep_blinking(1)
 
 
 def get_domain():

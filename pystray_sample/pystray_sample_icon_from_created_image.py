@@ -50,7 +50,7 @@ PANEL_BG = (19, 19, 19)
 SLOT_H = 34
 
 
-def create_xorg_tray_image(width, height, color, text='0000'):
+def create_xorg_tray_image(width, height, color, text='0000', fg=(255, 255, 255)):
     # Goal: white digits that look exactly like the GNOME panel clock next to the
     # tray - pure white, no dark outline, thin strokes - readable at ~34px tall.
     #
@@ -84,7 +84,7 @@ def create_xorg_tray_image(width, height, color, text='0000'):
     final_w = max(1, round(big_w * SLOT_H / big_h))
     mask = mask.resize((final_w, SLOT_H), Image.LANCZOS)
     image = Image.composite(
-        Image.new('RGB', (final_w, SLOT_H), (255, 255, 255)),
+        Image.new('RGB', (final_w, SLOT_H), fg),
         Image.new('RGB', (final_w, SLOT_H), PANEL_BG),
         mask,
     )
