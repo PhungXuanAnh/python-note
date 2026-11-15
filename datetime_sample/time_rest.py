@@ -185,7 +185,9 @@ def show_warning_image_until_closed():
         _warning_fg = None
         _show_warning_icon()
 
-        _open_warning_image()
+        # feh survives pkill while gnome-shell hangs; a new one each round used up all 256 X clients.
+        if not _is_warning_image_open():
+            _open_warning_image()
         # Give the image viewer a moment to start up properly
         _sleep_blinking(0.5)
 
